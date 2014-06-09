@@ -2,6 +2,7 @@ package org.libbun;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -177,7 +178,51 @@ public class Main {
 		BunDriver driver = loadDriver(DriverName);
 		Namespace gamma = new Namespace(p, driver);
 		driver.initTable(gamma);
-		performShell(gamma, driver);
+		if(InputFileName == null) {
+			performShell(gamma, driver);
+		}
+		else {
+			evalScript(gamma, driver);
+		}
+	}
+
+	public final static void evalScript(Namespace gamma, BunDriver driver) {
+		InputStream stream = null;
+		if(PegDebuggerMode) {
+			File inputFile = new File(InputFileName);
+			try {
+				stream = new FileInputStream(inputFile);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+			BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+			String buffer = "";
+			try {
+				int buflen = 4096;
+				int readed = 0;
+				char[] buf = new char[buflen];
+				StringBuilder builder = new StringBuilder();
+				while ((readed = reader.read(buf, 0, buflen)) >= 0) {
+					builder.append(buf, 0, readed);
+				}
+				buffer = builder.toString();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			PegSource source = new PegSource(inputFile.getName(), 1, buffer);
+			PegParserContext context =  gamma.root.newParserContext("main", source);
+			PegObject node = context.parsePegNode(new PegObject(BunSymbol.TopLevelFunctor), "TopLevel");
+			node.gamma = gamma;
+			if(PegDebuggerMode) {
+				System.out.println("parsed:\n" + node.toString());
+				if(context.hasChar()) {
+					System.out.println("** uncosumed: '" + context + "' **");
+				}
+				System.out.println("hit: " + context.memoHit + ", miss: " + context.memoMiss + ", object=" + context.objectCount + ", error=" + context.errorCount);
+				System.out.println("backtrackCount: " + context.backtrackCount + ", backtrackLength: " + context.backtrackSize);
+				System.out.println();
+			}
+		}
 	}
 
 	public final static void performShell(Namespace gamma, BunDriver driver) {
