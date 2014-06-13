@@ -92,15 +92,50 @@ ClassStmt
     ;
 
 Expr
-    = Comp
-    / Expr <<@ "[" WS* Expr@ WS* "]" #get>>
-    / Expr <<@ "." Expr@ #field>>
-    / Expr <<@ "(" _* Args@ _* ")" #apply>>
-    / Expr <<@ _* '=' _* Expr@ #assign>>
+    = Assign
     ;
 
-Comp
-    = Sum <<@ WS* ('<=' #lte / '<' #lt / '>=' #gte / '>' #gt / '==' #eq) WS* Sum@ >>*
+Assign
+    = OrExpr <<@ WS* AssignOp WS* OrExpr@>>*
+    ;
+
+AssignOp
+    = '=' !'=' #assign
+    / '+='     #addeq
+    / '-='     #subeq
+    / '*='     #muleq
+    / '/='     #diveq
+    ;
+
+OrExpr
+    = AndExpr <<@ WS* 'or' WS* AndExpr@ #or >>*
+    ;
+
+AndExpr
+    = BitwiseExpr <<@ WS* 'and' WS* BitwiseExpr@ #and >>*
+    ;
+
+BitwiseExpr
+    = Equal <<@ WS* ('|' !'|' #bitor / '&' !'&' #bitand / '^' #bitxor) WS* Equal@ >>*
+    ;
+
+Equal
+    = Relation <<@ WS*  EqOp@ WS* Relation@>>*
+    ;
+
+EqOp
+    = 'is' WS+ 'not' #noteq
+    / 'is' #eq
+    / '==' #eq
+    / '!=' #noteq
+    ;
+
+Relation
+    = Shift <<@ WS* ('<' !'<' #lt / '<=' #lte / '>' !'>' #gt / '>=' #gte) WS* Shift@ >>*
+    ;
+
+Shift
+    = Sum <<@ WS* ('<<' #lshift / '>>' #rshift) WS* Sum@ >>*
     ;
 
 Sum
@@ -108,7 +143,18 @@ Sum
     ;
 
 Product
-    = Value <<@ WS* ('*' #mul / '/' #div / '%' #mod) WS* Value@ >>*
+    = Unary <<@ WS* ('*' #mul / '/' #div / '%' #mod) WS* Unary@ >>*
+    ;
+
+Unary
+    = << ('not' #not / '!' #not / '-' #minus / '+' #plus / '~' #compl) Unary@ >>
+    / Value <<@ Selector >>*
+    ;
+
+Selector
+    = '.' Symbol@ #field
+    / '[' WS* Expr@ WS* ']' #index
+    / '(' << _* ( Expr@ ( _* ',' _* Expr@ )* )? #args >>@ ')'  #apply
     ;
 
 Value
