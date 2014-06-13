@@ -131,11 +131,11 @@ EqOp
     ;
 
 Relation
-    = Shift <<@ _ ('<' !'<' #lt / '<=' #lte / '>' !'>' #gt / '>=' #gte) _ Shift@ >>*
+    = Shift <<@ WS* ('<' !'<' #lt / '<=' #lte / '>' !'>' #gt / '>=' #gte) WS* Shift@ >>*
     ;
 
 Shift
-    = Sum <<@ _ ('<<' #lshift / '>>' #rshift) _ Sum@ >>*
+    = Sum <<@ WS* ('<<' #lshift / '>>' #rshift) WS* Sum@ >>*
     ;
 
 Sum
@@ -147,8 +147,8 @@ Product
     ;
 
 Unary
-    = << ('!' #not / '-' #minus / '+' #plus / '~' #compl) Unary@ >>
-    / Value <<@ Selector>>*
+    = << ('not' #not / '!' #not / '-' #minus / '+' #plus / '~' #compl) Unary@ >>
+    / Value <<@ Selector >>*
     ;
 
 Selector
