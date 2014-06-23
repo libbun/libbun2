@@ -1,0 +1,31 @@
+parsed:
+#block {            ## by peg : null
+   #stmt.expression {            ## by peg : null
+      #number: 1234   ## by peg : null
+   }
+   #stmt.expression {            ## by peg : null
+      #minus {            ## by peg : null
+         #number: 1234   ## by peg : null
+      }
+   }
+   #stmt.expression {            ## by peg : null
+      #number: 1.234   ## by peg : null
+   }
+   #stmt.expression {            ## by peg : null
+      #minus {            ## by peg : null
+         #number: 1.234   ## by peg : null
+      }
+   }
+   #stmt.expression {            ## by peg : null
+      #number: 123e4   ## by peg : null
+   }
+   #stmt.expression {            ## by peg : null
+      #number: 123E4   ## by peg : null
+   }
+   #stmt.expression {            ## by peg : null
+      : 0123   ## by peg : null
+   }
+   #stmt.expression {            ## by peg : null
+      : 0x123   ## by peg : null
+   }
+}
