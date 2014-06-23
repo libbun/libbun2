@@ -1,14 +1,6 @@
 parsed:
 #block {            ## by peg : ( SourceElement^ (__ SourceElement^)*  ) defined in SourceElements
    #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
-      #intNumber: 1234   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
-   }
-   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
-      #minus {            ## by peg : ( UnaryOperator __ UnaryExpression^ ) defined in UnaryExpression
-         #intNumber: 1234   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
-      }
-   }
-   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
       #floatNumber: 1234.   ## by peg : ( DecimalIntegerLiteral '.' DecimalDigit* ExponentPart?  ) defined in DecimalLiteral
    }
    #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
