@@ -5,7 +5,7 @@ parsed:
          #typespecifier {            ## by peg : ( (VOID / CHAR / SHORT / INT / LONG / FLOAT / DOUBLE / SIGNED / UNSIGNED / BOOL / COMPLEX / StructOrUnionSpecifier / EnumSpecifier)^  ) defined in TypeSpecifier
             #union: union    ## by peg : ( UNION  ) defined in StructOrUnion
             #identifier: data    ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
-            #structdeclaration {            ## by peg : ( SpecifierQualifierList StructDeclaratorList^ SEMI  ) defined in StructDeclaration
+            #structdeclaration {            ## by peg : ( SpecifierQualifierList^ (StructDeclaratorList^)? SEMI  ) defined in StructDeclaration
                #typespecifier: int    ## by peg : ( (VOID / CHAR / SHORT / INT / LONG / FLOAT / DOUBLE / SIGNED / UNSIGNED / BOOL / COMPLEX / StructOrUnionSpecifier / EnumSpecifier)^  ) defined in TypeSpecifier
                #structdeclaratorlist {            ## by peg : ( StructDeclarator^ (COMMA StructDeclarator^)*  ) defined in StructDeclaratorList
                   #declarator {            ## by peg : ( (Pointer^)? DirectDeclarator^  ) defined in Declarator
@@ -13,7 +13,7 @@ parsed:
                   }
                }
             }
-            #structdeclaration {            ## by peg : ( SpecifierQualifierList StructDeclaratorList^ SEMI  ) defined in StructDeclaration
+            #structdeclaration {            ## by peg : ( SpecifierQualifierList^ (StructDeclaratorList^)? SEMI  ) defined in StructDeclaration
                #typespecifier: char    ## by peg : ( (VOID / CHAR / SHORT / INT / LONG / FLOAT / DOUBLE / SIGNED / UNSIGNED / BOOL / COMPLEX / StructOrUnionSpecifier / EnumSpecifier)^  ) defined in TypeSpecifier
                #structdeclaratorlist {            ## by peg : ( StructDeclarator^ (COMMA StructDeclarator^)*  ) defined in StructDeclaratorList
                   #declarator {            ## by peg : ( (Pointer^)? DirectDeclarator^  ) defined in Declarator

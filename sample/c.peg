@@ -193,7 +193,7 @@ StructOrUnion
     ;
 
 StructDeclaration
-    = << SpecifierQualifierList StructDeclaratorList@ SEMI #structdeclaration >>
+    = << SpecifierQualifierList StructDeclaratorList@? SEMI #structdeclaration >>
     ;
 
 SpecifierQualifierList
@@ -238,8 +238,8 @@ TypeQualifier
     ;
 
 FunctionSpecifier
-    = INLINE
-    / STDCALL
+    = << INLINE #inline >>
+    / << STDCALL #stdcall >>
     ;
 
 Attribute
@@ -545,7 +545,7 @@ FOR       = "for"        !IdChar Spacing ;
 GOTO      = "goto"       !IdChar Spacing ;
 IF        = "if"         !IdChar Spacing ;
 INT       = "int"        !IdChar Spacing ;
-INLINE    = "inline"     !IdChar Spacing ;
+INLINE    = ("inline" / "__inline")    !IdChar Spacing ;
 LONG      = "long"       !IdChar Spacing ;
 REGISTER  = "register"   !IdChar Spacing ;
 RESTRICT  = "restrict"   !IdChar Spacing ;
