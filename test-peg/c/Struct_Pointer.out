@@ -63,7 +63,7 @@ parsed:
                   #identifier: s    ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
                }
                #initializer {            ## by peg : ( (AssignmentExpression^ / LWING (InitializerList^)* COMMA? RWING)  ) defined in Initializer
-                  #castexpression {            ## by peg : ( ((LPAR TypeName RPAR)^)+ UnaryExpression^  ) defined in CastExpression
+                  #castexpression {            ## by peg : ( (LPAR TypeName RPAR)^ UnaryExpression^  ) defined in CastExpression
                      #typename {            ## by peg : ( SpecifierQualifierList^ (AbstractDeclarator^)?  ) defined in TypeName
                         #typedefname {            ## by peg : ( Identifier^  ) defined in TypedefName
                            #identifier: Student    ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
@@ -72,7 +72,9 @@ parsed:
                      }
                      noname {            ## by peg : ( (LBRK^ Expression^ RBRK^ / LPAR^ (ArgumentExpressionList^)? RPAR^ / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
                         #identifier: malloc   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
-                        #identifier: Student   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
+                        #sizeof {            ## by peg : ( SIZEOF  (UnaryExpression^ / LPAR^ TypeName^ RPAR^) ) defined in UnaryExpression
+                           #identifier: Student   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
+                        }
                      }
                   }
                }
