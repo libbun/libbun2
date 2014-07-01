@@ -30,7 +30,7 @@ parsed:
       }
       #compoundstatement {            ## by peg : ( LWING ((Declaration / Statement)^)* RWING  ) defined in CompoundStatement
          #expressionstatement {            ## by peg : ( (Expression^)? SEMI  ) defined in ExpressionStatement
-            noname {            ## by peg : ( (LBRK^ Expression^ RBRK^ / LPAR^ (ArgumentExpressionList^)? RPAR^ / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
+            #apply {            ## by peg : ( (FunctionCall  / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
                #identifier: func   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
                #integer: 2   ## by peg : ( (DecimalConstant / HexConstant / OctalConstant) IntegerSuffix?  ) defined in IntegerConstant
             }
