@@ -425,7 +425,7 @@ UnaryOperator
     ;
 
 CastExpression
-    = <<(LPAR TypeName RPAR)@+ UnaryExpression@ #castexpression >>
+    = <<(LPAR TypeName RPAR)@ UnaryExpression@ #castexpression >>
     / UnaryExpression
     ;
 
