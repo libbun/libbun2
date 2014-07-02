@@ -1,0 +1,16 @@
+parsed:
+#toplevel {            ## by peg : null
+   #try {            ## by peg : null
+      #block {            ## by peg : null
+         #print {            ## by peg : null
+            #integer: 1   ## by peg : null
+         }
+      }
+      #name: Exception   ## by peg : null
+      #block {            ## by peg : null
+         #print {            ## by peg : null
+            #integer: 2   ## by peg : null
+         }
+      }
+   }
+}

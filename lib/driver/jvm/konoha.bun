@@ -1,302 +1,321 @@
-typedef bool
-typedef int
-typedef float
+typedef boolean
+typedef long
+typedef double
 typedef String
+typedef void
+typedef Object
 
 
 bun #block(*): void {
 	${statement this}
 }
 
-bun #integer(): int {
-	${PUSH_INT this}
+bun #integer(): long {
+	${PUSH_AS_LONG this}
 }
 
-bun #float() : float {
-	${PUSH_FLOAT this}
+bun #float() : double {
+	${PUSH_AS_DOUBLE this}
 }
 
-bun #true() :bool {
-	${PUSH_BOOL true}
+bun #true() :boolean {
+	${PUSH_AS_BOOL true}
 }
 
-bun #false() :bool {
-	${PUSH_BOOL false}
+bun #false() :boolean {
+	${PUSH_AS_BOOL false}
 }
 
 bun #string() : String {
-	${PUSH_STRING}
+	${PUSH_AS_STRING}
 }
 
-// binary op defiention
+// binary op definition
 // ADD
-bun #add(x : int, y : int) : int {
-	${x} ${y} ${OP}
+bun #add(x : long, y : long) : long {
+	${x} ${y} ${LADD}
 }
 
-bun #add(x : int, y : float) : float {
-	${x} ${y} ${OP}
+bun #add(x : long, y : double) : double {
+	${x} ${L2D} ${y} ${DADD}
 }
 
-bun #add(x : float, y : int) : float {
-	${x} ${y} ${OP}
+bun #add(x : double, y : long) : double {
+	${x} ${y} ${L2D} ${DADD}
 }
 
-bun #add(x : float, y : float) : float {
-	${x} ${y} ${OP}
+bun #add(x : double, y : double) : double {
+	${x} ${y} ${DADD}
 }
 // string concat
-bun #add(x : String, y : int) : String {
+bun #add(x : String, y : long) : String {
 	${x} ${y} ${OP}
 }
 
-bun #add(x : String, y : float) : String {
+bun #add(x : String, y : double) : String {
 	${x} ${y} ${OP}
 }
 
-bun #add(x : String, y : bool) : String {
+bun #add(x : String, y : boolean) : String {
 	${x} ${y} ${OP}
 }
 
-bun #add(x : String, y : any) : String {
+bun #add(x : String, y : Object) : String {
 	${x} ${y} ${OP}
 }
 
-bun #add(x : int, y : String) : String {
+bun #add(x : long, y : String) : String {
 	${x} ${y} ${OP}
 }
 
-bun #add(x : float, y : String) : String {
+bun #add(x : double, y : String) : String {
 	${x} ${y} ${OP}
 }
 
-bun #add(x : bool, y : String) : String {
+bun #add(x : boolean, y : String) : String {
 	${x} ${y} ${OP}
 }
 
-bun #add(x : any, y : String) : String {
+bun #add(x : Object, y : String) : String {
 	${x} ${y} ${OP}
 }
 
 //SUB
-bun #sub(x : int, y : int) : int {
-	${x} ${y} ${OP}
+bun #sub(x : long, y : long) : long {
+	${x} ${y} ${LSUB}
 }
 
-bun #sub(x : int, y : float) : float {
-	${x} ${y} ${OP}
+bun #sub(x : long, y : double) : double {
+	${x} ${L2D} ${y} ${DSUB}
 }
 
-bun #sub(x : float, y : int) : float {
-	${x} ${y} ${OP}
+bun #sub(x : double, y : long) : double {
+	${x} ${y} ${L2D} ${DSUB}
 }
 
-bun #sub(x : float, y : float) : float {
-	${x} ${y} ${OP}
+bun #sub(x : double, y : double) : double {
+	${x} ${y} ${DSUB}
 }
 
 // MUL
-bun #mul(x : int, y : int) : int {
-	${x} ${y} ${OP}
+bun #mul(x : long, y : long) : long {
+	${x} ${y} ${LMUL}
 }
 
-bun #mul(x : int, y : float) : float {
-	${x} ${y} ${OP}
+bun #mul(x : long, y : double) : double {
+	${x} ${L2D} ${y} ${DMUL}
 }
 
-bun #mul(x : float, y : int) : float {
-	${x} ${y} ${OP}
+bun #mul(x : double, y : long) : double {
+	${x} ${y} ${L2D} ${DMUL}
 }
 
-bun #mul(x : float, y : float) : float {
-	${x} ${y} ${OP}
+bun #mul(x : double, y : double) : double {
+	${x} ${y} ${DMUL}
 }
 
 // DIV
-bun #div(x : int, y : int) : int {
-	${x} ${y} ${OP}
+bun #div(x : long, y : long) : long {
+	${x} ${y} ${LDIV}
 }
 
-bun #div(x : int, y : float) : float {
-	${x} ${y} ${OP}
+bun #div(x : long, y : double) : double {
+	${x} ${y} ${DDIV}
 }
 
-bun #div(x : float, y : int) : float {
-	${x} ${y} ${OP}
+bun #div(x : double, y : long) : double {
+	${x} ${y} ${L2D} ${DDIV}
 }
 
-bun #div(x : float, y : float) : float {
-	${x} ${y} ${OP}
+bun #div(x : double, y : double) : double {
+	${x} ${y} ${DDIV}
 }
 
 // MOD
-bun #mod(x : int, y : int) : int {
+bun #mod(x : long, y : long) : long {
 	${x} ${y} ${OP}
 }
 
-bun #mod(x : int, y : float) : float {
+bun #mod(x : long, y : double) : double {
 	${x} ${y} ${OP}
 }
 
-bun #mod(x : float, y : int) : float {
+bun #mod(x : double, y : long) : double {
 	${x} ${y} ${OP}
 }
 
-bun #mod(x : float, y : float) : float {
+bun #mod(x : double, y : double) : double {
 	${x} ${y} ${OP}
 }
 
 // EQ
-bun #eq(x : int, y : int) : bool {
+bun #eq(x : long, y : long) : boolean {
 	${x} ${y} ${OP}
 }
 
-bun #eq(x : int, y : float) : bool {
+bun #eq(x : long, y : double) : boolean {
 	${x} ${y} ${OP}
 }
 
-bun #eq(x : float, y : int) : bool {
+bun #eq(x : double, y : long) : boolean {
 	${x} ${y} ${OP}
 }
 
-bun #eq(x : float, y : float) : bool {
+bun #eq(x : double, y : double) : boolean {
 	${x} ${y} ${OP}
 }
 
-bun #eq(x : bool, y : bool) : bool {
+bun #eq(x : boolean, y : boolean) : boolean {
 	${x} ${y} ${OP}
 }
 
-bun #eq(x : String, y : String) : bool {
+bun #eq(x : String, y : String) : boolean {
 	${x} ${y} ${OP}
 }
 
-bun #eq(x : any, y : any) : bool {
+bun #eq(x : Object, y : Object) : boolean {
 	${x} ${y} ${OP}
 }
 
 // NOTEQ
-bun #noteq(x : int, y : int) : bool {
+bun #noteq(x : long, y : long) : boolean {
 	${x} ${y} ${OP}
 }
 
-bun #noteq(x : int, y : float) : bool {
+bun #noteq(x : long, y : double) : boolean {
 	${x} ${y} ${OP}
 }
 
-bun #noteq(x : float, y : int) : bool {
+bun #noteq(x : double, y : long) : boolean {
 	${x} ${y} ${OP}
 }
 
-bun #noteq(x : float, y : float) : bool {
+bun #noteq(x : double, y : double) : boolean {
 	${x} ${y} ${OP}
 }
 
-bun #noteq(x : bool, y : bool) : bool {
+bun #noteq(x : boolean, y : boolean) : boolean {
 	${x} ${y} ${OP}
 }
 
-bun #noteq(x : String, y : String) : bool {
+bun #noteq(x : String, y : String) : boolean {
 	${x} ${y} ${OP}
 }
 
-bun #noteq(x : any, y : any) : bool {
+bun #noteq(x : Object, y : Object) : boolean {
 	${x} ${y} ${OP}
 }
 
 // LT
-bun #lt(x : int, y : int) : bool {
+bun #lt(x : long, y : long) : boolean {
 	${x} ${y} ${OP}
 }
 
-bun #lt(x : int, y : float) : bool {
+bun #lt(x : long, y : double) : boolean {
 	${x} ${y} ${OP}
 }
 
-bun #lt(x : float, y : int) : bool {
+bun #lt(x : double, y : long) : boolean {
 	${x} ${y} ${OP}
 }
 
-bun #lt(x : float, y : float) : bool {
+bun #lt(x : double, y : double) : boolean {
 	${x} ${y} ${OP}
 }
 
 // LTE
-bun #lte(x : int, y : int) : bool {
+bun #lte(x : long, y : long) : boolean {
 	${x} ${y} ${OP}
 }
 
-bun #lte(x : int, y : float) : bool {
+bun #lte(x : long, y : double) : boolean {
 	${x} ${y} ${OP}
 }
 
-bun #lte(x : float, y : int) : bool {
+bun #lte(x : double, y : long) : boolean {
 	${x} ${y} ${OP}
 }
 
-bun #lte(x : float, y : float) : bool {
+bun #lte(x : double, y : double) : boolean {
 	${x} ${y} ${OP}
 }
 
 // GT
-bun #gt(x : int, y : int) : bool {
+bun #gt(x : long, y : long) : boolean {
 	${x} ${y} ${OP}
 }
 
-bun #gt(x : int, y : float) : bool {
+bun #gt(x : long, y : double) : boolean {
 	${x} ${y} ${OP}
 }
 
-bun #gt(x : float, y : int) : bool {
+bun #gt(x : double, y : long) : boolean {
 	${x} ${y} ${OP}
 }
 
-bun #gt(x : float, y : float) : bool {
+bun #gt(x : double, y : double) : boolean {
 	${x} ${y} ${OP}
 }
 
 // GTE
-bun #gte(x : int, y : int) : bool {
+bun #gte(x : long, y : long) : boolean {
 	${x} ${y} ${OP}
 }
 
-bun #gte(x : int, y : float) : bool {
+bun #gte(x : long, y : double) : boolean {
 	${x} ${y} ${OP}
 }
 
-bun #gte(x : float, y : int) : bool {
+bun #gte(x : double, y : long) : boolean {
 	${x} ${y} ${OP}
 }
 
-bun #gte(x : float, y : float) : bool {
+bun #gte(x : double, y : double) : boolean {
 	${x} ${y} ${OP}
 }
 
 // unary op definition
 // NOT
-bun #not(x : bool) : bool {
+bun #not(x : boolean) : boolean {
 	${x} ${OP}
 }
 
 // PLUS
-bun #plus(x : int) : int {
-	${x} ${OP}
+bun #plus(x : long) : long {
+	${x} ${INDY plus bsm_UnaryOp Object Object}
 }
 
-bun #plus(x : float) : float {
+bun #plus(x : double) : double {
 	${x} ${OP}
 }
 
 // MINUS
-bun #minus(x : int) : int {
+bun #minus(x : long) : long {
 	${x} ${OP}
 }
 
-bun #minus(x : float) : float {
+bun #minus(x : double) : double {
 	${x} ${OP}
 }
 
 // COMPL
-bun #compl(x : int) : int {
+bun #compl(x : long) : long {
 	${x} ${OP}
 }
+
+// conditional operator
+// And
+bun #and(x : boolean, y : boolean) : boolean {
+	${AND}
+}
+
+// Or
+bun #or(x : boolean, y : boolean) : boolean {
+	${OR}
+}
+
+// LET
+bun #let(name, type, value): void && letvar() {
+	${VAR_DECL}
+}
+

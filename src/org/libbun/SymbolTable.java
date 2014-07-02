@@ -1,6 +1,5 @@
 package org.libbun;
 
-
 public class SymbolTable {
 	Namespace          root = null;
 	PegObject          scope     = null;
@@ -315,9 +314,8 @@ public class SymbolTable {
 	}
 	
 	public void load(String fileName, BunDriver driver) {
-		PegSource source = Main.loadSource(fileName);
-		this.root.newParserContext(null, source);
-		ParserContext context =  this.root.newParserContext(null, source);
+		ParserContext context = Main.newParserContext(Main.loadSource(fileName));
+		this.root.initParserRuleSet(context, null);
 		while(context.hasNode()) {
 			context.initMemo();
 			PegObject node = context.parseNode("TopLevel");

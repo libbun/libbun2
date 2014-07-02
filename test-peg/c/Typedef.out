@@ -1,0 +1,69 @@
+parsed:
+#translationunit {            ## by peg : ( Spacing (ExternalDeclaration^)+ EOT  ) defined in TranslationUnit
+   #declaration {            ## by peg : ( DeclarationNoAttribute^ ((Attribute / Assembler)^)? SEMI  ) defined in Declaration
+      #declarationspecifier {            ## by peg : ( ((StorageClassSpecifier / TypeSpecifier / TypeQualifier / FunctionSpecifier / Attribute)^)+  ) defined in DeclarationSpecifiers
+         #storageclassspecifier: typedef    ## by peg : ( (TYPEDEF / EXTERN / STATIC / AUTO / REGISTER)^  ) defined in StorageClassSpecifier
+         #typespecifier {            ## by peg : ( (VOID / CHAR / SHORT / INT / LONG / FLOAT / DOUBLE / SIGNED / UNSIGNED / BOOL / COMPLEX / StructOrUnionSpecifier / EnumSpecifier)^  ) defined in TypeSpecifier
+            #struct: struct    ## by peg : ( STRUCT  ) defined in StructOrUnion
+            #identifier: A    ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
+            #structdeclaration {            ## by peg : ( SpecifierQualifierList StructDeclaratorList^ SEMI  ) defined in StructDeclaration
+               #typespecifier: int    ## by peg : ( (VOID / CHAR / SHORT / INT / LONG / FLOAT / DOUBLE / SIGNED / UNSIGNED / BOOL / COMPLEX / StructOrUnionSpecifier / EnumSpecifier)^  ) defined in TypeSpecifier
+               #structdeclaratorlist {            ## by peg : ( StructDeclarator^ (COMMA StructDeclarator^)*  ) defined in StructDeclaratorList
+                  #declarator {            ## by peg : ( (Pointer^)? DirectDeclarator^  ) defined in Declarator
+                     #identifier: X   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
+                  }
+               }
+            }
+         }
+      }
+      #initdeclaratorlist {            ## by peg : ( (COMMA InitDeclarator^)  ) defined in InitDeclaratorList
+         #declarator {            ## by peg : ( (Pointer^)? DirectDeclarator^  ) defined in Declarator
+            #pointer: *   ## by peg : ( (STAR^ (TypeQualifier^)*)+  ) defined in Pointer
+            #identifier: StructA   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
+         }
+         #declarator {            ## by peg : ( (Pointer^)? DirectDeclarator^  ) defined in Declarator
+            #pointer: **   ## by peg : ( (STAR^ (TypeQualifier^)*)+  ) defined in Pointer
+            #identifier: StructAPtr   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
+         }
+      }
+   }
+   #declaration {            ## by peg : ( DeclarationNoAttribute^ ((Attribute / Assembler)^)? SEMI  ) defined in Declaration
+      #declarationspecifier {            ## by peg : ( ((StorageClassSpecifier / TypeQualifier / FunctionSpecifier / Attribute)^)* TypedefName^ (StorageClassSpecifier / TypeQualifier / FunctionSpecifier / Attribute)*  ) defined in DeclarationSpecifiers
+         #typedefname {            ## by peg : ( Identifier^  ) defined in TypedefName
+            #identifier: StructA    ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
+         }
+      }
+      #declarator {            ## by peg : ( (Pointer^)? DirectDeclarator^  ) defined in Declarator
+         #identifier: value   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
+      }
+   }
+   #declaration {            ## by peg : ( DeclarationNoAttribute^ ((Attribute / Assembler)^)? SEMI  ) defined in Declaration
+      #declarationspecifier {            ## by peg : ( ((StorageClassSpecifier / TypeSpecifier / TypeQualifier / FunctionSpecifier / Attribute)^)+  ) defined in DeclarationSpecifiers
+         #storageclassspecifier: typedef    ## by peg : ( (TYPEDEF / EXTERN / STATIC / AUTO / REGISTER)^  ) defined in StorageClassSpecifier
+         #typespecifier: int    ## by peg : ( (VOID / CHAR / SHORT / INT / LONG / FLOAT / DOUBLE / SIGNED / UNSIGNED / BOOL / COMPLEX / StructOrUnionSpecifier / EnumSpecifier)^  ) defined in TypeSpecifier
+      }
+      #declarator {            ## by peg : ( (Pointer^)? DirectDeclarator^  ) defined in Declarator
+         #declarator {            ## by peg : ( (Pointer^)? DirectDeclarator^  ) defined in Declarator
+            #identifier: fptr_t   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
+         }
+         #parameterlist {            ## by peg : ( (COMMA ParameterDeclaration^)  ) defined in ParameterList
+            #declarationspecifier {            ## by peg : ( ((StorageClassSpecifier / TypeSpecifier / TypeQualifier / FunctionSpecifier / Attribute)^)+  ) defined in DeclarationSpecifiers
+               #typespecifier: float   ## by peg : ( (VOID / CHAR / SHORT / INT / LONG / FLOAT / DOUBLE / SIGNED / UNSIGNED / BOOL / COMPLEX / StructOrUnionSpecifier / EnumSpecifier)^  ) defined in TypeSpecifier
+            }
+            #declarationspecifier {            ## by peg : ( ((StorageClassSpecifier / TypeSpecifier / TypeQualifier / FunctionSpecifier / Attribute)^)+  ) defined in DeclarationSpecifiers
+               #typespecifier: char   ## by peg : ( (VOID / CHAR / SHORT / INT / LONG / FLOAT / DOUBLE / SIGNED / UNSIGNED / BOOL / COMPLEX / StructOrUnionSpecifier / EnumSpecifier)^  ) defined in TypeSpecifier
+            }
+         }
+      }
+   }
+   #declaration {            ## by peg : ( DeclarationNoAttribute^ ((Attribute / Assembler)^)? SEMI  ) defined in Declaration
+      #declarationspecifier {            ## by peg : ( ((StorageClassSpecifier / TypeQualifier / FunctionSpecifier / Attribute)^)* TypedefName^ (StorageClassSpecifier / TypeQualifier / FunctionSpecifier / Attribute)*  ) defined in DeclarationSpecifiers
+         #typedefname {            ## by peg : ( Identifier^  ) defined in TypedefName
+            #identifier: fptr_t    ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
+         }
+      }
+      #declarator {            ## by peg : ( (Pointer^)? DirectDeclarator^  ) defined in Declarator
+         #identifier: func_ptr   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
+      }
+   }
+}

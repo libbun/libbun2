@@ -1,14 +1,14 @@
 parsed:
-#toplevel {            ## by peg : null
-   #if {            ## by peg : null
-      #lt {            ## by peg : null
-         #integer: 5   ## by peg : null
-         #integer: 3   ## by peg : null
+#toplevel {            ## by peg : ( (Stmt^)+  )
+   #if {            ## by peg : ( 'if' WS+ Expr^ WS* ':' Block^ (Elif^)* ('else' WS* ':' Block^)?  )
+      #lt {            ## by peg : ( WS* ('<' !'<'  / '<='  / '>' !'>'  / '>=' ) WS* Shift^ )
+         #integer: 5   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  )
+         #integer: 3   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  )
       }
-      #block {            ## by peg : null
-         #add {            ## by peg : null
-            #integer: 4   ## by peg : null
-            #integer: 6   ## by peg : null
+      #block {            ## by peg : ( (indent WS* Stmt^ EOS?)+  )
+         #add {            ## by peg : ( WS* ('+'  / '-' ) WS* Product^ )
+            #integer: 4   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  )
+            #integer: 6   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  )
          }
       }
    }

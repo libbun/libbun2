@@ -1,0 +1,270 @@
+
+//typedef void;
+typedef NullType;
+typedef i1;
+typedef i32;
+typedef float;
+//typedef unicode;
+
+// type
+
+bun #Tvoid(): void {
+	void
+}
+
+bun #Tboolean(): i1 {
+	i1
+}
+
+bun #Tint(): i32 {
+	i32
+}
+
+bun #Tdouble(): float {
+	float
+}
+
+//bun #TString(): unicode {
+//	unicode
+//}
+
+// literal
+
+bun #null(): NullType {
+	null
+}
+
+bun #true(): i1 {
+	true
+}
+
+bun #false(): i1 {
+	false
+}
+
+bun #integer(): i32 {
+	${textof this}
+}
+
+bun #float(): float {
+	${textof this}
+}
+
+//bun #string(): unicode {
+//	u"${textof this}"
+//}
+
+bun #conv(x: float): i32 {
+	${startstmt}${reservenum 1}%Temp__${getnum 0} = fptosi ${typeof x} ${x} to ${typeof this}${endstmt}%Temp__${getnum 0}
+}
+
+
+bun #conv(x: i32): float {
+	${startstmt}${reservenum 1}%Temp__${getnum 0} = sitofp ${typeof x} ${x} to ${typeof this}${endstmt}%Temp__${getnum 0}
+}
+
+bun<T> #group(expr :T) :T {
+	${expr}
+}
+
+bun #not(x: i1) :i1 {
+	${startstmt}${reservenum 1}%Temp__${getnum 0} = xor ${typeof x} ${x}, 1${endstmt}%Temp__${getnum 0}
+}
+
+bun #plus(x: i32) :i32 {
+	${x}
+}
+
+bun #plus(x: float) :float {
+	${x}
+}
+
+bun #minus(x: i32) :i32 {
+	${startstmt}${reservenum 1}%Temp__${getnum 0} = sub i32 0, ${x}${endstmt}%Temp__${getnum 0}
+}
+
+bun #minus(x: float) :float {
+	${startstmt}${reservenum 1}%Temp__${getnum 0} = fsub float -0.0, ${x}${endstmt}%Temp__${getnum 0}
+}
+
+bun #compl(x: i32) :i32 {
+	${startstmt}${reservenum 1}%Temp__${getnum 0} = xor ${typeof x} ${x}, -1${endstmt}%Temp__${getnum 0}
+}//
+
+//TODO
+bun #and(x: i1, y: i1): i1 {
+	${x} and ${y}
+}
+
+//TODO
+bun #or(x: i1, y: i1): i1 {
+	${x} or ${y}
+}
+
+//TODO
+bun<T> #assign(x: T, y: T): void {
+	${x} = ${y}
+}
+
+//bun<T> #add(x: T, y: T) :T {
+//	(${x} + ${y})
+//}
+
+//bun #add(x: unicode, y: any): unicode {
+//	(${x} + ustr(${y}))
+//}
+
+//bun #add(x: unicode, y: unicode): unicode {
+//	${x} + ${y}
+//}
+
+bun #add(x: i32, y: i32): i32 {
+	${startstmt}${reservenum 1}%Temp__${getnum 0} = add ${typeof x} ${x}, ${y}${endstmt}%Temp__${getnum 0}
+}
+
+bun #add(x: float, y: float): float {
+	${startstmt}${reservenum 1}%Temp__${getnum 0} = fadd ${typeof x} ${x}, ${y}${endstmt}%Temp__${getnum 0}
+}
+
+bun #sub(x: i32, y: i32): i32 {
+	${startstmt}${reservenum 1}%Temp__${getnum 0} = sub ${typeof x} ${x}, ${y}${endstmt}%Temp__${getnum 0}
+}
+
+bun #sub(x: float, y: float): float {
+	${startstmt}${reservenum 1}%Temp__${getnum 0} = fsub ${typeof x} ${x}, ${y}${endstmt}%Temp__${getnum 0}
+}
+
+bun #mul(x: i32, y: i32): i32 {
+	${startstmt}${reservenum 1}%Temp__${getnum 0} = mul ${typeof x} ${x}, ${y}${endstmt}%Temp__${getnum 0}
+}
+
+bun #mul(x: float, y: float): float {
+	${startstmt}${reservenum 1}%Temp__${getnum 0} = fmul ${typeof x} ${x}, ${y}${endstmt}%Temp__${getnum 0}
+}
+
+bun #div(x: i32, y: i32): i32 {
+	${startstmt}${reservenum 1}%Temp__${getnum 0} = sdiv ${typeof x} ${x}, ${y}${endstmt}%Temp__${getnum 0}
+}
+
+bun #div(x: float, y: float): float {
+	${startstmt}${reservenum 1}%Temp__${getnum 0} = fdiv ${typeof x} ${x}, ${y}${endstmt}%Temp__${getnum 0}
+}
+
+bun #mod(x: i32, y: i32): i32 {
+	${startstmt}${reservenum 1}%Temp__${getnum 0} = srem ${typeof x} ${x}, ${y}${endstmt}%Temp__${getnum 0}
+}
+
+bun #mod(x: float, y: float): float {
+	${startstmt}${reservenum 1}%Temp__${getnum 0} = frem ${typeof x} ${x}, ${y}${endstmt}%Temp__${getnum 0}
+}
+
+//bun<T> #eq(x: T, y: T): i1 {
+//	(${x} == ${y})
+//}
+
+bun #eq(x: i1, y: i1): i1 {
+	${startstmt}${reservenum 1}%Temp__${getnum 0} = icmp eq ${typeof x} ${x}, ${y}${endstmt}%Temp__${getnum 0}
+}
+
+bun #eq(x: i32, y: i32): i1 {
+	${startstmt}${reservenum 1}%Temp__${getnum 0} = icmp eq ${typeof x} ${x}, ${y}${endstmt}%Temp__${getnum 0}
+}
+
+bun #eq(x: float, y: float): i1 {
+	${startstmt}${reservenum 1}%Temp__${getnum 0} = fcmp oeq ${typeof x} ${x}, ${y}${endstmt}%Temp__${getnum 0}
+}
+
+//bun<T> #noteq(x: T, y: T): i1 {
+//	(${x} != ${y})
+//}
+
+bun #noteq(x: i1, y: i1): i1 {
+	${startstmt}${reservenum 1}%Temp__${getnum 0} = icmp ne ${typeof x} ${x}, ${y}${endstmt}%Temp__${getnum 0}
+}
+
+bun #noteq(x: i32, y: i32): i1 {
+	${startstmt}${reservenum 1}%Temp__${getnum 0} = icmp ne ${typeof x} ${x}, ${y}${endstmt}%Temp__${getnum 0}
+}
+
+bun #noteq(x: float, y: float): i1 {
+	${startstmt}${reservenum 1}%Temp__${getnum 0} = fcmp one ${typeof x} ${x}, ${y}${endstmt}%Temp__${getnum 0}
+}
+
+bun #lt(x: i32, y: i32): i1 {
+	${startstmt}${reservenum 1}%Temp__${getnum 0} = icmp slt ${typeof x} ${x}, ${y}${endstmt}%Temp__${getnum 0}
+}
+
+bun #lt(x: float, y: float): i1 {
+	${startstmt}${reservenum 1}%Temp__${getnum 0} = fcmp olt ${typeof x} ${x}, ${y}${endstmt}%Temp__${getnum 0}
+}
+
+bun #lte(x: i32, y: i32): i1 {
+	${startstmt}${reservenum 1}%Temp__${getnum 0} = icmp sle ${typeof x} ${x}, ${y}${endstmt}%Temp__${getnum 0}
+}
+
+bun #lte(x: float, y: float): i1 {
+	${startstmt}${reservenum 1}%Temp__${getnum 0} = fcmp ole ${typeof x} ${x}, ${y}${endstmt}%Temp__${getnum 0}
+}
+
+bun #gt(x: i32, y: i32): i1 {
+	${startstmt}${reservenum 1}%Temp__${getnum 0} = icmp sgt ${typeof x} ${x}, ${y}${endstmt}%Temp__${getnum 0}
+}
+
+bun #gt(x: float, y: float): i1 {
+	${startstmt}${reservenum 1}%Temp__${getnum 0} = fcmp ogt ${typeof x} ${x}, ${y}${endstmt}%Temp__${getnum 0}
+}
+
+bun #gte(x: i32, y: i32): i1 {
+	${startstmt}${reservenum 1}%Temp__${getnum 0} = icmp sge ${typeof x} ${x}, ${y}${endstmt}%Temp__${getnum 0}
+}
+
+bun #gte(x: float, y: float): i1 {
+	${startstmt}${reservenum 1}%Temp__${getnum 0} = fcmp oge ${typeof x} ${x}, ${y}${endstmt}%Temp__${getnum 0}
+}
+
+//TODO
+bun #apply(f, args) && typecheck() {
+	${f}(${list args ", "})
+}
+
+//TODO
+bun #let(name, type, value): void && letvar() {
+	${value} ${name} = ${value}
+}
+
+//TODO
+bun #var(name, type, value): void && letvar() {
+	${name} = ${value}
+}
+
+bun #function(name, params, rtype, block): void && letvar() {
+	define ${rtype} @${name} (${list params ", "}) ${begin} ${block} ${end}
+}
+
+bun #param(name, type): void {
+	${type} %${name}
+}
+
+bun #block(*): void && typecheck() {
+	${statement this}
+}
+
+//TODO
+bun #if(x: i1, then: void): void {
+	if ${x}: ${begin} ${statement then} ${end}
+}
+
+//TODO
+bun #if(x: i1, then: void, else: void): void {
+	if ${x}: ${begin} ${statement then} ${end}
+	else: ${begin} ${statement else} ${end}
+}
+
+bun #return(): void && typecheck() {
+	${startstmt}ret void${endstmt}
+}
+
+bun #return(expr): void && typecheck() {
+	${startstmt}ret ${typeof expr} ${expr}${endstmt}
+}
+

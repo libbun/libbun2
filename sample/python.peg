@@ -6,15 +6,18 @@ Stmt
     = IfStmt EOS?
     / WhileStmt EOS?
     / ForStmt EOS?
-    / ReturnStmt EOS?
-    / ImportStmt EOS?
-    / BreakStmt EOS?
-    / ContinueStmt EOS?
+    / ReturnStmt EOS
+    / ImportStmt EOS
+    / BreakStmt EOS
+    / ContinueStmt EOS
     / DefineFunction EOS?
     / DefineClass EOS?
-    / Print EOS?
-    / With EOS?
-    / Expr EOS?
+    / Try EOS?
+    / Assert EOS
+    / Print EOS
+    / Raise EOS
+    / With EOS
+    / Expr EOS
     / EOS+
     / catch .*
     ;
@@ -26,15 +29,27 @@ EOS
     ;
 
 With
-    = <<"with" WS+ Expr@ WS+ "as" WS+ Symbol@ WS* ":" NL+ Block@ #with>>
+    = <<"with" WS+ Expr@ WS+ "as" WS+ Symbol@ WS* ":" Block@ #with>>
+    ;
+
+Assert
+    = <<"assert" WS+ Expr@ (WS* "," WS* Expr@)? #assert>>
     ;
 
 Print
     = <<"print" WS+ Expr@ #print >>
     ;
 
+Raise
+    = <<"raise" WS+ Expr@ #throw >>
+    ;
+
 IfStmt
-    = <<"if" WS+ Expr@ WS* ":" Block@ (indent _* "else" WS* ":" NL+ Block@)? #if>>
+    = <<"if" WS+ Expr@ WS* ":" Block@ (Elif@)* ("else" WS* ":" Block@)? #if >>
+    ;
+
+Elif
+    = << "elif" WS+ Expr@ WS* ":" Block@ #if >>
     ;
 
 WhileStmt
@@ -59,11 +74,15 @@ DefineFunction
     ;
 
 DefineClass
-    = <<"class" WS+ Symbol@ (WS* "(" (Extend@)? WS* ")" )? WS* ":" NL+ ClassBlock@ #class>>
+    = <<"class" WS+ Symbol@ (WS* "(" WS* (Extend@)? WS* ")" )? WS* ":" ClassBlock@ #class>>
     ;
 
 Extend
-    = << Symbol@ #extend >>
+    = << ExtendContent@ #super >>
+    ;
+
+ExtendContent
+    = Symbol@
     ;
 
 BreakStmt
@@ -79,16 +98,21 @@ ReturnStmt
     ;
 
 Block
-    = NL+ << (indent WS* Stmt@ NL?)+ #block>>
+    = WS* EOS+ << (indent WS* Stmt@ EOS?)+ #block>>
     / WS* << Stmt@ #block>>
     ;
 
 ClassBlock
-    = << (indent WS* ClassStmt@ NL?)+ #block>>;
+    = NL+ << (indent WS* ClassStmt@ EOS?)+ #block>>;
 
 ClassStmt
-    = DefineFunction
-    / Assignment
+    = Stmt
+    //= DefineFunction
+    /// Expr
+    ;
+
+Try
+    = << "try" WS* ":" Block@ "except" WS+ Expr@ WS* ":" Block@ #try >>
     ;
 
 Expr
@@ -128,6 +152,7 @@ EqOp
     / 'is' #eq
     / '==' #eq
     / '!=' #noteq
+    / 'in' #in
     ;
 
 Relation
@@ -153,21 +178,32 @@ Unary
 
 Selector
     = '.' Symbol@ #field
-    / '[' WS* Expr@ WS* ']' #index
-    / '(' << _* ( Expr@ ( _* ',' _* Expr@ )* )? #args >>@ ')'  #apply
+    / '[' WS* (Slice / Expr)@ WS* ']' #index
+    / '(' << _* ( _* Expr@ ( _* ',' _* Expr@ )* )? #args >>@ ')'  #apply
+    ;
+
+Slice
+    = << SliceBegin@ WS* ":" WS* SliceEnd@ #slice >>
+    / << SliceBegin@ WS* ":" #slice >>
+    / << ":" SliceEnd@ #slice >>
+    ;
+
+SliceBegin
+    = << Expr@ #sliceBegin >>
+    ;
+
+SliceEnd
+    = << Expr@ #sliceEnd >>
     ;
 
 Value
-    = Symbol
-    / StringLiteral
+    = StringLiteral
+    / Symbol
     / Number
     / ArrayLiteral
     / MapLiteral
     / TupleLiteral
     ;
-
-Assignment
-    = Expr;
 
 ArrayLiteral
     = << "[" _* Expr@? (_* "," _* Expr@)* _* "]" #array>>
@@ -186,7 +222,11 @@ MapContent
     = << (StringLiteral / Symbol)@ _* ":" _* Expr@ #keyvalue>>;
 
 Params
-    = << Symbol@? (_* "," _* Symbol@)* _* #params>>;
+    = << Param@? (_* "," _* Param@)* _* #params>>;
+
+Param
+    = << Symbol@ (WS* '=' WS* Expr@)? #param >>
+    ;
 
 Args
     = << Expr@? (_* "," _* Expr@)* _* #args>>;
@@ -199,13 +239,30 @@ Symbol
     ;
 
 StringLiteral
-    = '"' << ('\\"' / !'"' .)* #string >> '"'
-    / "'" << ("\\'" / !"'" .)* #string >> "'"
+    = [bru]? '"""' << ('\\"' / !'"""' .)@*  #string >> '"""'
+    / [bru]? "'''" << ("\\'" / !"'''" .)@*  #string >> "'''"
+    / [bru]? '"' << ('\\"' / !'"' .)@* #string >> '"'
+    / [bru]? "'" << ("\\'" / !"'" .)@* #string >> "'"
     ;
 
+Digits = [0-9]+;
+
+Exponent = [eE] [+-]? Digits;
+
+FloatLiteral
+    = "." Digits Exponent?
+    / Digits "." Exponent
+    / Digits (("." (Digits Exponent?)?) / Exponent);
+
+IntegerLiteral
+    = "0" [xX] [0-9a-fA-F]+      // hexadecimal integer
+    / "0" [0-7]+                 // octal integer
+    / "0"                        // zero
+    / [1-9] Digits?;             // decimal integer
+
 Number
-    = << ('-' WS* / '+' WS*)?('0'/[1-9][0-9]*) '.' [0-9]+ #float >>
-    / << ('-' WS* / '+' WS*)?('0'/[1-9][0-9]*) #integer>>
+    = << ('-' WS* / '+' WS*)? FloatLiteral   #float >>
+    / << ('-' WS* / '+' WS*)? IntegerLiteral #integer>>
     ;
 
 Asterisk

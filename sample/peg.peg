@@ -1,30 +1,68 @@
-
 // Definiton of Bun's Peg
 
-_ <- ( [ \t\r\n]+ / Comment )* ;
-Comment <- '/*' (!'*/' .)* '*/'
-        / '//' (![\r\n] .)* [\r\n] ;
+_ = 
+  ([ \t\r\n]+ / Comment )* 
+  ;
+Comment
+  = '/*' (!'*/' .)* '*/'
+  / '//' (![\r\n] .)* [\r\n]
+  ;
+RuleName
+  = << [A-Za-z_] [A-Za-z0-9_]* #name >>
+  ;
+String
+  = "'" << (!"'" .)*  #string >> "'"
+  / '"' <<  (!'"' .)* #string >> '"'
+  ;
+Character 
+  = "[" <<  (!']' .)* #character >> "]"
+  ;
+Any
+  = << '.' #any >>
+  ;
+ObjectLabel 
+  = << '#' [A-z0-9_.]+ #label>>
+  ;
+Index
+  = << [0-9] #index >>
+  ;
 
+SetterTerm
+  = '(' Expr ')' Setter?
+  / '<<' << ('@' [ \t\n] #newjoin / '' #new) _? Expr@ >> _? '>>' Setter?
+  / RuleName Setter?
+  ;
+Setter
+  = '@' <<@ [0-9]? #setter>>
+  ;
+Term
+  = String 
+  / Character
+  / Any
+  / ObjectLabel
+  / Index
+  / SetterTerm
+  ;
 
-Label      <- {[A-z0-9_]+ #name};
-String     <- {"'" (!"'" .)* "'" #string} / {'"' (!'"' .)* '"' #string};
-Character  <- {'[' (!']' .)* ']' #character};
-Any        <- {'.' #any};
-ObjectLabel <- {'#' [A-z0-9_.]+ #label};
-
-Term  <- '(' Expr ')' 
-	/ {'{' $Expr '}' #new} 
-	/ {'{$' _ $Expr '}' #newjoin} 
-	/ String 
-	/ Character 
-	/ Any 
-	/ Label;
-
-TermNtime  <- Term {$ ('*' #zero / '+' #one / '?' #option)}? ;
-Predicated  <- {('&' #and / '!' #not / '$' #set) $TermNtime} / TermNtime ;
-Sequence   <- Predicated {$ (_ $Predicated)+ #seq}? ;
-Choice     <- Sequence {$ _ '/' _ $Sequence #choice}*  ;
-Expr       <- Choice ;
-Rule       <- {$Label _ '<-' _ $Expr #rule} ';' ;
-TopLevel   <- Rule;
+SuffixTerm
+  = Term <<@ ('*' #zero / '+' #one / '?' #option) >>?
+  ;
+Predicated
+  = << ('&' #and / '!' #not / '$' #set) SuffixTerm@ >> / SuffixTerm 
+  ;
+Sequence 
+  = Predicated <<@ (_ Predicated@)+ #seq >>?
+  ;
+Choice
+  = Sequence <<@ _? ('/' _? Sequence@)+ #choice >>?
+  ;
+Expr
+  = Choice
+  ;
+Rule
+  = << RuleName@ _? '=' _? Expr@ #rule>>
+  ;
+TopLevel   
+  =  Rule _? ';'
+  ;
 

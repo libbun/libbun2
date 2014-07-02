@@ -11,23 +11,15 @@ public class PegSource {
 		this.sourceText = sourceText;
 	}
 
-//	public SourceToken newToken(Peg createdPeg, int startIndex, int endIndex) {
-//		return new SourceToken(createdPeg, this, startIndex, endIndex);
-//	}
-//
-//	public SourceToken newToken(Peg createdPeg, int startIndex, int endIndex, String token) {
-//		return new SourceToken(createdPeg, this, startIndex, endIndex, token);
-//	}
-
-	public final String substring(int startIndex, int endIndex) {
-		return this.sourceText.substring(startIndex, endIndex);
-	}
-
 	public final char charAt(int n) {
 		if(0 <= n && n < this.sourceText.length()) {
 			return Main._GetChar(this.sourceText, n);
 		}
 		return '\0';
+	}
+
+	public final String substring(int startIndex, int endIndex) {
+		return this.sourceText.substring(startIndex, endIndex);
 	}
 
 	public final int getLineNumber(int Position) {
@@ -42,6 +34,7 @@ public class PegSource {
 		}
 		return LineNumber;
 	}
+
 
 	public final int getIndentSize(int fromPosition) {
 		int startPosition = this.getLineStartPosition(fromPosition);
@@ -65,15 +58,8 @@ public class PegSource {
 	
 	public final String getIndentText(int fromPosition) {
 		int startPosition = this.getLineStartPosition(fromPosition);
-		int endPosition = fromPosition;
-		for(; endPosition < this.sourceText.length(); endPosition++) {
-			char ch = this.charAt(endPosition);
-			if(ch != ' ' && ch != '\t') {
-				break;
-			}
-		}
 		int i = startPosition;
-		for(; i < endPosition; i++) {
+		for(; i < fromPosition; i++) {
 			char ch = this.charAt(i);
 			if(ch != ' ' && ch != '\t') {
 				break;
@@ -161,121 +147,4 @@ public class PegSource {
 		}
 		return fileName;
 	}
-
-//	public final int GetLineHeadPosition(int Position) {
-//		String s = this.sourceText;
-//		int StartIndex = 0;
-//		int i = Position;
-//		if(!(i < s.length())) {
-//			i = s.length() - 1;
-//		}
-//		while(i >= 0) {
-//			char ch = Main._GetChar(s, i);
-//			if(ch == '\n') {
-//				StartIndex = i + 1;
-//				break;
-//			}
-//			i = i - 1;
-//		}
-//		return StartIndex;
-//	}
-//
-//	public final int CountIndentSize(int Position) {
-//		String s = this.sourceText;
-//		int length = 0;
-//		int i = Position;
-//		while(i < s.length()) {
-//			char ch = Main._GetChar(s, i);
-//			if(ch == '\t') {
-//				length = length + 8;
-//			}
-//			else if(ch == ' ') {
-//				length = length + 1;
-//			}
-//			else {
-//				break;
-//			}
-//			i = i + 1;
-//		}
-//		return length;
-//	}
-//
-//	public final String GetLineText(int Position) {
-//		String s = this.sourceText;
-//		int StartIndex = 0;
-//		int EndIndex = s.length();
-//		int i = Position;
-//		if(!(i < s.length())) {
-//			i = s.length() - 1;
-//		}
-//		while(i >= 0) {
-//			char ch = Main._GetChar(s, i);
-//			if(ch == '\n') {
-//				StartIndex = i + 1;
-//				break;
-//			}
-//			i = i - 1;
-//		}
-//		i = Position;
-//		while(i < s.length()) {
-//			char ch = Main._GetChar(s, i);
-//			if(ch == '\n') {
-//				EndIndex = i;
-//				break;
-//			}
-//			i = i + 1;
-//		}
-//		return s.substring(StartIndex, EndIndex);
-//	}
-//
-//	public final String GetLineMarker(int Position) {
-//		String s = this.sourceText;
-//		int StartIndex = 0;
-//		int i = Position;
-//		if(!(i < s.length())) {
-//			i = s.length() - 1;
-//		}
-//		while(i >= 0) {
-//			char ch = Main._GetChar(s, i);
-//			if(ch == '\n') {
-//				StartIndex = i + 1;
-//				break;
-//			}
-//			i = i - 1;
-//		}
-//		String Line = "";
-//		i = StartIndex;
-//		while(i < Position) {
-//			char ch = Main._GetChar(s, i);
-//			if(ch == '\n') {
-//				break;
-//			}
-//			if(ch == '\t') {
-//				Line = Line + "\t";
-//			}
-//			else {
-//				Line = Line + " ";
-//			}
-//			i = i + 1;
-//		}
-//		return Line + "^";
-//	}
-//
-//	public final String FormatErrorHeader(String Error, int Position, String Message) {
-//		return "(" + this.fileName + ":" + this.getLineNumber(Position) + ") [" + Error +"] " + Message;
-//	}
-//
-//	public final String FormatErrorMarker(String Error, int Position, String Message) {
-//		String Line = this.GetLineText(Position);
-//		String Delim = "\n\t";
-//		if(Line.startsWith("\t") || Line.startsWith(" ")) {
-//			Delim = "\n";
-//		}
-//		String Header = this.FormatErrorHeader(Error, Position, Message);
-//		String Marker = this.GetLineMarker(Position);
-//		Message = Header + Delim + Line + Delim + Marker;
-//		return Message;
-//	}
-
-
 }

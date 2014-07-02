@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
 import java.text.DecimalFormat;
 
 public class Main {
@@ -128,8 +129,12 @@ public class Main {
 	static {
 		driverMap.put("py", PythonDriver.class);
 		driverMap.put("python", PythonDriver.class);
+		driverMap.put("ll", LLVMDriver.class);
+		driverMap.put("llvm", LLVMDriver.class);
 		driverMap.put("jvm", JvmDriver.class);
-//		driverMap.put("jvm-debug", DebugableJvmDriver.class);
+		driverMap.put("jvm-debug", JvmDriver.DebuggableJvmDriver.class);
+		driverMap.put("jvm-indy", JvmIndyDriver.class);
+		driverMap.put("jvm-indy-debug", JvmIndyDriver.DebuggableJvmIndyDriver.class);
 	}
 
 	private static BunDriver loadDriver(String driverName) {
@@ -146,20 +151,23 @@ public class Main {
 		return new PythonDriver();
 	}
 
+	public final static ParserContext newParserContext(PegSource source) {
+		return new SimpleParserContext(source);
+	}
+
 	public final static void main(String[] args) {
 		parseCommandArgument(args);
-		PegParser p = new PegParser();
-		p.loadPegFile(LanguagePeg);
 		BunDriver driver = loadDriver(DriverName);
-		Namespace gamma = new Namespace(p, driver);
+		Namespace gamma = new Namespace(driver);
+		gamma.loadPegFile("main", LanguagePeg);
 		driver.initTable(gamma);
 		if(InputFileName != null) {
 			loadScript(gamma, driver, InputFileName);
-			if (ShellMode) {
-				performShell(gamma, driver);
-			}
 		}
 		else {
+			ShellMode = true;
+		}
+		if(ShellMode) {
 			performShell(gamma, driver);
 		}
 	}
@@ -172,9 +180,10 @@ public class Main {
 
 	private static void parseLine(Namespace gamma, BunDriver driver, String startPoint, PegSource source) {
 		try {
-			ParserContext context =  gamma.newParserContext("main", source);
+			ParserContext context = Main.newParserContext(source);
+			gamma.initParserRuleSet(context, "main");
 			ParseProfileStart();
-			PegObject node = context.parsePegNode(new PegObject(BunSymbol.TopLevelFunctor), startPoint);
+			PegObject node = context.parsePegObject(new PegObject(BunSymbol.TopLevelFunctor), startPoint);
 			if(node.isFailure()) {
 				node.name = BunSymbol.PerrorFunctor;
 			}
@@ -253,7 +262,7 @@ public class Main {
 						line = line.substring(loc+1);
 					}
 					else {
-						PegParser p = gamma.root.getParser("main");
+						PegRuleSet p = gamma.root.getRuleSet("main");
 						p.show(line.substring(1));
 						startPoint = null;
 					}
@@ -481,6 +490,7 @@ public class Main {
 	public final static void _ArrayCopy(Object src, int sIndex, Object dst, int dIndex, int length) {
 		System.arraycopy(src, sIndex, dst, dIndex, length);
 	}
+
 
 
 

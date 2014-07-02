@@ -1,0 +1,183 @@
+typedef String
+typedef void
+typedef Object
+
+typedef Long
+typedef Double
+typedef Boolean
+
+// statement definition
+bun #toplevel(*)  {
+	${TOP_LEVEL this}
+}
+
+bun #block(*): void {
+	${BLOCK this}
+}
+
+
+bun #if(cond : untyped, then : void) : void {
+	${IF}
+}
+
+bun #if(cond : untyped, then : void, else) : void {
+	${IF}
+}
+
+bun #while(cond : untyped, block : void) : void {
+	${WHILE}
+}
+
+// expression definition.
+bun #group(x : untyped) : untyped {
+	${x}
+}
+
+bun #integer(): untyped {
+	${PUSH_AS_LONG} ${BOX long}
+}
+
+bun #float() : untyped {
+	${PUSH_AS_DOUBLE} ${BOX double}
+}
+
+bun #true() : untyped {
+	${PUSH_AS_BOOLEAN true} ${BOX boolean}
+}
+
+bun #false() : untyped {
+	${PUSH_AS_BOOLEAN false} ${BOX boolean}
+}
+
+bun #string() : untyped {
+	${PUSH_AS_STRING}
+}
+
+// binary op definition
+// ADD
+bun #add(x : untyped, y : untyped) : untyped {
+	${x} ${y} ${INDY add bsmBinaryOp Object Object Object}
+}
+
+//SUB
+bun #sub(x : untyped, y : untyped) : untyped {
+	${x} ${y} ${INDY sub bsmBinaryOp Object Object Object}
+}
+
+// MUL
+bun #mul(x : untyped, y : untyped) : untyped {
+	${x} ${y} ${INDY mul bsmBinaryOp Object Object Object}
+}
+
+// DIV
+bun #div(x : untyped, y : untyped) : untyped {
+	${x} ${y} ${INDY div bsmBinaryOp Object Object Object}
+}
+
+// MOD
+bun #mod(x : untyped, y : untyped) : untyped {
+	${x} ${y} ${INDY mod bsmBinaryOp Object Object Object}
+}
+
+// EQ
+bun #eq(x : untyped, y : untyped) : untyped {
+	${x} ${y} ${INDY eq bsmCompOp Boolean Object Object}
+}
+
+// NOTEQ
+bun #noteq(x : untyped, y : untyped) : untyped {
+	${x} ${y} ${INDY noteq bsmCompOp Boolean Object Object}
+}
+
+// LT
+bun #lt(x : untyped, y : untyped) : untyped {
+	${x} ${y} ${INDY lt bsmCompOp Boolean Object Object}
+}
+
+// LTE
+bun #lte(x : untyped, y : untyped) : untyped {
+	${x} ${y} ${INDY lte bsmCompOp Boolean Object Object}
+}
+
+// GT
+bun #gt(x : untyped, y : untyped) : untyped {
+	${x} ${y} ${INDY gt bsmCompOp Boolean Object Object}
+}
+
+// GTE
+bun #gte(x : untyped, y : untyped) : untyped {
+	${x} ${y} ${INDY gte bsmCompOp Boolean Object Object}
+}
+
+// unary op definition
+// NOT
+bun #not(x : untyped) : untyped {
+	${x} ${INDY not bsmUnaryOp Object Object}
+}
+
+// PLUS
+bun #plus(x : untyped) : untyped {
+	${x} ${INDY plus bsmUnaryOp Object Object}
+}
+
+// MINUS
+bun #minus(x : untyped) : untyped {
+	${x} ${INDY minus bsmUnaryOp Object Object}
+}
+
+// COMPL
+bun #compl(x : untyped) : untyped {
+	${x} ${INDY compl bsmUnaryOp Object Object}
+}
+
+// conditional operator
+// And
+bun #and(x : untyped, y : untyped) : untyped {
+	${AND} ${BOX boolean}
+}
+
+// Or
+bun #or(x : untyped, y : untyped) : untyped {
+	${OR} ${BOX boolean}
+}
+
+// collection
+bun #array(*) : untyped {
+	${NEW_ARRAY}
+}
+
+bun #map(*) : untyped {
+	${NEW_MAP}
+}
+
+bun #index(recv : untyped, index : untyped) :untyped {
+	${recv} ${index} ${INDY get bsmMethod Object Object Object}
+}
+
+bun #apply(t : untyped, arg : untyped) : untyped {
+	${APPLY}
+}
+
+bun #name() : untyped {
+	${NAME}
+}
+
+bun #assign(left : untyped, right : untyped) : void {
+	${PY_ASSIGN}
+}
+
+bun #trinary(cond : untyped, then : untyped, else : untyped) : untyped {
+	${TRINARY}
+}
+
+bun #print(x) : void {
+	${x} ${PRINT}
+}
+
+bun #function(name, params, block : void) : void {
+	${DEFUNC}
+}
+
+bun #return(expr : untyped) : void {
+	${expr} ${RETURN_STATEMENT}
+}

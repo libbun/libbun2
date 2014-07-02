@@ -1,15 +1,18 @@
 package org.libbun;
 
 public class Namespace extends SymbolTable {
-	public UniMap<PegParser> parserMap;
-	public UniArray<String> exportSymbolList;
+	public UniMap<PegRuleSet> ruleMap;
+	public UniArray<String>   exportSymbolList;
 	public BunDriver  driver;
 
-	public Namespace(PegParser parser, BunDriver driver) {
+	public Namespace(BunDriver driver) {
 		super(null);
 		this.root = this;
-		this.parserMap = new UniMap<PegParser>();
-		this.parserMap.put("main", parser);
+		this.ruleMap = new UniMap<PegRuleSet>();
+		PegRuleSet pegRule = new PegRuleSet();
+		pegRule.loadPegRule();
+		this.ruleMap.put("peg", pegRule);
+//		this.ruleMap.put("main", ruleSet);
 		this.driver = driver;
 	}
 	
@@ -17,20 +20,43 @@ public class Namespace extends SymbolTable {
 		return "root";
 	}
 
-
 	public void importFrom(Namespace ns) {
 		for(int i = 0; i < ns.exportSymbolList.size(); i++) {
 			String symbol = ns.exportSymbolList.ArrayValues[i];
 			this.setSymbol(symbol, ns.getSymbol(symbol));
 		}
 	}
+	
 
-	public ParserContext newParserContext(String lang, PegSource source) {
-		if(lang == null) {
-			lang = this.guessLang(source.fileName, "bun");
+	public final PegRuleSet loadPegFile(String ruleNs, String fileName) {
+		PegRuleSet rules = this.ruleMap.get(fileName);
+		if(rules == null) {
+			rules = new PegRuleSet();
+			rules.loadPegFile(fileName);
+			this.ruleMap.get(fileName);
 		}
-		PegParser parser = this.getParser(lang);
-		return parser.newContext(source);
+		if(ruleNs != null) {
+			this.ruleMap.put(ruleNs, rules);
+		}
+		return rules;
+	}
+	
+	public final PegRuleSet getRuleSet(String ruleNs) {
+		PegRuleSet p = this.ruleMap.get(ruleNs);
+		if(p == null) {
+			p = new PegRuleSet();
+			p.loadPegFile("lib/peg/" + ruleNs + ".peg");
+			this.ruleMap.put(ruleNs, p);
+		}
+		return p;
+	}
+
+	public void initParserRuleSet(ParserContext context, String lang) {
+		if(lang == null) {
+			lang = this.guessLang(context.source.fileName, "bun");
+		}
+		PegRuleSet ruleSet = this.getRuleSet(lang);
+		context.setRuleSet(ruleSet);
 	}
 
 	private String guessLang(String fileName, String defaultValue) {
@@ -43,15 +69,6 @@ public class Namespace extends SymbolTable {
 		return defaultValue;
 	}
 
-	public final PegParser getParser(String lang) {
-		PegParser p = this.parserMap.get(lang);
-		if(p == null) {
-			p = new PegParser();
-			p.loadPegFile("lib/peg/" + lang + ".peg");
-			this.parserMap.put(lang, p);
-		}
-		return p;
-	}
 
 
 

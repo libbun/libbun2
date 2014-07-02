@@ -97,13 +97,15 @@ class TestRunner:
                 print '-----------------------'
                 print 'expected\n%s' % (expected)
                 print '-----------------------'
-        print "# of testcases: %d, # of OK: %d, # of FAILED: %d" % (
-                executed, passed, executed - passed)
-        if executed - passed > 0:
-            print '\nFAILED File:'
-            for name in failed_file_names:
-                print "    %s" % (name)
-        return
+        return executed, passed, failed_file_names
+
+def printTestResult(executed, passed, failed_file_names):
+    print "# of testcases: %d, # of OK: %d, # of FAILED: %d" % (
+            executed, passed, executed - passed)
+    if executed - passed > 0:
+        print '\nFAILED File:'
+        for name in failed_file_names:
+            print "    %s" % (name)
 
 if __name__ == '__main__':
     root = os.path.abspath(os.path.dirname(__file__) + "/../../")
@@ -113,7 +115,14 @@ if __name__ == '__main__':
         target = sys.argv[1]
         dirs = filter(lambda x : x == target, dirs)
 
+    executed = 0
+    passed   = 0
+    failed_file_names = []
     for path in dirs:
         runner = TestRunner(True)
         if runner.prepare(root, root + "/test-peg/" + path):
-            runner.run()
+            each_executed, each_passed, each_failed_file_names = runner.run()
+            executed += each_executed
+            passed   += each_passed
+            failed_file_names += each_failed_file_names
+    printTestResult(executed, passed, failed_file_names)

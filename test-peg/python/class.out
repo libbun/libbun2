@@ -6,7 +6,9 @@ parsed:
          #function {            ## by peg : null
             #name: __init__   ## by peg : null
             #params {            ## by peg : null
-               #name: self   ## by peg : null
+               #param {            ## by peg : null
+                  #name: self   ## by peg : null
+               }
             }
             #block {            ## by peg : null
                #assign {            ## by peg : null
@@ -29,7 +31,7 @@ parsed:
    }
    #class {            ## by peg : null
       #name: B   ## by peg : null
-      #extend {            ## by peg : null
+      #super {            ## by peg : null
          #name: A   ## by peg : null
       }
       #block {            ## by peg : null

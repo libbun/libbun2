@@ -388,6 +388,14 @@ TODO: アノテーション
 function f(n) {
 	return n
 }
+
+function g(n=1) {
+	return n
+}
+
+function h(n: int) {
+	return n
+}
 ```
 
 * ラベル
@@ -396,7 +404,37 @@ function f(n) {
 #function {
 	#name: f
 	#params {
-		#name: n
+		#param {
+			#name: n
+		}
+	}
+	#block {
+		#return {
+			#name: n
+		}
+	}
+}
+#function {
+	#name: g
+	#params {
+		#param {
+			#name: n
+			#integer: 1
+		}
+	}
+	#block {
+		#return {
+			#name: n
+		}
+	}
+}
+#function {
+	#name: h
+	#params {
+		#param {
+			#name: n
+			#type: int
+		}
 	}
 	#block {
 		#return {
@@ -478,6 +516,35 @@ module A {
 	#add {
 		#integer: 1
 		#integer: 1
+	}
+}
+```
+
+### Try
+
+* 入力例
+
+```
+try {
+	1 + 1
+} catch(e) {
+	b
+}
+```
+
+* ラベル
+
+```
+#try {
+	#block {
+		#add {
+			#integer: 1
+			#integer: 1
+		}
+	}
+	#name: e
+	#block {
+		#name: b
 	}
 }
 ```

@@ -68,7 +68,7 @@ public abstract class BunDriver {
 abstract class SourceDriver extends BunDriver {
 
 	private String fileName;
-	private UniStringBuilder builder;
+	protected UniStringBuilder builder;
 	
 	protected SourceDriver() {
 		this.addCommand("push",      new PushCommand());

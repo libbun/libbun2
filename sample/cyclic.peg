@@ -1,0 +1,9 @@
+
+
+// The below produces an cyclic AST.
+// This is one of known bugs.
+
+TopLevel 
+  = << "T" #T ("o" #o <<@ "p" #p >>)@ >> .*
+  ;
+

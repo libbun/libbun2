@@ -1,13 +1,14 @@
 package org.libbun;
 
 public abstract class ParserContext extends SourceContext {
-	public  final PegParser    parser;
-	public  int objectCount = 0;
+//	public PegRuleSet ruleSet;
+	public int objectCount = 0;
 
-	public ParserContext(PegParser parser, PegSource source, int startIndex, int endIndex) {
+	public ParserContext(PegSource source, int startIndex, int endIndex) {
 		super(source, startIndex, endIndex);
-		this.parser = parser;
 	}
+	
+	public abstract void setRuleSet(PegRuleSet ruleSet);
 
 //	@Override
 //	public SourceContext subContext(int startIndex, int endIndex) {
@@ -20,12 +21,14 @@ public abstract class ParserContext extends SourceContext {
 	}
 
 	public PegObject parseNode(String key) {
-		return this.parsePegNode(new PegObject(BunSymbol.TopLevelFunctor), key);
+		return this.parsePegObject(new PegObject(BunSymbol.TopLevelFunctor), key);
 	}
 
 	public abstract void initMemo();
+	public void removeMemo(int startIndex, int endIndex) {
+	}
 
-	protected abstract PegObject parsePegNode(PegObject inNode, String key);
+	protected abstract PegObject parsePegObject(PegObject inNode, String key);
 	
 	public final PegObject newPegObject(String name) {
 		PegObject node = new PegObject(name, this.source, null, this.sourcePosition);
@@ -43,7 +46,14 @@ public abstract class ParserContext extends SourceContext {
 		}
 		return this.foundFailureNode;
 	}
-	
+
+	public final PegObject refoundFailure(Peg created, int pos) {
+		this.foundFailureNode.startIndex = pos;
+		this.foundFailureNode.endIndex   = pos;
+		this.foundFailureNode.createdPeg = created;
+		return this.foundFailureNode;
+	}
+
 	public final Peg storeFailurePeg() {
 		return this.foundFailureNode.createdPeg;
 	}
@@ -55,17 +65,19 @@ public abstract class ParserContext extends SourceContext {
 		this.foundFailureNode.startIndex   = pos;
 		this.foundFailureNode.endIndex   = pos;
 	}
-	
+
 	public abstract int getStackPosition(Peg peg);
 	public abstract void popBack(int stackPosition, boolean backtrack);
 	public abstract void push(Peg peg, PegObject parentNode, int index, PegObject node);
 	public abstract void addSubObject(PegObject newnode, int stack, int top);
-
-	public PegObject parseRightPegNode(PegObject left, String symbol) {
-		return left;  // unsupported left recursion
-	}
 	
 	public abstract void showStatInfo(PegObject node);
 
+	public boolean isVerifyMode() {
+		return false;
+	}
 
+	public PegObject precheck(PegNewObject peg, PegObject in) {
+		return null;  // if prechecked
+	}
 }

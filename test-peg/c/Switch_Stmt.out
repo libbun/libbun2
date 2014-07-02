@@ -1,39 +1,45 @@
 parsed:
-#translationunit {            ## by peg : null
-   #functiondefinition {            ## by peg : null
-      #typespecifier: int    ## by peg : null
-      #declarator {            ## by peg : null
-         #identifier: main   ## by peg : null
-         #typespecifier: void   ## by peg : null
+#translationunit {            ## by peg : ( Spacing (ExternalDeclaration^)+ EOT  ) defined in TranslationUnit
+   #functiondefinition {            ## by peg : ( DeclarationSpecifiers^ Declarator^ (DeclarationList^)? CompoundStatement^  ) defined in FunctionDefinition
+      #declarationspecifier {            ## by peg : ( ((StorageClassSpecifier / TypeSpecifier / TypeQualifier / FunctionSpecifier / Attribute)^)+  ) defined in DeclarationSpecifiers
+         #typespecifier: int    ## by peg : ( (VOID / CHAR / SHORT / INT / LONG / FLOAT / DOUBLE / SIGNED / UNSIGNED / BOOL / COMPLEX / StructOrUnionSpecifier / EnumSpecifier)^  ) defined in TypeSpecifier
       }
-      #compoundstatement {            ## by peg : null
-         #declaration {            ## by peg : null
-            #typespecifier: int    ## by peg : null
-            #initdeclarator {            ## by peg : null
-               #declarator {            ## by peg : null
-                  #identifier: n    ## by peg : null
+      #declarator {            ## by peg : ( (Pointer^)? DirectDeclarator^  ) defined in Declarator
+         #identifier: main   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
+         #declarationspecifier {            ## by peg : ( ((StorageClassSpecifier / TypeSpecifier / TypeQualifier / FunctionSpecifier / Attribute)^)+  ) defined in DeclarationSpecifiers
+            #typespecifier: void   ## by peg : ( (VOID / CHAR / SHORT / INT / LONG / FLOAT / DOUBLE / SIGNED / UNSIGNED / BOOL / COMPLEX / StructOrUnionSpecifier / EnumSpecifier)^  ) defined in TypeSpecifier
+         }
+      }
+      #compoundstatement {            ## by peg : ( LWING ((Declaration / Statement)^)* RWING  ) defined in CompoundStatement
+         #declaration {            ## by peg : ( DeclarationNoAttribute^ ((Attribute / Assembler)^)? SEMI  ) defined in Declaration
+            #declarationspecifier {            ## by peg : ( ((StorageClassSpecifier / TypeSpecifier / TypeQualifier / FunctionSpecifier / Attribute)^)+  ) defined in DeclarationSpecifiers
+               #typespecifier: int    ## by peg : ( (VOID / CHAR / SHORT / INT / LONG / FLOAT / DOUBLE / SIGNED / UNSIGNED / BOOL / COMPLEX / StructOrUnionSpecifier / EnumSpecifier)^  ) defined in TypeSpecifier
+            }
+            #initdeclarator {            ## by peg : ( (EQU Initializer^)  ) defined in InitDeclarator
+               #declarator {            ## by peg : ( (Pointer^)? DirectDeclarator^  ) defined in Declarator
+                  #identifier: n    ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
                }
-               #initializer {            ## by peg : null
-                  #integerconstant: 1   ## by peg : null
+               #initializer {            ## by peg : ( (AssignmentExpression^ / LWING (InitializerList^)* COMMA? RWING)  ) defined in Initializer
+                  #integer: 1   ## by peg : ( (DecimalConstant / HexConstant / OctalConstant) IntegerSuffix?  ) defined in IntegerConstant
                }
             }
          }
-         #switchstatement {            ## by peg : null
-            #identifier: n   ## by peg : null
-            #compoundstatement {            ## by peg : null
-               #case {            ## by peg : null
-                  #integerconstant: 1   ## by peg : null
+         #switchstatement {            ## by peg : ( SWITCH LPAR Expression^ RPAR Statement^  ) defined in SelectionStatement
+            #identifier: n   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
+            #compoundstatement {            ## by peg : ( LWING ((Declaration / Statement)^)* RWING  ) defined in CompoundStatement
+               #case {            ## by peg : ( CASE ConstantExpression^ COLON Statement^  ) defined in LabeledStatement
+                  #integer: 1   ## by peg : ( (DecimalConstant / HexConstant / OctalConstant) IntegerSuffix?  ) defined in IntegerConstant
                   #break: break;
-	   ## by peg : null
+	   ## by peg : ( BREAK^ SEMI  ) defined in JumpStatement
                }
-               #default {            ## by peg : null
+               #default {            ## by peg : ( DEFAULT COLON Statement^  ) defined in LabeledStatement
                   #break: break;
-	   ## by peg : null
+	   ## by peg : ( BREAK^ SEMI  ) defined in JumpStatement
                }
             }
          }
-         #returnstatement {            ## by peg : null
-            #integerconstant: 0   ## by peg : null
+         #returnstatement {            ## by peg : ( RETURN^ (Expression^)? SEMI  ) defined in JumpStatement
+            #integer: 0   ## by peg : ( (DecimalConstant / HexConstant / OctalConstant) IntegerSuffix?  ) defined in IntegerConstant
          }
       }
    }

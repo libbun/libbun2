@@ -1,11 +1,11 @@
 parsed:
-#toplevel {            ## by peg : null
-   #add {            ## by peg : null
-      #integer: 1   ## by peg : null
-      #integer: 2   ## by peg : null
+#toplevel {            ## by peg : ( (Stmt^)+  )
+   #add {            ## by peg : ( WS* ('+'  / '-' ) WS* Product^ )
+      #integer: 1   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  )
+      #integer: 2   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  )
    }
-   #add {            ## by peg : null
-      #integer: 2   ## by peg : null
-      #integer: 3   ## by peg : null
+   #add {            ## by peg : ( WS* ('+'  / '-' ) WS* Product^ )
+      #integer: 2   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  )
+      #integer: 3   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  )
    }
 }

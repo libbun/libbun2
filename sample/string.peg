@@ -4,7 +4,7 @@
 // see www.libbun.org/peg
 
 String   
-  = << '"' ('\\"' / !'"' .)* '"' #string >>
+  = '"' << (!'"' .)* #string >> '"'
   ;
 
 TopLevel 

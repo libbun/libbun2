@@ -1,5 +1,10 @@
 parsed:
-#toplevel {            ## by peg : null
-   #string: hpge   ## by peg : null
-   #string: hoge   ## by peg : null
+#toplevel {            ## by peg : ( (Stmt^)+  )
+   #assign {            ## by peg : ( WS* AssignOp WS* OrExpr^ )
+      #name: a   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  )
+      #string: a
+
+
+   ## by peg : ( (('\\"' / !'"""' .)^)*  )
+   }
 }

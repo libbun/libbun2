@@ -1,8 +1,8 @@
 parsed:
-#toplevel {            ## by peg : null
-   #array {            ## by peg : null
-      #integer: 1   ## by peg : null
-      #integer: 2   ## by peg : null
-      #integer: 3   ## by peg : null
+#toplevel {            ## by peg : ( (Stmt^)+  )
+   #array {            ## by peg : ( '[' _* (Expr^)? (_* ',' _* Expr^)* _* ']'  )
+      #integer: 1   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  )
+      #integer: 2   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  )
+      #integer: 3   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  )
    }
 }

@@ -1,4 +1,4 @@
-import BunType from buntype.peg;
+import BunType from "buntype.peg";
 
 TopLevel
  = Template

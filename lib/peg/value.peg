@@ -17,7 +17,7 @@ Number
 Value
   = << 'null'  AsToken #null >>
   / << 'true'  AsToken #true >>
-  / << 'false' AsToken #false>>
+  / << 'false' AsToken #false >>
   / Number
   / String
   ;

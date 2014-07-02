@@ -1,8 +1,8 @@
 // Bun's Peg example
 // / catch is an extended operator to catch error
 
-import Value from value.peg;
-import Type  from type.peg;
+import Value from "value.peg";
+import Type  from "type.peg";
 
 // TopLevel = Expr / _ ;
 
@@ -65,7 +65,7 @@ Stmt
   = IfStmt
   / VarDecl EOS / LetDecl EOS
   / << 'return' (Spacing Expr@)? #return >> EOS
-  / << 'while' _ '(' _ Expr@ _ ')' NL $Block #while >>
+  / << 'while' _ '(' _ Expr@ _ ')' NL Block@ #while >>
   / << 'break' #break >> EOS
   / Expr EOS
   ;

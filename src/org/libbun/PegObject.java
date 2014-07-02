@@ -30,10 +30,11 @@ public class PegObject {
 	}
 
 	public final boolean is(String functor) {
-		return this.name.startsWith(functor);
+		return this.name.equals(functor);
 	}
 
 	public final void setSource(Peg createdPeg, PegSource source, int startIndex, int endIndex) {
+		this.createdPeg = createdPeg;
 		this.source     = source;
 		this.startIndex = startIndex;
 		this.endIndex   = endIndex;
@@ -163,7 +164,10 @@ public class PegObject {
 	}
 
 	final void stringfy(SourceBuilder sb) {
-		if(this.AST == null) {
+		if(this.isFailure()) {
+			sb.append(this.formatSourceMessage("syntax error", "    " + this.info()));
+		}
+		else if(this.AST == null) {
 			sb.appendNewLine(this.name+ ": ", this.getText(), "   " + this.info());
 		}
 		else {

@@ -17,7 +17,7 @@ BasicType
 
 Type
  = << BasicType >>
- / 'struct' _ << [A-Za-z0-9_]+ #type >>
+ / 'struct' _ << [A-Za-z_][A-Za-z0-9_]* #type >>
  / Type <<@ '*' #pointer >>
  ;
 
