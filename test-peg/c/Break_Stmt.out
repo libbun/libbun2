@@ -29,7 +29,7 @@ parsed:
                #identifier: i    ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
                #integer: 10   ## by peg : ( (DecimalConstant / HexConstant / OctalConstant) IntegerSuffix?  ) defined in IntegerConstant
             }
-            #inc {            ## by peg : ( (LBRK^ Expression^ RBRK^ / LPAR^ (ArgumentExpressionList^)? RPAR^ / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
+            #inc {            ## by peg : ( (FunctionCall  / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
                #identifier: i   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
             }
             #compoundstatement {            ## by peg : ( LWING ((Declaration / Statement)^)* RWING  ) defined in CompoundStatement

@@ -2,10 +2,10 @@ parsed:
 #translationunit {            ## by peg : ( Spacing (ExternalDeclaration^)+ EOT  ) defined in TranslationUnit
    #functiondefinition {            ## by peg : ( DeclarationSpecifiers^ Declarator^ (DeclarationList^)? CompoundStatement^  ) defined in FunctionDefinition
       #declarationspecifier {            ## by peg : ( ((StorageClassSpecifier / TypeSpecifier / TypeQualifier / FunctionSpecifier / Attribute)^)+  ) defined in DeclarationSpecifiers
-         #typespecifier: int    ## by peg : ( (VOID / CHAR / SHORT / INT / LONG / FLOAT / DOUBLE / SIGNED / UNSIGNED / BOOL / COMPLEX / StructOrUnionSpecifier / EnumSpecifier)^  ) defined in TypeSpecifier
+         #typespecifier: void    ## by peg : ( (VOID / CHAR / SHORT / INT / LONG / FLOAT / DOUBLE / SIGNED / UNSIGNED / BOOL / COMPLEX / StructOrUnionSpecifier / EnumSpecifier)^  ) defined in TypeSpecifier
       }
       #declarator {            ## by peg : ( (Pointer^)? DirectDeclarator^  ) defined in Declarator
-         #identifier: main   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
+         #identifier: f   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
          #declarationspecifier {            ## by peg : ( ((StorageClassSpecifier / TypeSpecifier / TypeQualifier / FunctionSpecifier / Attribute)^)+  ) defined in DeclarationSpecifiers
             #typespecifier: void   ## by peg : ( (VOID / CHAR / SHORT / INT / LONG / FLOAT / DOUBLE / SIGNED / UNSIGNED / BOOL / COMPLEX / StructOrUnionSpecifier / EnumSpecifier)^  ) defined in TypeSpecifier
          }
@@ -15,29 +15,23 @@ parsed:
             #declarationspecifier {            ## by peg : ( ((StorageClassSpecifier / TypeSpecifier / TypeQualifier / FunctionSpecifier / Attribute)^)+  ) defined in DeclarationSpecifiers
                #typespecifier: int    ## by peg : ( (VOID / CHAR / SHORT / INT / LONG / FLOAT / DOUBLE / SIGNED / UNSIGNED / BOOL / COMPLEX / StructOrUnionSpecifier / EnumSpecifier)^  ) defined in TypeSpecifier
             }
-            #declarator {            ## by peg : ( (Pointer^)? DirectDeclarator^  ) defined in Declarator
-               #identifier: n   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
+            #initdeclarator {            ## by peg : ( (EQU Initializer^)  ) defined in InitDeclarator
+               #declarator {            ## by peg : ( (Pointer^)? DirectDeclarator^  ) defined in Declarator
+                  #identifier: a   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
+                  #integer: 10   ## by peg : ( (DecimalConstant / HexConstant / OctalConstant) IntegerSuffix?  ) defined in IntegerConstant
+               }
+               #initializer: {}   ## by peg : ( (AssignmentExpression^ / LWING (InitializerList^)* COMMA? RWING)  ) defined in Initializer
             }
          }
-         #forstatement {            ## by peg : ( FOR LPAR (Expression^)? SEMI (Expression^)? SEMI (Expression^)? RPAR Statement^  ) defined in IterationStatement
+         #expressionstatement {            ## by peg : ( (Expression^)? SEMI  ) defined in ExpressionStatement
             #assignmentexpression {            ## by peg : ( UnaryExpression^ AssignmentOperator^ AssignmentExpression^  ) defined in AssignmentExpression
-               #identifier: n    ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
+               #index {            ## by peg : ( (FunctionCall  / Index  / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
+                  #identifier: a   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
+                  #integer: 2   ## by peg : ( (DecimalConstant / HexConstant / OctalConstant) IntegerSuffix?  ) defined in IntegerConstant
+               }
                #assignmentoperator: =    ## by peg : ( (EQU / STAREQU / DIVEQU / MODEQU / PLUSEQU / MINUSEQU / LEFTEQU / RIGHTEQU / ANDEQU / HATEQU / OREQU)^  ) defined in AssignmentOperator
-               #integer: 0   ## by peg : ( (DecimalConstant / HexConstant / OctalConstant) IntegerSuffix?  ) defined in IntegerConstant
+               #integer: 3   ## by peg : ( (DecimalConstant / HexConstant / OctalConstant) IntegerSuffix?  ) defined in IntegerConstant
             }
-            #lt {            ## by peg : ( (LE  / GE  / LT  / GT ) ShiftExpression^ ) defined in RelationalExpression
-               #identifier: n    ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
-               #integer: 10   ## by peg : ( (DecimalConstant / HexConstant / OctalConstant) IntegerSuffix?  ) defined in IntegerConstant
-            }
-            #inc {            ## by peg : ( (FunctionCall  / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
-               #identifier: n   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
-            }
-            #compoundstatement: {
-	}
-	   ## by peg : ( LWING ((Declaration / Statement)^)* RWING  ) defined in CompoundStatement
-         }
-         #returnstatement {            ## by peg : ( RETURN^ (Expression^)? SEMI  ) defined in JumpStatement
-            #integer: 0   ## by peg : ( (DecimalConstant / HexConstant / OctalConstant) IntegerSuffix?  ) defined in IntegerConstant
          }
       }
    }

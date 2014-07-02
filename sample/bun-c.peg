@@ -99,7 +99,7 @@
 //-------------------------------------------------------------------------
 
 TranslationUnit
-    = << Spacing ExternalDeclaration@+ EOT #translationunit >>
+    = << Spacing ExternalDeclaration@+ EOT #toplevel >>
     ;
 
 ExternalDeclaration
@@ -108,11 +108,11 @@ ExternalDeclaration
     ;
 
 FunctionDefinition
-    = << DeclarationSpecifiers@ Declarator@ DeclarationList@? CompoundStatement@ #functiondefinition>>
+    = << DeclarationSpecifiers@ Declarator@ DeclarationList@? CompoundStatement@ #function >>
     ;
 
 DeclarationList
-    = << Declaration@+ #declarationlist>>
+    = << Declaration@+ #c.declarationlist>>
     ;
 
 
@@ -121,7 +121,7 @@ DeclarationList
 //-------------------------------------------------------------------------
 
 Declaration
-    = << DeclarationNoAttribute@ (Attribute / Assembler)@? SEMI #declaration >>
+    = << DeclarationNoAttribute@ (Attribute / Assembler)@? SEMI #c.declaration >>
     ;
 
 DeclarationNoAttribute
@@ -139,21 +139,21 @@ DeclarationSpecifiers
        / TypeQualifier
        / FunctionSpecifier
        / Attribute
-       )* #declarationspecifier >>
+       )* #c.declarationspecifier >>
     / << ( StorageClassSpecifier
       / TypeSpecifier
       / TypeQualifier
       / FunctionSpecifier
       / Attribute
-      )@+ #declarationspecifier >>
+      )@+ #c.declarationspecifier >>
     ;
 
 InitDeclaratorList
-    = InitDeclarator <<@ (COMMA InitDeclarator@) #initdeclaratorlist >>*
+    = InitDeclarator <<@ (COMMA InitDeclarator@) #c.initdeclaratorlist >>*
     ;
 
 InitDeclarator
-    = Declarator <<@ (EQU Initializer@) #initdeclarator >>?
+    = Declarator <<@ (EQU Initializer@) #c.initdeclarator >>?
     ;
 
 StorageClassSpecifier
@@ -161,7 +161,7 @@ StorageClassSpecifier
     / EXTERN
     / STATIC
     / AUTO
-    / REGISTER)@ #storageclassspecifier >>
+    / REGISTER)@ #c.storageclassspecifier >>
     ;
 
 TypeSpecifier
@@ -177,7 +177,7 @@ TypeSpecifier
     / BOOL
     / COMPLEX
     / StructOrUnionSpecifier
-    / EnumSpecifier)@ #typespecifier >>
+    / EnumSpecifier)@ #c.typespecifier >>
     ;
 
 StructOrUnionSpecifier
@@ -188,12 +188,12 @@ StructOrUnionSpecifier
     ;
 
 StructOrUnion
-    = << STRUCT #struct >>
-    / << UNION #union >>
+    = << STRUCT #c.struct >>
+    / << UNION #c.union >>
     ;
 
 StructDeclaration
-    = << SpecifierQualifierList StructDeclaratorList@ SEMI #structdeclaration >>
+    = << SpecifierQualifierList StructDeclaratorList@ SEMI #c.structdeclaration >>
     ;
 
 SpecifierQualifierList
@@ -207,7 +207,7 @@ SpecifierQualifierList
     ;
 
 StructDeclaratorList
-    = << StructDeclarator@ (COMMA StructDeclarator@)* #structdeclaratorlist >>
+    = << StructDeclarator@ (COMMA StructDeclarator@)* #c.structdeclaratorlist >>
     ;
 
 StructDeclarator
@@ -223,7 +223,7 @@ EnumSpecifier
     ;
 
 EnumeratorList
-    = Enumerator <<@ (COMMA Enumerator@)* #enumeratorlist >>
+    = Enumerator <<@ (COMMA Enumerator@)* #c.enumeratorlist >>
     ;
 
 Enumerator
@@ -253,7 +253,7 @@ AttributeParamList = LPAR (AttributeParam (COMMA AttributeParam)*)? RPAR;
 Assembler = ASM LPAR (StringLiteral (COMMA StringLiteral)*)? RPAR;
 
 Declarator
-    = << Pointer@? DirectDeclarator@ #declarator >>
+    = << Pointer@? DirectDeclarator@ #c.declarator >>
     ;
 
 DirectDeclarator
@@ -270,7 +270,7 @@ DirectDeclarator
     ;
 
 Pointer
-    = << ( STAR@ TypeQualifier@* )+ #pointer >>
+    = << ( STAR@ TypeQualifier@* )+ #c.pointer >>
     ;
 
 ParameterTypeList
@@ -278,19 +278,19 @@ ParameterTypeList
     ;
 
 ParameterList
-    = ParameterDeclaration <<@ (COMMA ParameterDeclaration@) #parameterlist>>*
+    = ParameterDeclaration <<@ (COMMA ParameterDeclaration@) #param >>*
     ;
 
 ParameterDeclaration
-    = DeclarationSpecifiers <<@ ( Declarator / AbstractDeclarator )@ #parameterdeclaration >>?
+    = DeclarationSpecifiers <<@ ( Declarator / AbstractDeclarator )@ #c.parameterdeclaration >>?
     ;
 
 IdentifierList
-    = << Identifier@ (COMMA Identifier@)* #identifierlist >>
+    = << Identifier@ (COMMA Identifier@)* #c.identifierlist >>
     ;
 
 TypeName
-    = << SpecifierQualifierList@ AbstractDeclarator@? #typename >>
+    = << SpecifierQualifierList@ AbstractDeclarator@? #c.typename >>
     ;
 
 AbstractDeclarator
@@ -309,20 +309,20 @@ DirectAbstractDeclarator
     ;
 
 TypedefName
-    = << Identifier@ #typedefname >>
+    = << Identifier@ #c.typedefname >>
     ;
 
 Initializer
     = << (AssignmentExpression@
-    / LWING InitializerList@* COMMA? RWING) #initializer>>
+    / LWING InitializerList@* COMMA? RWING) #c.initializer>>
     ;
 
 InitializerList
-    = << Designation@? Initializer@ (COMMA Designation@? Initializer@)* #initializerlist >>
+    = << Designation@? Initializer@ (COMMA Designation@? Initializer@)* #c.initializerlist >>
     ;
 
 Designation
-    = << Designator@+ EQU #designation>>
+    = << Designator@+ EQU #c.designation>>
     ;
 
 Designator
@@ -351,30 +351,30 @@ LabeledStatement
     ;
 
 CompoundStatement
-    = << LWING ( Declaration / Statement )@* RWING #compoundstatement >>
+    = << LWING ( Declaration / Statement )@* RWING #block >>
     ;
 
 ExpressionStatement
-    = << Expression@? SEMI #expressionstatement >>
+    = << Expression@? SEMI #c.expressionstatement >>
     ;
 
 SelectionStatement
-    = << IF LPAR Expression@ RPAR Statement@ (ELSE Statement@)? #ifstatement >>
-    / << SWITCH LPAR Expression@ RPAR Statement@ #switchstatement >>
+    = << IF LPAR Expression@ RPAR Statement@ (ELSE Statement@)? #if >>
+    / << SWITCH LPAR Expression@ RPAR Statement@ #switch >>
     ;
 
 IterationStatement
-    = << WHILE LPAR Expression@ RPAR Statement@ #whilestatement >>
-    / << DO Statement@ WHILE LPAR Expression@ RPAR SEMI #dowhilestatement >>
-    / << FOR LPAR Expression@? SEMI Expression@? SEMI Expression@? RPAR Statement@ #forstatement >>
-    / << FOR LPAR Declaration@ Expression@? SEMI Expression@? RPAR Statement@ #forstatement >>
+    = << WHILE LPAR Expression@ RPAR Statement@ #while >>
+    / << DO Statement@ WHILE LPAR Expression@ RPAR SEMI #c.dowhile >>
+    / << FOR LPAR Expression@? SEMI Expression@? SEMI Expression@? RPAR Statement@ #for >>
+    / << FOR LPAR Declaration@ Expression@? SEMI Expression@? RPAR Statement@ #for >>
     ;
 
 JumpStatement
     = GOTO Identifier SEMI
     / << CONTINUE@ SEMI #continue>>
     / << BREAK@ SEMI #break >>
-    / << RETURN@ Expression@? SEMI #returnstatement >>
+    / << RETURN@ Expression@? SEMI #return >>
     ;
 
 
@@ -389,12 +389,10 @@ PrimaryExpression
     / LPAR Expression RPAR
     ;
 
-Index
-    = LBRK@ Expression@ RBRK@
-    ;
-
 FunctionCall
-    = LPAR@ ArgumentExpressionList@? RPAR@
+    = ( LBRK@ Expression@ RBRK@
+      / LPAR@ ArgumentExpressionList@? RPAR@
+      )
     ;
 
 PostfixExpression
@@ -403,16 +401,15 @@ PostfixExpression
       )
       <<@
       ( FunctionCall #apply
-      / Index #index
       / DOT #dot Identifier@
-      / PTR #ptr Identifier@
+      / PTR #c.ptr Identifier@
       / INC #inc
       / DEC #dec
       )@ >>*
     ;
 
 ArgumentExpressionList
-    = AssignmentExpression <<@ (COMMA AssignmentExpression@) #argumentexpressionlist >>*
+    = AssignmentExpression <<@ (COMMA AssignmentExpression@) #c.argumentexpressionlist >>*
     ;
 
 UnaryExpression
@@ -420,7 +417,7 @@ UnaryExpression
     / INC UnaryExpression
     / DEC UnaryExpression
     / UnaryOperator CastExpression
-    / << SIZEOF #sizeof (UnaryExpression@ / LPAR@ TypeName@ RPAR@ ) >>
+    / SIZEOF (UnaryExpression / LPAR TypeName RPAR )
     ;
 
 UnaryOperator
@@ -433,7 +430,7 @@ UnaryOperator
     ;
 
 CastExpression
-    = <<(LPAR TypeName RPAR)@+ UnaryExpression@ #castexpression >>
+    = <<(LPAR TypeName RPAR)@+ UnaryExpression@ #c.castexpression >>
     / UnaryExpression
     ;
 
@@ -482,7 +479,7 @@ ConditionalExpression
     ;
 
 AssignmentExpression
-    = << UnaryExpression@ AssignmentOperator@ AssignmentExpression@ #assignmentexpression >>
+    = << UnaryExpression@ AssignmentOperator@ AssignmentExpression@ #assign >>
     / ConditionalExpression
     ;
 
@@ -497,7 +494,7 @@ AssignmentOperator
     / RIGHTEQU
     / ANDEQU
     / HATEQU
-    / OREQU)@ #assignmentoperator >>
+    / OREQU)@ #c.assignmentoperator >>
     ;
 
 Expression
@@ -629,7 +626,7 @@ Keyword
 //  distinct from keywords, but it seems so.
 //-------------------------------------------------------------------------
 
-Identifier = << !Keyword IdNondigit@ IdChar@* Spacing #identifier >>;
+Identifier = << !Keyword IdNondigit@ IdChar@* Spacing #name >>;
 
 IdNondigit
     = [a-z] / [A-Z] / [_]
