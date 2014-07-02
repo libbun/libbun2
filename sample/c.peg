@@ -389,10 +389,12 @@ PrimaryExpression
     / LPAR Expression RPAR
     ;
 
+Index
+    = LBRK@ Expression@ RBRK@
+    ;
+
 FunctionCall
-    = ( LBRK@ Expression@ RBRK@
-      / LPAR@ ArgumentExpressionList@? RPAR@
-      )
+    = LPAR@ ArgumentExpressionList@? RPAR@
     ;
 
 PostfixExpression
@@ -401,6 +403,7 @@ PostfixExpression
       )
       <<@
       ( FunctionCall #apply
+      / Index #index
       / DOT #dot Identifier@
       / PTR #ptr Identifier@
       / INC #inc
