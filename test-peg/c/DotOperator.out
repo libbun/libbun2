@@ -24,7 +24,7 @@ parsed:
          }
          #expressionstatement {            ## by peg : ( (Expression^)? SEMI  ) defined in ExpressionStatement
             #assignmentexpression {            ## by peg : ( UnaryExpression^ AssignmentOperator^ AssignmentExpression^  ) defined in AssignmentExpression
-               #dot {            ## by peg : ( (LBRK^ Expression^ RBRK^ / LPAR^ (ArgumentExpressionList^)? RPAR^ / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
+               #dot {            ## by peg : ( (FunctionCall  / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
                   #identifier: s   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
                   #identifier: number    ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
                }
@@ -34,7 +34,7 @@ parsed:
          }
          #expressionstatement {            ## by peg : ( (Expression^)? SEMI  ) defined in ExpressionStatement
             #assignmentexpression {            ## by peg : ( UnaryExpression^ AssignmentOperator^ AssignmentExpression^  ) defined in AssignmentExpression
-               #dot {            ## by peg : ( (LBRK^ Expression^ RBRK^ / LPAR^ (ArgumentExpressionList^)? RPAR^ / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
+               #dot {            ## by peg : ( (FunctionCall  / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
                   #identifier: s   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
                   #identifier: name    ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
                }
