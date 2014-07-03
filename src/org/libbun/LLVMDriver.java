@@ -15,7 +15,6 @@ public class LLVMDriver extends SourceDriver {
 		this.addCommand("endstmt",    new EndStatementCommand());
 		this.addCommand("reservenum", new ReserveNumberCommand());
 		this.addCommand("getnum",     new GetNumberCommand());
-		KonohaTypeChecker.initDriver(this);
 		gamma.loadBunModel("lib/driver/llvm/konoha.bun", this);
 		//gamma.loadBunModel("lib/driver/python/python_types.bun", this);
 	}

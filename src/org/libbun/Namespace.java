@@ -4,6 +4,7 @@ public class Namespace extends SymbolTable {
 	public UniMap<PegRuleSet> ruleMap;
 	public UniArray<String>   exportSymbolList;
 	public BunDriver  driver;
+	public BunTypeChecker checker;
 
 	public Namespace(BunDriver driver) {
 		super(null);
@@ -14,6 +15,7 @@ public class Namespace extends SymbolTable {
 		this.ruleMap.put("peg", pegRule);
 //		this.ruleMap.put("main", ruleSet);
 		this.driver = driver;
+		this.checker = new BunTypeChecker();
 	}
 	
 	public final String toString() {

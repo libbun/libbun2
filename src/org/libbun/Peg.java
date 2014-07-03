@@ -723,7 +723,7 @@ class PegTag extends PegAtom {
 	@Override
 	public PegObject simpleMatch(PegObject inNode, ParserContext context) {
 		if(!context.isVerifyMode()) {
-			inNode.name = this.symbol;
+			inNode.tag = this.symbol;
 		}
 		return inNode;
 	}
@@ -907,17 +907,17 @@ class PegCType extends PegAtom {
 	protected PegObject simpleMatch(PegObject inNode, ParserContext context) {
 		if(inNode.source != null) {
 			if(AddType) {
-				if(inNode.name.equals("#DeclarationNoAttribute") && inNode.AST.length >= 2) {
+				if(inNode.tag.equals("#DeclarationNoAttribute") && inNode.AST.length >= 2) {
 					// inNode.AST = [typedef struct A, StructA]
 					PegObject first = inNode.AST[0];
 					if(first.AST.length >= 2) {
 						String firstText = first.AST[0].getText().trim();
 						// first is "typedef"
-						if(first.AST[0].name.equals("#storageclassspecifier") && firstText.equals("typedef")) {
+						if(first.AST[0].tag.equals("#storageclassspecifier") && firstText.equals("typedef")) {
 							PegObject second = inNode.AST[1];
 							for (int i = 0; i < second.AST.length; i++) {
 								PegObject decl = second.get(i);
-								if(decl.name.equals("#declarator")) {
+								if(decl.tag.equals("#declarator")) {
 									// "typedef struct A StructA;"
 									// add new typename StructA
 									System.out.println(decl.get(decl.AST.length - 1).getText());

@@ -1,16 +1,16 @@
 parsed:
-#toplevel {            ## by peg : ( (Stmt^)+  )
-   #foreach {            ## by peg : ( 'for' WS+ Symbol^ WS+ 'in' WS+ Expr^ ':' Block^  )
-      #name: x   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  )
-      #array {            ## by peg : ( '[' _* (Expr^)? (_* ',' _* Expr^)* _* ']'  )
-         #integer: 1   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  )
-         #integer: 2   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  )
-         #integer: 3   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  )
+#toplevel {            ## by peg : ( (Stmt^)+  ) defined in TopLevel
+   #foreach {            ## by peg : ( 'for' WS+ Symbol^ WS+ 'in' WS+ Expr^ ':' Block^  ) defined in ForStmt
+      #name: x   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  ) defined in Symbol
+      #array {            ## by peg : ( '[' _* (Expr^)? (_* ',' _* Expr^)* _* ']'  ) defined in ArrayLiteral
+         #integer: 1   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  ) defined in Number
+         #integer: 2   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  ) defined in Number
+         #integer: 3   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  ) defined in Number
       }
-      #block {            ## by peg : ( (indent WS* Stmt^ EOS?)+  )
-         #add {            ## by peg : ( WS* ('+'  / '-' ) WS* Product^ )
-            #name: x   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  )
-            #integer: 1   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  )
+      #block {            ## by peg : ( (WS* EOS+ / indent WS+ Stmt^ EOS?)+  ) defined in Block
+         #add {            ## by peg : ( WS* ('+'  / '-' ) WS* Product^ ) defined in Sum
+            #name: x   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  ) defined in Symbol
+            #integer: 1   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  ) defined in Number
          }
       }
    }

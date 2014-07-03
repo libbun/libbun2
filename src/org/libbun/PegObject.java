@@ -1,24 +1,23 @@
 package org.libbun;
 
-
 public class PegObject {
 	PegSource    source = null;
 	int          startIndex = 0;
 	int          endIndex = 0;
 	Peg          createdPeg = null;
-	String       name = null;
+	String       tag = null;
 	PegObject    parent = null;
 	PegObject    AST[] = null;
 	SymbolTable  gamma = null;
 	Functor      matched = null;
-	BunType     typed   = null;
+	BunType      typed   = null;
 
-	PegObject(String name) {
-		this.name = name;
+	PegObject(String tag) {
+		this.tag = tag;
 	}
 
-	PegObject(String name, PegSource source, Peg createdPeg, int startIndex) {
-		this.name       = name;
+	PegObject(String tag, PegSource source, Peg createdPeg, int startIndex) {
+		this.tag        = tag;
 		this.source     = source;
 		this.createdPeg = createdPeg;
 		this.startIndex = startIndex;
@@ -26,11 +25,11 @@ public class PegObject {
 	}
 
 	public final boolean isFailure() {
-		return (this.name == null);
+		return (this.tag == null);
 	}
 
 	public final boolean is(String functor) {
-		return this.name.equals(functor);
+		return this.tag.equals(functor);
 	}
 
 	public final void setSource(Peg createdPeg, PegSource source, int startIndex, int endIndex) {
@@ -147,10 +146,10 @@ public class PegObject {
 				return node.typed;
 			}
 			if(node.matched == null && gamma != null) {
-				gamma.tryMatch(node);
+				node = gamma.tryMatch(node, true);
 			}
 			if(node.matched != null) {
-				return node.getType(defaultType);
+				return node.matched.getReturnType(defaultType);
 			}
 		}
 		return defaultType;
@@ -168,10 +167,10 @@ public class PegObject {
 			sb.append(this.formatSourceMessage("syntax error", "    " + this.info()));
 		}
 		else if(this.AST == null) {
-			sb.appendNewLine(this.name+ ": ", this.getText(), "   " + this.info());
+			sb.appendNewLine(this.tag+ ": ", this.getText(), "   " + this.info());
 		}
 		else {
-			sb.appendNewLine(this.name);
+			sb.appendNewLine(this.tag);
 			sb.openIndent(" {            " + this.info());
 			for(int i = 0; i < this.size(); i++) {
 				if(this.AST[i] != null) {
@@ -216,25 +215,14 @@ public class PegObject {
 		return node.gamma;
 	}
 
-
-	private void checkGamma() {
+	public final SymbolTable getLocalSymbolTable() {
 		if(this.gamma == null) {
 			SymbolTable gamma = this.getSymbolTable();
 			gamma = new SymbolTable(gamma.getNamespace(), this);
 			// NOTE: this.gamma was set in SymbolTable constructor
 			assert(this.gamma != null);
 		}
-	}
-
-	public void setName(String name, BunType type, PegObject initValue) {
-		this.checkGamma();
-		this.gamma.setName(name, type, initValue);
-	}
-
-	public void setName(PegObject nameNode, BunType type, PegObject initValue) {
-		this.checkGamma();
-		this.gamma.setName(nameNode, type, initValue);
-		nameNode.typed = type;
+		return this.gamma;
 	}
 	
 	public final BunType getType(BunType defaultType) {
@@ -248,20 +236,6 @@ public class PegObject {
 		}
 		return this.typed;
 	}
-
-	public final void build(BunDriver driver) {
-		if(this.matched == null) {
-			SymbolTable gamma = this.getSymbolTable();
-			gamma.tryMatch(this);
-		}
-		if(this.matched != null) {
-			this.matched.build(this, driver);
-		}
-		else {
-			driver.pushUnknownNode(this);
-		}
-	}
-
 	
 	public boolean isVariable() {
 		// TODO Auto-generated method stub
@@ -271,6 +245,15 @@ public class PegObject {
 	public void setVariable(boolean flag) {
 	}
 
-
+	public final int countUnmatched(int c) {
+		for(int i = 0; i < this.size(); i++) {
+			PegObject o = this.get(i);
+			c = o.countUnmatched(c);
+		}
+		if(this.matched == null) {
+			return c+1;
+		}
+		return c;
+	}
 
 }

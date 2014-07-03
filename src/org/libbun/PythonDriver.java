@@ -4,7 +4,6 @@ public class PythonDriver extends SourceDriver {
 
 	@Override
 	public void initTable(Namespace gamma) {
-		KonohaTypeChecker.initDriver(this);
 		gamma.loadBunModel("lib/driver/python/konoha.bun", this);
 		gamma.loadBunModel("lib/driver/python/python_types.bun", this);
 	}

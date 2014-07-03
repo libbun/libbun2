@@ -898,7 +898,7 @@ class NodeType extends BunNodeType {
 		sb.append(this.symbol);
 	}
 	public boolean accept(SymbolTable gamma, PegObject node, boolean hasNextChoice) {
-		if(this.symbol.equals(node.name)) {
+		if(this.symbol.equals(node.tag)) {
 			return true;
 		}
 		return false;

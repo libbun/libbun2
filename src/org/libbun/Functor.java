@@ -1,18 +1,27 @@
 package org.libbun;
 
 public class Functor {
+	public final static int _SymbolFunctor = 1;
+	public final static int _ReadOnlyFunctor = (1 << 1);
+	public final static int _LocalFunctor    = (1 << 2);
+	
 	public SymbolTable storedTable = null;
+	public int         flag;
 	public String      name;
-	public boolean     isSymbol;
 	public BunType     funcType;
 	TemplateEngine     template;
 	public Functor     nextChoice = null;
 
-	public Functor(String name, boolean isSymbol, BunType funcType) {
+	public Functor(int flag, String name, BunType funcType) {
+		this.flag = flag;
 		this.name = name;
-		this.isSymbol = isSymbol;
 		this.funcType = funcType;
 	}
+
+	public final boolean is(int flag) {
+		return Main._IsFlag(this.flag, flag);
+	}
+	
 	public String key() {
 		if(this.funcType == null) {
 			return this.name + "*";
@@ -21,14 +30,13 @@ public class Functor {
 			if(this.name.equals("#coercion") || this.name.equals("#conv")) {
 				return BunType.keyTypeRel(this.name, this.funcType.get(0), this.funcType.getReturnType());
 			}
-			if(this.isSymbol) {
+			if(this.is(Functor._SymbolFunctor)) {
 				return this.name;
 			}
 			return this.name + ":" + this.funcType.getFuncParamSize();
 		}
 	}
-	@Override 
-	public String toString() {
+	@Override public String toString() {
 		return this.key();
 	}
 	
@@ -38,22 +46,22 @@ public class Functor {
 		}
 		return defaultType;
 	}
-	protected void matchSubNode(PegObject node, boolean hasNextChoice) {
+	
+	protected PegObject matchSubNode(PegObject node, boolean isStrongTyping) {
 		SymbolTable gamma = node.getSymbolTable();
 		BunType varFuncType = this.getVarFuncType();
 		for(int i = 0; i < node.size(); i++) {
 			BunType type = this.paramTypeAt(varFuncType, i);
-			if(!gamma.checkTypeAt(node, i, type, hasNextChoice)) {
+			if(!gamma.checkTypeAt(node, i, type, isStrongTyping)) {
 				node.matched = null;
-				return;
+				return node;
 			}
 		}
-		this.returnType(varFuncType).typed(gamma, node, true);
 		node.matched = this;
-//		if(this.funcType instanceof FunctorType) {
-//			((FunctorType)this.funcType).check(gamma, node, gamma.root.driver);
-//		}
+		this.returnType(varFuncType).typed(gamma, node, true);
+		return gamma.check(node, isStrongTyping);
 	}
+	
 	private BunType getVarFuncType() {
 		if(this.funcType != null) {
 			//System.out.println("func: " + this.funcType + " greekCount=" + this.funcType.countGreekType());
@@ -81,17 +89,12 @@ public class Functor {
 	public void add(TemplateEngine section) {
 		this.template = section;
 	}
-	
 }
 
 
 class ErrorFunctor extends Functor {
 	public ErrorFunctor() {
-		super(BunSymbol.PerrorFunctor, false, null);
-	}
-	@Override
-	protected void matchSubNode(PegObject node, boolean hasNextChoice) {
-		node.matched = this;
+		super(0, BunSymbol.PerrorFunctor, null);
 	}
 	@Override
 	public void build(PegObject node, BunDriver driver) {
@@ -108,14 +111,15 @@ class ErrorFunctor extends Functor {
 
 class BunTypeDefFunctor extends Functor {
 	public BunTypeDefFunctor(String name) {
-		super(name, false, null);
+		super(0, name, null);
 	}
 	@Override 
-	protected void matchSubNode(PegObject node, boolean hasNextChoice) {
+	protected PegObject matchSubNode(PegObject node, boolean hasNextChoice) {
 		SymbolTable gamma = node.getSymbolTable();
 		String name = node.getText();
 		gamma.setType(BunType.newValueType(name, null));
 		node.matched = this;
+		return node;
 	}
 	@Override
 	public void build(PegObject node, BunDriver driver) {
@@ -124,17 +128,18 @@ class BunTypeDefFunctor extends Functor {
 
 class BunTemplateFunctor extends Functor {
 	public BunTemplateFunctor(String name) {
-		super(name, false, null);
+		super(0, name, null);
 	}
 
 	@Override 
-	protected void matchSubNode(PegObject node, boolean hasNextChoice) {
+	protected PegObject matchSubNode(PegObject node, boolean hasNextChoice) {
 		SymbolTable gamma = node.getSymbolTable();
 		Functor f = this.parseFunctor(gamma, node);
 		if(f != null) {
 			gamma.addFunctor(f);
 		}
 		node.matched = this;
+		return node;
 	}
 
 	@Override
@@ -143,16 +148,15 @@ class BunTemplateFunctor extends Functor {
 	}
 	
 	private Functor parseFunctor(SymbolTable gamma, PegObject bunNode) {
-		boolean isSymbol = false;
+		int isSymbol = 0;
 		String name = bunNode.textAt(0, null);
-		GreekList greekList = this.parseGreekList(gamma, bunNode.get(5, null));
+		GreekList greekList = this.parseGreekList(gamma, bunNode.get(4, null));
 		UniMap<Integer> nameMap = new UniMap<Integer>();
 		if(bunNode.get(1).isEmptyToken()) {
-			isSymbol = true;
+			isSymbol |= Functor._SymbolFunctor;
 		}
-		String checkerName = bunNode.textAt(4, null);
-		BunType funcType = this.parseFuncType(gamma, greekList, bunNode.get(1), bunNode.get(2), checkerName, nameMap);
-		Functor functor = new Functor(name, isSymbol, funcType);
+		BunType funcType = this.parseFuncType(gamma, greekList, bunNode.get(1), bunNode.get(2), nameMap);
+		Functor functor = new Functor(isSymbol, name, funcType);
 		TemplateEngine section = this.parseSection(bunNode.get(3), nameMap);
 		functor.add(section);
 		return functor;
@@ -180,7 +184,7 @@ class BunTemplateFunctor extends Functor {
 		return listed;
 	}
 
-	private BunType parseFuncType(SymbolTable gamma, GreekList greekList, PegObject paramNode, PegObject returnTypeNode, String checkerName, UniMap<Integer> nameMap) {
+	private BunType parseFuncType(SymbolTable gamma, GreekList greekList, PegObject paramNode, PegObject returnTypeNode, UniMap<Integer> nameMap) {
 		if(paramNode.size() == 0 && paramNode.getText().equals("(*)")) {
 			return null; // 
 		}
@@ -192,11 +196,7 @@ class BunTemplateFunctor extends Functor {
 			nameMap.put(name, i);
 		}
 		typeList.add(this.parseType(gamma, greekList, returnTypeNode));
-		BunType t = BunType.newFuncType(typeList);
-//		if(greekList != null || checkerName != null) {
-//			t = new FunctorType(greekList, t, checkerName);
-//		}
-		return t;
+		return BunType.newFuncType(typeList);
 	}
 
 	private BunType parseType(SymbolTable gamma, GreekList greekList, PegObject node) {
@@ -212,7 +212,8 @@ class BunTemplateFunctor extends Functor {
 		}
 		if(node.is("#type")) {
 			if(node.isEmptyToken()) {
-				return BunType.newVarType(node);
+				return BunType.UntypedType;
+				//return BunType.newVarType(node);
 			}
 			String typeName = node.getText();
 			BunType t = gamma.getType(typeName, null);
@@ -263,7 +264,7 @@ class BunTemplateFunctor extends Functor {
 			}
 			return BunType.newUnionType(list);
 		}
-		System.out.println("#FIXME: " + node.name);
+		System.out.println("#FIXME: " + node.tag);
 		return BunType.UntypedType;
 	}
 

@@ -1,17 +1,17 @@
 parsed:
-#block {            ## by peg : null
-   #exprstmt {            ## by peg : null
-      #add {            ## by peg : null
-         #intNumber: 1   ## by peg : null
-         #intNumber: 2   ## by peg : null
+#block {            ## by peg : ( SourceElement^ (__ SourceElement^)*  ) defined in SourceElements
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #add {            ## by peg : ( __ AdditiveOperator __ MultiplicativeExpression^ ) defined in AdditiveExpression
+         #intNumber: 1   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
+         #intNumber: 2   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
       }
    }
-   #exprstmt {            ## by peg : null
-      #add {            ## by peg : null
-         #intNumber: 1   ## by peg : null
-         #mul {            ## by peg : null
-            #intNumber: 2   ## by peg : null
-            #intNumber: 3   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #add {            ## by peg : ( __ AdditiveOperator __ MultiplicativeExpression^ ) defined in AdditiveExpression
+         #intNumber: 1   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
+         #mul {            ## by peg : ( __ MultiplicativeOperator __ UnaryExpression^ ) defined in MultiplicativeExpression
+            #intNumber: 2   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
+            #intNumber: 3   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
          }
       }
    }

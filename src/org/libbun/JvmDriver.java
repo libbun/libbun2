@@ -129,8 +129,6 @@ public class JvmDriver extends BunDriver implements Opcodes {
 		this.classMap.put("void", Void.class);
 		this.classMap.put("Object", Object.class);
 		this.classMap.put("untyped", Object.class);
-
-		KonohaTypeChecker.initDriver(this);
 		gamma.loadBunModel(this.bunModel, this);
 	}
 
@@ -211,7 +209,7 @@ public class JvmDriver extends BunDriver implements Opcodes {
 	}
 
 	protected BunType toType(PegObject pObject) {
-		String name = pObject.name;
+		String name = pObject.tag;
 		String typeName = name.substring(2);
 		BunType type = this.gamma.getType(typeName, null);
 		if(type == null) {
@@ -409,7 +407,7 @@ public class JvmDriver extends BunDriver implements Opcodes {
 	protected class CallOperator extends DriverCommand {
 		@Override
 		public void invoke(BunDriver driver, PegObject node, String[] param) {
-			String opName = node.name.substring(1);
+			String opName = node.tag.substring(1);
 			int size = node.size();
 			Class<?>[] paramClasses = new Class<?>[size];
 			for(int i = 0; i < size; i++) {
@@ -604,7 +602,7 @@ public class JvmDriver extends BunDriver implements Opcodes {
 			
 		}
 		else {
-			throw new RuntimeException("unsuppored assing: " + leftNode.name);
+			throw new RuntimeException("unsuppored assing: " + leftNode.tag);
 		}
 	}
 

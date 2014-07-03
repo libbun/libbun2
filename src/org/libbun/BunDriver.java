@@ -18,7 +18,7 @@ public abstract class BunDriver {
 	public void pushNode(PegObject node) {
 		if(node.matched == null) {
 			SymbolTable gamma = node.getSymbolTable();
-			gamma.tryMatch(node);
+			node = gamma.tryMatch(node, true);
 		}
 		if(node.matched != null) {
 			BunType t = node.getType(BunType.UntypedType);
@@ -30,7 +30,7 @@ public abstract class BunDriver {
 	}
 	
 	public void pushUnknownNode(PegObject node) {
-		Main._PrintLine("Driver pushed unknown node: " + node.name + "\n" + node + "\n");
+		Main._PrintLine("Driver pushed unknown node: " + node.tag + "\n" + node + "\n");
 	}
 
 	public void pushUpcastNode(BunType castType, PegObject node) {

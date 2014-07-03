@@ -1,6 +1,7 @@
 
 TopLevel
-    = << Stmt@+ #toplevel>>;
+    = Stmt
+    ;
 
 Stmt
     = IfStmt EOS?

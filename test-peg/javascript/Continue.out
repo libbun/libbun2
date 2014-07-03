@@ -6,10 +6,10 @@ parsed:
          #if {            ## by peg : ( IfToken __ '(' __ Expression^ __ ')' __ StatementBlock^  ) defined in IfStatement
             #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
                #identifier: i   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
-               #intNumber: 8   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
+               #intNumber: 4   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
             }
-            #block {            ## by peg : ( (Statement^ __)*  ) defined in Block
-               #break: break;   ## by peg : ( BreakToken EOS  ) defined in BreakStatement
+            #block {            ## by peg : ( Statement^  ) defined in StatementBlock
+               #continue: continue;   ## by peg : ( ContinueToken EOS  ) defined in ContinueStatement
             }
          }
       }

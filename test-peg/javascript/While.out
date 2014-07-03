@@ -1,29 +1,29 @@
 parsed:
-#block {            ## by peg : null
-   #while {            ## by peg : null
-      #lt {            ## by peg : null
-         #identifier: n   ## by peg : null
-         #intNumber: 10   ## by peg : null
+#block {            ## by peg : ( SourceElement^ (__ SourceElement^)*  ) defined in SourceElements
+   #while {            ## by peg : ( WhileToken __ '(' __ (BooleanLiteral^ / Expression^) __ ')' __ Statement^  ) defined in IterationStatement
+      #lt {            ## by peg : ( __ RelationalOperator __ ShiftExpression^ ) defined in RelationalExpression
+         #identifier: n   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #intNumber: 10   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
       }
-      #block {            ## by peg : null
-         #exprstmt {            ## by peg : null
-            #postincl {            ## by peg : null
-               #identifier: n   ## by peg : null
+      #block {            ## by peg : ( (Statement^ __)*  ) defined in Block
+         #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+            #postincl {            ## by peg : ( LeftHandSideExpression^ _ '++'  ) defined in PostfixExpression
+               #identifier: n   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
             }
          }
       }
    }
-   #dowhile {            ## by peg : null
-      #block {            ## by peg : null
-         #exprstmt {            ## by peg : null
-            #predecl {            ## by peg : null
-               #identifier: n   ## by peg : null
+   #dowhile {            ## by peg : ( DoToken __ Statement^ __ WhileToken __ '(' __ (BooleanLiteral^ / Expression^) __ ')' EOS  ) defined in IterationStatement
+      #block {            ## by peg : ( (Statement^ __)*  ) defined in Block
+         #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+            #predecl {            ## by peg : ( UnaryOperator __ UnaryExpression^ ) defined in UnaryExpression
+               #identifier: n   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
             }
          }
       }
-      #lt {            ## by peg : null
-         #identifier: n   ## by peg : null
-         #intNumber: 10   ## by peg : null
+      #lt {            ## by peg : ( __ RelationalOperator __ ShiftExpression^ ) defined in RelationalExpression
+         #identifier: n   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #intNumber: 10   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
       }
    }
 }

@@ -1,38 +1,38 @@
 parsed:
-#block {            ## by peg : null
-   #if {            ## by peg : null
-      #lt {            ## by peg : null
-         #identifier: n   ## by peg : null
-         #intNumber: 10   ## by peg : null
+#block {            ## by peg : ( SourceElement^ (__ SourceElement^)*  ) defined in SourceElements
+   #if {            ## by peg : ( IfToken __ '(' __ Expression^ __ ')' __ StatementBlock^ __ ElseToken __ StatementBlock^  ) defined in IfStatement
+      #lt {            ## by peg : ( __ RelationalOperator __ ShiftExpression^ ) defined in RelationalExpression
+         #identifier: n   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #intNumber: 10   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
       }
-      #block {            ## by peg : null
-         #exprstmt {            ## by peg : null
-            #assign {            ## by peg : null
-               #identifier: a   ## by peg : null
-               #intNumber: 1   ## by peg : null
+      #block {            ## by peg : ( (Statement^ __)*  ) defined in Block
+         #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+            #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+               #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+               #intNumber: 1   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
             }
          }
       }
-      #block {            ## by peg : null
-         #if {            ## by peg : null
-            #eq {            ## by peg : null
-               #identifier: n   ## by peg : null
-               #intNumber: 10   ## by peg : null
+      #block {            ## by peg : ( SingleStatement^  ) defined in StatementBlock
+         #if {            ## by peg : ( IfToken __ '(' __ Expression^ __ ')' __ StatementBlock^ __ ElseToken __ StatementBlock^  ) defined in IfStatement
+            #eq {            ## by peg : ( __ EqualityOperator __ RelationalExpression^ ) defined in EqualityExpression
+               #identifier: n   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+               #intNumber: 10   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
             }
-            #block {            ## by peg : null
-               #exprstmt {            ## by peg : null
-                  #assign {            ## by peg : null
-                     #identifier: a   ## by peg : null
-                     #intNumber: 0   ## by peg : null
+            #block {            ## by peg : ( Statement^  ) defined in StatementBlock
+               #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+                  #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+                     #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+                     #intNumber: 0   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
                   }
                }
             }
-            #block {            ## by peg : null
-               #exprstmt {            ## by peg : null
-                  #assign {            ## by peg : null
-                     #identifier: a   ## by peg : null
-                     #minus {            ## by peg : null
-                        #intNumber: 1   ## by peg : null
+            #block {            ## by peg : ( Statement^  ) defined in StatementBlock
+               #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+                  #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+                     #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+                     #minus {            ## by peg : ( UnaryOperator __ UnaryExpression^ ) defined in UnaryExpression
+                        #intNumber: 1   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
                      }
                   }
                }

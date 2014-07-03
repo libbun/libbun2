@@ -26,7 +26,7 @@ TypeDef
 
 Template
   = NL ('bun' / 'template') NL  
-    << GreekList@5? NL TemplateName@0 NL Params@1 _ BunAnno@2 _ Checker@4? NL 
+    << GreekList@4? NL TemplateName@0 NL Params@1 _ BunAnno@2  NL 
       '{' _ '\n' Section@3 '}' #bun 
     >>
   ;

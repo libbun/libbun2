@@ -5,7 +5,7 @@ parsed:
          #typespecifier {            ## by peg : ( (VOID / CHAR / SHORT / INT / LONG / FLOAT / DOUBLE / SIGNED / UNSIGNED / BOOL / COMPLEX / StructOrUnionSpecifier / EnumSpecifier)^  ) defined in TypeSpecifier
             #struct: struct    ## by peg : ( STRUCT  ) defined in StructOrUnion
             #identifier: student    ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
-            #structdeclaration {            ## by peg : ( SpecifierQualifierList StructDeclaratorList^ SEMI  ) defined in StructDeclaration
+            #structdeclaration {            ## by peg : ( SpecifierQualifierList (StructDeclaratorList^)? SEMI  ) defined in StructDeclaration
                #typespecifier: int    ## by peg : ( (VOID / CHAR / SHORT / INT / LONG / FLOAT / DOUBLE / SIGNED / UNSIGNED / BOOL / COMPLEX / StructOrUnionSpecifier / EnumSpecifier)^  ) defined in TypeSpecifier
                #structdeclaratorlist {            ## by peg : ( StructDeclarator^ (COMMA StructDeclarator^)*  ) defined in StructDeclaratorList
                   #declarator {            ## by peg : ( (Pointer^)? DirectDeclarator^  ) defined in Declarator
@@ -13,7 +13,7 @@ parsed:
                   }
                }
             }
-            #structdeclaration {            ## by peg : ( SpecifierQualifierList StructDeclaratorList^ SEMI  ) defined in StructDeclaration
+            #structdeclaration {            ## by peg : ( SpecifierQualifierList (StructDeclaratorList^)? SEMI  ) defined in StructDeclaration
                #typespecifier: char    ## by peg : ( (VOID / CHAR / SHORT / INT / LONG / FLOAT / DOUBLE / SIGNED / UNSIGNED / BOOL / COMPLEX / StructOrUnionSpecifier / EnumSpecifier)^  ) defined in TypeSpecifier
                #structdeclaratorlist {            ## by peg : ( StructDeclarator^ (COMMA StructDeclarator^)*  ) defined in StructDeclaratorList
                   #declarator {            ## by peg : ( (Pointer^)? DirectDeclarator^  ) defined in Declarator
@@ -70,9 +70,11 @@ parsed:
                         }
                         #pointer: *   ## by peg : ( (STAR^ (TypeQualifier^)*)+  ) defined in Pointer
                      }
-                     noname {            ## by peg : ( (LBRK^ Expression^ RBRK^ / LPAR^ (ArgumentExpressionList^)? RPAR^ / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
+                     #apply {            ## by peg : ( (FunctionCall  / Index  / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
                         #identifier: malloc   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
-                        #identifier: Student   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
+                        #sizeof {            ## by peg : ( SIZEOF  (UnaryExpression^ / LPAR^ TypeName^ RPAR^) ) defined in UnaryExpression
+                           #identifier: Student   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
+                        }
                      }
                   }
                }
@@ -80,7 +82,7 @@ parsed:
          }
          #expressionstatement {            ## by peg : ( (Expression^)? SEMI  ) defined in ExpressionStatement
             #assignmentexpression {            ## by peg : ( UnaryExpression^ AssignmentOperator^ AssignmentExpression^  ) defined in AssignmentExpression
-               #ptr {            ## by peg : ( (LBRK^ Expression^ RBRK^ / LPAR^ (ArgumentExpressionList^)? RPAR^ / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
+               #ptr {            ## by peg : ( (FunctionCall  / Index  / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
                   #identifier: s   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
                   #identifier: number    ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
                }
@@ -90,7 +92,7 @@ parsed:
          }
          #expressionstatement {            ## by peg : ( (Expression^)? SEMI  ) defined in ExpressionStatement
             #assignmentexpression {            ## by peg : ( UnaryExpression^ AssignmentOperator^ AssignmentExpression^  ) defined in AssignmentExpression
-               #ptr {            ## by peg : ( (LBRK^ Expression^ RBRK^ / LPAR^ (ArgumentExpressionList^)? RPAR^ / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
+               #ptr {            ## by peg : ( (FunctionCall  / Index  / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
                   #identifier: s   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
                   #identifier: name    ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
                }
@@ -126,18 +128,18 @@ parsed:
                   #identifier: a    ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
                }
                #initializer {            ## by peg : ( (AssignmentExpression^ / LWING (InitializerList^)* COMMA? RWING)  ) defined in Initializer
-                  noname {            ## by peg : ( (LBRK^ Expression^ RBRK^ / LPAR^ (ArgumentExpressionList^)? RPAR^ / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
+                  #apply {            ## by peg : ( (FunctionCall  / Index  / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
                      #identifier: new_Student   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
                   }
                }
             }
          }
          #expressionstatement {            ## by peg : ( (Expression^)? SEMI  ) defined in ExpressionStatement
-            noname {            ## by peg : ( (LBRK^ Expression^ RBRK^ / LPAR^ (ArgumentExpressionList^)? RPAR^ / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
+            #apply {            ## by peg : ( (FunctionCall  / Index  / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
                #identifier: printf   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
                #argumentexpressionlist {            ## by peg : ( (COMMA AssignmentExpression^)  ) defined in ArgumentExpressionList
                   #string: "%d\n"   ## by peg : ( 'L'? (["] (StringChar^)* ["] Spacing)+  ) defined in StringLiteral
-                  #ptr {            ## by peg : ( (LBRK^ Expression^ RBRK^ / LPAR^ (ArgumentExpressionList^)? RPAR^ / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
+                  #ptr {            ## by peg : ( (FunctionCall  / Index  / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
                      #identifier: a   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
                      #identifier: number   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
                   }
@@ -145,11 +147,11 @@ parsed:
             }
          }
          #expressionstatement {            ## by peg : ( (Expression^)? SEMI  ) defined in ExpressionStatement
-            noname {            ## by peg : ( (LBRK^ Expression^ RBRK^ / LPAR^ (ArgumentExpressionList^)? RPAR^ / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
+            #apply {            ## by peg : ( (FunctionCall  / Index  / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
                #identifier: printf   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
                #argumentexpressionlist {            ## by peg : ( (COMMA AssignmentExpression^)  ) defined in ArgumentExpressionList
                   #string: "%s\n"   ## by peg : ( 'L'? (["] (StringChar^)* ["] Spacing)+  ) defined in StringLiteral
-                  #ptr {            ## by peg : ( (LBRK^ Expression^ RBRK^ / LPAR^ (ArgumentExpressionList^)? RPAR^ / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
+                  #ptr {            ## by peg : ( (FunctionCall  / Index  / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
                      #identifier: a   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
                      #identifier: name   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
                   }

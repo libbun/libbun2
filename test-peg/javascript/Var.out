@@ -1,28 +1,40 @@
 parsed:
-#block {            ## by peg : null
-   #varstmt {            ## by peg : null
-      #varlist {            ## by peg : null
-         #var {            ## by peg : null
-            #identifier: a   ## by peg : null
+#block {            ## by peg : ( SourceElement^ (__ SourceElement^)*  ) defined in SourceElements
+   #varlist {            ## by peg : ( VariableDeclaration^ (__ ',' __ VariableDeclaration^)*  ) defined in VariableDeclarationList
+      #var {            ## by peg : ( Identifier^ ((__ Initialiser)^)?  ) defined in VariableDeclaration
+         #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+      }
+   }
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+         #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #intNumber: 10   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
+      }
+   }
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+         #identifier: b   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #intNumber: 5   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
+      }
+   }
+   #varlist {            ## by peg : ( VariableDeclaration^ (__ ',' __ VariableDeclaration^)*  ) defined in VariableDeclarationList
+      #var {            ## by peg : ( Identifier^ ((__ Initialiser)^)?  ) defined in VariableDeclaration
+         #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #expr {            ## by peg : ( __ AssignmentExpression^  ) defined in Initialiser
+            #intNumber: 1   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
+         }
+      }
+      #var {            ## by peg : ( Identifier^ ((__ Initialiser)^)?  ) defined in VariableDeclaration
+         #identifier: b   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #expr {            ## by peg : ( __ AssignmentExpression^  ) defined in Initialiser
+            #intNumber: 2   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
          }
       }
    }
-   #exprstmt {            ## by peg : null
-      #assign {            ## by peg : null
-         #identifier: a   ## by peg : null
-         #intNumber: 10   ## by peg : null
-      }
-   }
-   #exprstmt {            ## by peg : null
-      #assign {            ## by peg : null
-         #identifier: b   ## by peg : null
-         #intNumber: 5   ## by peg : null
-      }
-   }
-   #exprstmt {            ## by peg : null
-      #add {            ## by peg : null
-         #identifier: a   ## by peg : null
-         #identifier: b   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #add {            ## by peg : ( __ AdditiveOperator __ MultiplicativeExpression^ ) defined in AdditiveExpression
+         #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #identifier: b   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
       }
    }
 }

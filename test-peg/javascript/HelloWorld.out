@@ -1,14 +1,11 @@
 parsed:
-#block {            ## by peg : null
-   #exprstmt {            ## by peg : null
-      #call {            ## by peg : null
-         #field {            ## by peg : null
-            #identifier: document   ## by peg : null
-            #identifier: write   ## by peg : null
-         }
-         #arguments {            ## by peg : null
-            #argument {            ## by peg : null
-               #string: Hello World!   ## by peg : null
+#block {            ## by peg : ( SourceElement^ (__ SourceElement^)*  ) defined in SourceElements
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #call {            ## by peg : ( MemberExpression^ __ Arguments^  ) defined in FirstCall
+         #identifier: document   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #arguments {            ## by peg : ( Argument^ (__ ',' __ Argument^)*  ) defined in ArgumentList
+            #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
+               #string: Hello World!   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
             }
          }
       }

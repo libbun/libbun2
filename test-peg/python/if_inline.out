@@ -1,14 +1,14 @@
 parsed:
-#toplevel {            ## by peg : ( (Stmt^)+  )
-   #if {            ## by peg : ( 'if' WS+ Expr^ WS* ':' Block^ (Elif^)* ('else' WS* ':' Block^)?  )
-      #lt {            ## by peg : ( WS* ('<' !'<'  / '<='  / '>' !'>'  / '>=' ) WS* Shift^ )
-         #integer: 3   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  )
-         #integer: 2   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  )
+#toplevel {            ## by peg : ( (Stmt^)+  ) defined in TopLevel
+   #if {            ## by peg : ( 'if' WS+ Expr^ WS* ':' Block^ (Elif^)* (indent 'else' WS* ':' Block^)?  ) defined in IfStmt
+      #lt {            ## by peg : ( WS* ('<' !'<'  / '<='  / '>' !'>'  / '>=' ) WS* Shift^ ) defined in Relation
+         #integer: 3   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  ) defined in Number
+         #integer: 2   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  ) defined in Number
       }
-      #block {            ## by peg : ( Stmt^  )
-         #assign {            ## by peg : ( WS* AssignOp WS* OrExpr^ )
-            #name: a   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  )
-            #integer: 3   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  )
+      #block {            ## by peg : ( (WS* EOS+ / indent WS+ Stmt^ EOS?)+  ) defined in Block
+         #assign {            ## by peg : ( WS* AssignOp WS* OrExpr^ ) defined in Assign
+            #name: a   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  ) defined in Symbol
+            #integer: 3   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  ) defined in Number
          }
       }
    }

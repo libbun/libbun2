@@ -9,7 +9,7 @@ public class Debugger extends BunDriver {
 			this.report(node, "error", msg);
 		}
 		else {
-			Main._PrintLine("Parsed: " + node.name + "\n" + node + "\n");
+			Main._PrintLine("Parsed: " + node.tag + "\n" + node + "\n");
 		}
 	}
 	

@@ -44,13 +44,13 @@ FuncDecl
   ;
 
 Params
-  = << '(' _ (Param@ ( _ ',' _ Param@)*)? _ ')' #params >>
+  = << '(' _ (Param@ ( _ ',' _ Param@)*)? _ ')' #block >>
   ;
 Param
   = << Name@ TypeAnno@ #param >>
   ;
 TypeAnno
-  = (_ ':' _ Type / << '' #type>>)     // imported
+  = (_ ':' _ Type / << '' #Tvar>>)     // imported
   ;
 
 Block
@@ -80,13 +80,11 @@ IfStmt
   ;
 
 LetDecl
-  = <<'let' Spacing Name@ TypeAnno@ _ '=' _ Expr@ 
-       (_ 'in' _ Block@)? #let  >>
+  = <<'let' Spacing Name@ TypeAnno@ _ '=' _ Expr@ (_ 'in' _ Block@)? #let  >>
   ;
 
 VarDecl
-  = <<'var' Spacing Name@ TypeAnno@ _ '=' _ Expr@ 
-      (_ 'in' _ Block@)? #var >>
+  = <<'var' Spacing Name@ TypeAnno@ _ '=' _ Expr@ (_ 'in' _ Block@)? #var >>
   ;
   
 Expr

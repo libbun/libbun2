@@ -1,48 +1,48 @@
 parsed:
-#block {            ## by peg : null
-   #switch {            ## by peg : null
-      #identifier: a   ## by peg : null
-      #caseblock {            ## by peg : null
-         #cases {            ## by peg : null
-            #case {            ## by peg : null
-               #intNumber: 0   ## by peg : null
-               #block {            ## by peg : null
-                  #exprstmt {            ## by peg : null
-                     #assign {            ## by peg : null
-                        #identifier: b   ## by peg : null
-                        #intNumber: 0   ## by peg : null
+#block {            ## by peg : ( SourceElement^ (__ SourceElement^)*  ) defined in SourceElements
+   #switch {            ## by peg : ( SwitchToken __ '(' __ Expression^ __ ')' __ CaseBlock^  ) defined in SwitchStatement
+      #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+      #caseblock {            ## by peg : ( (CaseClauses^ __)? DefaultClause^ __ (CaseClauses^ __)?  ) defined in CaseBlock
+         #cases {            ## by peg : ( CaseClause^ (__ CaseClause^)*  ) defined in CaseClauses
+            #case {            ## by peg : ( CaseToken __ Expression^ __ ':' (__ StatementList^ / __)  ) defined in CaseClause
+               #intNumber: 0   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
+               #block {            ## by peg : ( Statement^ __ (Statement^ __)*  ) defined in StatementList
+                  #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+                     #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+                        #identifier: b   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+                        #intNumber: 0   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
                      }
                   }
                }
             }
-            #case {            ## by peg : null
-               #intNumber: 1   ## by peg : null
+            #case {            ## by peg : ( CaseToken __ Expression^ __ ':' (__ StatementList^ / __)  ) defined in CaseClause
+               #intNumber: 1   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
             }
-            #case {            ## by peg : null
-               #intNumber: 2   ## by peg : null
-               #block {            ## by peg : null
-                  #exprstmt {            ## by peg : null
-                     #assign {            ## by peg : null
-                        #identifier: c   ## by peg : null
-                        #intNumber: 0   ## by peg : null
+            #case {            ## by peg : ( CaseToken __ Expression^ __ ':' (__ StatementList^ / __)  ) defined in CaseClause
+               #intNumber: 2   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
+               #block {            ## by peg : ( Statement^ __ (Statement^ __)*  ) defined in StatementList
+                  #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+                     #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+                        #identifier: c   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+                        #intNumber: 0   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
                      }
                   }
-                  #break: break;   ## by peg : null
+                  #break: break;   ## by peg : ( BreakToken EOS  ) defined in BreakStatement
                }
             }
-            #case {            ## by peg : null
-               #intNumber: 3   ## by peg : null
-               #block {            ## by peg : null
-                  #break: break;   ## by peg : null
+            #case {            ## by peg : ( CaseToken __ Expression^ __ ':' (__ StatementList^ / __)  ) defined in CaseClause
+               #intNumber: 3   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
+               #block {            ## by peg : ( Statement^ __ (Statement^ __)*  ) defined in StatementList
+                  #break: break;   ## by peg : ( BreakToken EOS  ) defined in BreakStatement
                }
             }
          }
-         #case.default {            ## by peg : null
-            #block {            ## by peg : null
-               #exprstmt {            ## by peg : null
-                  #assign {            ## by peg : null
-                     #identifier: d   ## by peg : null
-                     #intNumber: 0   ## by peg : null
+         #case.default {            ## by peg : ( DefaultToken __ ':' (__ StatementList^)?  ) defined in DefaultClause
+            #block {            ## by peg : ( Statement^ __ (Statement^ __)*  ) defined in StatementList
+               #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+                  #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+                     #identifier: d   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+                     #intNumber: 0   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
                   }
                }
             }
