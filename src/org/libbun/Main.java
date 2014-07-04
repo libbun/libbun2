@@ -182,30 +182,39 @@ public class Main {
 		try {
 			ParserContext context = Main.newParserContext(source);
 			gamma.initParserRuleSet(context, "main");
+
+			if(!ParseOnly) {
+				driver.startTransaction(null);
+			}
+
 			ParseProfileStart();
-			PegObject node = context.parsePegObject(new PegObject(BunSymbol.TopLevelFunctor), startPoint);
-			if(node.isFailure()) {
-				node.tag = BunSymbol.PerrorFunctor;
-			}
-			gamma.set(node);
-			if(PegDebuggerMode || EnableVerboseAst) {
-				System.out.println("parsed:\n" + node.toString());
-				if(context.hasChar()) {
-					System.out.println("** uncosumed: '" + context + "' **");
+			while(context.hasChar()) {
+				PegObject node = context.parsePegObject(new PegObject(BunSymbol.TopLevelFunctor), startPoint);
+				if(node.isFailure()) {
+					node.tag = BunSymbol.PerrorFunctor;
 				}
-			}
-			if(PegDebuggerMode || EnableVerbose) {
-				System.out.println();
-				context.showStatInfo(node);
+				gamma.set(node);
+				if(PegDebuggerMode || EnableVerboseAst) {
+					System.out.println("parsed:\n" + node.toString());
+					if(context.hasChar()) {
+						System.out.println("** uncosumed: '" + context + "' **");
+					}
+				}
+				if(PegDebuggerMode || EnableVerbose) {
+					System.out.println();
+					context.showStatInfo(node);
+				}
+				if(!ParseOnly) {
+					node = gamma.tryMatch(node, true);
+					if(EnableVerbose) {
+						System.out.println("Typed node: \n" + node + "\n:untyped: " + node.countUnmatched(0));
+					}
+					node.matched.build(node, driver);
+				}
 			}
 			ParseProfileStop();
-			if(!ParseOnly && driver != null) {
-				driver.startTransaction(null);
-				node = gamma.tryMatch(node, true);
-				if(EnableVerbose) {
-					System.out.println("Typed node: \n" + node + "\n:untyped: " + node.countUnmatched(0));
-				}
-				node.matched.build(node, driver);
+
+			if(!ParseOnly) {
 				driver.endTransaction();
 			}
 		}
