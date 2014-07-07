@@ -1,11 +1,10 @@
 
 //typedef void;
 typedef NullType;
-typedef bool;
+typedef boolean;
 typedef int;
-typedef long;
 typedef float;
-typedef unicode;
+typedef String;
 
 // type
 
@@ -16,7 +15,7 @@ template #Tvoid(): void {
 template #Tvar() {
 }
 
-template #Tboolean(): bool {
+template #Tboolean(): boolean {
 	bool
 }
 
@@ -32,20 +31,12 @@ template #Tint32(): int {
 	int
 }
 
-template #Tint64(): long {
-	long
+template #Tint64(): int {
+	int
 }
 
-template #Tint(): long {
-	long
-}
-
-template #cast(x: long) : int {
-	int(${x})
-}
-
-template #cast(x: int) : long {
-	long(${x})
+template #Tint(): int {
+	int
 }
 
 template #Tfloat(): float {
@@ -64,7 +55,11 @@ template #cast(x: int) : float {
 	float(${x})
 }
 
-template #TString(): unicode {
+template #conv(x: float) : int {
+	int(${x})
+}
+
+template #TString(): String {
 	unicode
 }
 
@@ -74,11 +69,11 @@ template #null(): NullType {
 	None
 }
 
-template #true(): bool {
+template #true(): boolean {
 	True
 }
 
-template #false(): bool {
+template #false(): boolean {
 	False
 }
 
@@ -90,7 +85,7 @@ template #int32(): int {
 	${textof this}
 }
 
-template #int64(): long {
+template #int64(): int {
 	${textof this}
 }
 
@@ -102,23 +97,16 @@ template #double(): float {
 	${textof this}
 }
 
-template #string(): unicode {
+template #string(): String {
 	u"${textof this}"
 }
 
-template #conv(x: float): int {
-	int(${x})
-}
-
-template #conv(x: int): float {
-	float(${x})
-}
 
 template<T> #group(expr :T) :T {
 	(${expr})
 }
 
-template #not(x: bool) :bool {
+template #not(x: boolean) :boolean {
 	not ${x}
 }
 
@@ -142,11 +130,11 @@ template #compl(x: int) :int {
 	~${x}
 }
 
-template #and(x: bool, y: bool): bool {
+template #and(x: boolean, y: boolean): boolean {
 	${x} and ${y}
 }
 
-template #or(x: bool, y: bool): bool {
+template #or(x: boolean, y: boolean): boolean {
 	${x} or ${y}
 }
 
@@ -158,7 +146,7 @@ template<T> #add(x: T, y: T) :T {
 	(${x} + ${y})
 }
 
-template #add(x: unicode, y: any !unicode): unicode {
+template #add(x: String, y: any !String): String {
 	(${x} + unicode(${y}))
 }
 
@@ -178,27 +166,27 @@ template<T> #mod(x: T, y: T): T {
 	(${x} % ${y})
 }
 
-template<T> #eq(x: T, y: T): bool {
+template<T> #eq(x: T, y: T): boolean {
 	(${x} == ${y})
 }
 
-template<T> #noteq(x: T, y: T): bool {
+template<T> #noteq(x: T, y: T): boolean {
 	(${x} != ${y})
 }
 
-template<T> #lt(x: T, y: T): bool {
+template<T> #lt(x: T, y: T): boolean {
 	(${x} < ${y})
 }
 
-template<T> #lte(x: T, y: T): bool {
+template<T> #lte(x: T, y: T): boolean {
 	(${x} <= ${y})
 }
 
-template<T> #gt(x: T, y: T): bool {
+template<T> #gt(x: T, y: T): boolean {
 	(${x} > ${y})
 }
 
-template<T> #gte(x: T, y: T): bool {
+template<T> #gte(x: T, y: T): boolean {
 	(${x} >= ${y})
 }
 
@@ -206,10 +194,13 @@ template #field(o: any, field) {
 	${o}->${textof field}
 }
 
-template #index(o: any, index) {
+template #index(o: String, index: int): String {
 	${o}[${index}]
 }
 
+template<T> #index(o: Array<T>, index: int): T {
+	${o}[${index}]
+}
 
 template<T> #let(name, type: T, value: T): void {
 	${name} = ${value}
@@ -238,7 +229,6 @@ template #arguments(*) {
 template #apply(f, args) {
 	${f}(${list args ", "})
 }
-
 
 template #return(): void {
 	return
@@ -280,78 +270,81 @@ template #throw(expr): void {
 	raise ${expr}
 }
 
-
-
 template #toplevel(*): void {
 	${statement this}
 }
 
-template #error(*) {
-	#error!!
-}
 
-template assert(x: bool) :void {
+template assert(x: boolean) :void {
 	assert ${x}
 }
 
-template println(x: unicode) :void {
+template println(x: any) :void {
 	print ${x}
 }
 
-template #conv(x: bool): unicode {
+template println(x: String) :void {
+	print ${x}
+}
+
+template #conv(x: boolean): String {
 	(u'true' if ${x} else u'false')
 }
 
-template #conv(x: int): unicode {
+template #conv(x: int): String {
 	unicode(${x})
 }
 
-template #conv(x: float): unicode {
+template #conv(x: float): String {
 	unicode(${x})
 }
 
 // String
-template size(x: unicode): int {
+template size(x: String): int {
 	len(${x})
 }
 
-template #field(o: unicode, field: 'size'): int {
+template #size(x: String): int {
+	len(${x})
+}
+
+template #field(o: String, field: 'size'): int {
 	len(${o})
 }
 
-template equals(x: unicode, y: unicode): bool {
+template equals(x: String, y: String): boolean {
 	${x} == ${y}
 }
 
-template startsWith(x: unicode, y: unicode): bool {
+template startsWith(x: String, y: String): boolean {
 	${x}.startswith(${y})
 }
 
-template endsWith(x: unicode, y: unicode): bool {
+template endsWith(x: String, y: String): boolean {
 	${x}.endsswith(${y})
 }
 
-template substring(x: unicode, y: int): unicode {
+template substring(x: String, y: int): String {
 	${x}[${y}:]
 }
 
-template substring(x: unicode, y: int, z: int): unicode {
+template substring(x: String, y: int, z: int): String {
 	${x}[${y}:${z}]
 }
 
-template indexOf(x: unicode, y: unicode): int {
+template indexOf(x: String, y: String): int {
 	${x}.find(${y})
 }
 
-template lastIndexOf(x: unicode, y: unicode): int {
+template lastIndexOf(x: String, y: String): int {
 	${x}.rfind(${y})
 }
 
-template toUpperCase(x: unicode): unicode {
+template toUpperCase(x: String): String {
 	${x}.upper()
 }
 
-template toLowerCase(x: unicode): unicode {
+template toLowerCase(x: String): String {
 	${x}.lower()
 }
 

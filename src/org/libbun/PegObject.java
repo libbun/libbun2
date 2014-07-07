@@ -200,11 +200,11 @@ public class PegObject {
 			sb.append(this.formatSourceMessage("syntax error", "    " + this.info()));
 		}
 		else if(this.AST == null) {
-			sb.appendNewLine(this.tag+ ": ", this.getText(), "   " + this.info());
+			sb.appendNewLine(this.tag+ ": '''", this.getText(), "'''" + this.info());
 		}
 		else {
 			sb.appendNewLine(this.tag);
-			sb.openIndent(" {            " + this.info());
+			sb.openIndent("{" + this.info());
 			for(int i = 0; i < this.size(); i++) {
 				if(this.AST[i] != null) {
 					this.AST[i].stringfy(sb);
@@ -219,13 +219,13 @@ public class PegObject {
 
 	private String info() {
 		if(this.matched == null) {
-			if(this.source != null) {
-				return "## by peg : " + this.createdPeg;
+			if(this.source != null && Main.VerbosePegMode) {
+				return "         ## by peg : " + this.createdPeg;
 			}
 			return "";
 		}
 		else {
-			return ":" + this.getType(null) + " by " + this.matched;
+			return "      :: " + this.getType(null) + " by " + this.matched;
 		}
 	}
 

@@ -156,20 +156,20 @@ public class SymbolTable {
 		}
 	}
 		
-	private BunType getTypeCoersion(BunType sourceType, BunType targetType, boolean hasNextChoice) {
-		String key = BunType.keyTypeRel("#cast", sourceType, targetType);
-		Functor f = this.getSymbol(key);
-		if(f != null) {
-			if(Main.VerboseMode) {
-				Main._PrintLine("found type coercion from " + sourceType + " to " + targetType);
-			}
-			return BunType.newTransType(key, sourceType, targetType, f);
-		}
-		if(hasNextChoice) {
-			return null;
-		}
-		return null;
-	}
+//	private BunType getTypeCoersion(BunType sourceType, BunType targetType, boolean hasNextChoice) {
+//		String key = BunType.keyTypeRel("#cast", sourceType, targetType);
+//		Functor f = this.getSymbol(key);
+//		if(f != null) {
+//			if(Main.VerboseMode) {
+//				Main._PrintLine("found type coercion from " + sourceType + " to " + targetType);
+//			}
+//			return BunType.newTransType(key, sourceType, targetType, f);
+//		}
+//		if(hasNextChoice) {
+//			return null;
+//		}
+//		return null;
+//	}
 
 	class DefinedTypeFunctor extends Functor {
 		public DefinedTypeFunctor(String name, BunType type) {
