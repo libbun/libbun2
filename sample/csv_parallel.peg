@@ -1,0 +1,21 @@
+
+// This is a simple example of csv file
+// NOTE: not comformed to any standard
+// 
+
+TopLevel =  << Line@*              #array >>;
+
+Line 
+ = << (!'\n' .)* #lazy >> |> CSV ('\n' / EOT)
+ ;
+
+CSV
+ = << Value@ (',' Value@)* #array >>
+ ;
+
+Value 
+ = '"' << (!'"' .)*   #value >> '"' 
+ / << (!',' .)*       #value >>
+ ;
+
+EOT      =  !.;

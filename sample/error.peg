@@ -1,0 +1,9 @@
+
+Num 
+ = << [0-9]+ ('L' #num / #error `expected L` ) >>
+ ;
+
+TopLevel
+ = Num
+ ;
+
