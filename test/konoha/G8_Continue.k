@@ -1,0 +1,37 @@
+require syntax::bun.extra;
+
+function WhileContinueTest() {
+	var n = 0;
+	var c = 0;
+	while(n < 10) {
+		assert(n < 10);
+		if(n % 2 == 0) {
+			n = n + 1;
+			continue;
+		}
+		c = c + 1;
+		n = n + 1;
+	}
+	println("#while/continue: " + n + ", " + c);
+	assert(c == 5);
+}
+
+function WhileNextContinue() {
+	var i = 0;
+	var c = 0;
+	while(i < 10 whatever i = i + 1) {
+		assert(i < 10);
+		if(i % 2 == 0) {
+			continue;
+		}
+		c = c + 1;
+	}
+	println("#while/next/continue" + i + ", " + c);
+	assert(c == 5);
+}
+
+export function main() {
+	WhileContinueTest();
+}
+
+
