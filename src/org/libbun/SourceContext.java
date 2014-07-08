@@ -4,7 +4,7 @@ package org.libbun;
 public class SourceContext {
 	public final         PegSource source;
 	protected int        sourcePosition = 0;
-	public final int     endPosition;
+	public int           endPosition;
 
 	int backtrackCount = 0;
 	int backtrackSize = 0;

@@ -32,6 +32,7 @@ public class SimpleParserContext extends ParserContext {
 	
 	@Override
 	public void setRuleSet(PegRuleSet ruleSet) {
+		this.ruleSet = ruleSet;
 		this.loadPegDefinition(ruleSet.pegMap);
 	}
 
@@ -207,8 +208,8 @@ public class SimpleParserContext extends ParserContext {
 			this.memoHit += 1;
 			this.endVerifyMode(verifyMode);
 			if(m.createdPeg == keypeg) {
+				this.setPosition(m.pos);  // comsume
 				if(verifyMode) {
-					this.setPosition(m.pos);  // comsume
 					return inNode;
 				}
 				//this.removePreCheckCache(keypos, m.pos);
@@ -233,7 +234,7 @@ public class SimpleParserContext extends ParserContext {
 			return vnode;
 		}
 		//this.removePreCheckCache(keypos, this.getPosition());
-		this.rollback(keypos);
+		//this.rollback(keypos);
 		return null;
 	}
 	

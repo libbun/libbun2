@@ -96,7 +96,8 @@ public class SymbolTable {
 		if(isStrongTyping) {
 			PegObject o = new PegObject("#error", errorNode.source, null, errorNode.startIndex);
 			o.matched = Functor.ErrorFunctor;
-			o.typed = BunType.newErrorType(message);
+			o.optionalToken = message;
+			o.typed = BunType.AnyType;
 			if(Main.VerboseMode) {
 				Main._PrintLine(errorNode.formatSourceMessage("debug", message));
 			}

@@ -170,6 +170,12 @@ public class Main {
 		return new SimpleParserContext(source);
 	}
 
+	public final static ParserContext newParserContext(PegSource source, int startIndex, int endIndex, PegRuleSet ruleSet) {
+		ParserContext p = new SimpleParserContext(source, startIndex, endIndex);
+		p.setRuleSet(ruleSet);
+		return p;
+	}
+	
 	public final static void main(String[] args) {
 		parseCommandArguments(args);
 		BunDriver driver = loadDriver(DriverName);

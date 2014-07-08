@@ -34,10 +34,10 @@ public abstract class BunDriver {
 	}
 	
 	public void pushErrorNode(PegObject node) {
-		if(node.typed == null) {
-			node.typed = BunType.newErrorType(null);
+		if(node.optionalToken == null) {
+			node.optionalToken = "syntax error";
 		}
-		this.report(node, "error", node.typed.getName());
+		this.report(node, "error", node.optionalToken);
 	}
 
 	public void pushUnknownNode(PegObject node) {

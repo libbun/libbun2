@@ -112,10 +112,14 @@ EOS   // End of Statement
  ;
 
 IfStmt
-  = <<'if' _? '(' _? Expr@ _? ')' NL? Block@ 
-       (NL? 'else' NL? (IfStmt@ / Block@) )? #if>>
+  = <<'if' #if _? '(' _? Expr@ _? ')' NL? 
+       (Block@ (NL? 'else' NL? (IfStmt@ / Block@ / BlockExpected) )? / BlockExpected) >>
   ;
 
+BlockExpected
+  = #error `{ is expected` BlockSkip
+  ;
+  
 LetDecl
   = <<'let' _ Name@ TypeAnno@ _? '=' _? Expr@ (_? 'in' _? Block@)? #let  >>
   ;
@@ -207,23 +211,19 @@ Value
   / String
   ;
 
-String
-//  = '"' << StringContent #stringexpr >> "'"
-  = '"' << ('\\"' / !'"' .)*  #string >> '"'
-  / "'" << ("\\'" / !"'" .)*  #string >> "'"
-  ;
-
 Number
  = << [0-9]+ ('.' [0-9]+ 'f'? #double / 'L' #int64 / '' #int) >>
  ;
 
+String
+ = '"' StringContent <<@ StringExpr #strings >>? '"'
+ ;
+
 StringContent
-  = << ('\\"' / '$$' / (!"${" !'"' .))* #string >> StringExpr?
-  ;
+ = << ('\\"' / (!'"' !'${' .))* #string >>
+ ;
 
 StringExpr
-  = '${' _? Expr@ _? '}' StringContent
-  ;
+ = '${' Expr@ '}' (StringContent@ StringExpr@?)? / '${' StringContent@
+ ;
 
-  
-  

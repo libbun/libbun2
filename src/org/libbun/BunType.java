@@ -343,13 +343,6 @@ public abstract class BunType  {
 		return null;
 	}
 	
-	private static BunType SyntaxErrorType = new ErrorType("syntax error", null, null);
-	public static BunType newErrorType(String message) {
-		if(message == null) {
-			return SyntaxErrorType;
-		}
-		return new ErrorType(message, null, null);
-	}
 }
 
 abstract class LangType extends BunType {
@@ -730,7 +723,6 @@ class TransType extends BunType {
 	}
 }
 
-
 class GreekList {
 	public String name;
 	public BunType premiseType;
@@ -1025,50 +1017,3 @@ class BunAndType extends BunNodeType {
 		}
 	}
 }
-
-class ErrorType extends BunType {
-	String message;
-	BunType requestType;
-	BunType nodeType;
-	ErrorType(String message, BunType requestType, BunType nodeType) {
-		super("#Terror");
-		this.message = message;
-		this.requestType = requestType;
-		this.nodeType = nodeType;
-	}
-	@Override
-	public void stringfy(UStringBuilder sb) {
-		sb.append(this.message);
-	}
-	@Override
-	public int size() {
-		return 0;
-	}
-	@Override
-	public BunType get(int index) {
-		return this.requestType;
-	}
-	@Override
-	public BunType getLangType(SymbolTable gamma) {
-		return this.requestType; // ?
-	}
-	@Override
-	public BunType getRealType() {
-		return this;
-	}
-	@Override
-	public BunType transformGreekTypeToVarType(BunType[] buffer) {
-		return this;
-	}
-	@Override
-	public boolean accept(SymbolTable gamma, PegObject node, boolean hasNextChoice) {
-		return true;
-	}
-	@Override
-	public void typed(SymbolTable gamma, PegObject node, boolean flag) {
-		// TODO Auto-generated method stub
-		
-	}
-
-}
-

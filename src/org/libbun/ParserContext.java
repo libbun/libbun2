@@ -1,7 +1,7 @@
 package org.libbun;
 
 public abstract class ParserContext extends SourceContext {
-//	public PegRuleSet ruleSet;
+	public PegRuleSet ruleSet = null;
 	public int objectCount = 0;
 
 	public ParserContext(PegSource source, int startIndex, int endIndex) {
@@ -36,7 +36,6 @@ public abstract class ParserContext extends SourceContext {
 		node.startIndex = this.storeFailurePosition();
 		node.endIndex = this.storeFailurePosition();
 		node.matched = Functor.ErrorFunctor;
-		node.typed = BunType.newErrorType(null);
 		return node;
 	}
 

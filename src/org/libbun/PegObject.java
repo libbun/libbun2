@@ -1,11 +1,12 @@
 package org.libbun;
 
 public class PegObject {
+	Peg          createdPeg = null;
 	public PegSource    source = null;
 	int          startIndex = 0;
 	int          endIndex = 0;
-	Peg          createdPeg = null;
 	public String       tag = null;
+	public String       optionalToken = null;
 	PegObject    parent = null;
 	PegObject    AST[] = null;
 	SymbolTable  gamma = null;
@@ -48,6 +49,9 @@ public class PegObject {
 	}
 	
 	public final String getText() {
+		if(this.optionalToken != null) {
+			return this.optionalToken;
+		}
 		if(this.source != null) {
 			return this.source.substring(this.startIndex, this.endIndex);
 		}
@@ -197,7 +201,7 @@ public class PegObject {
 
 	final void stringfy(SourceBuilder sb) {
 		if(this.isFailure()) {
-			sb.append(this.formatSourceMessage("syntax error", "    " + this.info()));
+			sb.append(this.formatSourceMessage("syntax error", this.info()));
 		}
 		else if(this.AST == null) {
 			sb.appendNewLine(this.tag+ ": '''", this.getText(), "'''" + this.info());
