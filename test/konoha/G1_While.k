@@ -9,16 +9,6 @@ function WhileTest() {
 	assert(n == 10);
 }
 
-
-function WhileWhateverTest() {
-        var n :int = 0;
-        while(n < 10 whatever n = n + 1) {
-                assert(n < 10);
-        }
-        println("#while/whatever: " + n);
-        assert(n == 10);
-}
-
 function NestedWhileTest() {
 	var n : int = 0;
 	while(n < 10) {
@@ -46,7 +36,6 @@ function WhileNtimes(n: int) {
 
 export function main() {
 	WhileTest();
-	WhileWhateverTest();
 	NestedWhileTest();
 	WhileNtimes(100);
 	WhileNtimes(1000);

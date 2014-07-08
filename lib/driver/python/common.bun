@@ -110,19 +110,20 @@ template #not(x: boolean) :boolean {
 	not ${x}
 }
 
-template #plus(x: int) :int {
-	+${x}
-}
 
 template #plus(x: float) :float {
 	+${x}
 }
 
-template #minus(x: int) :int {
-	-${x}
+template #plus(x: int) :int {
+	+${x}
 }
 
 template #minus(x: float) :float {
+	-${x}
+}
+
+template #minus(x: int) :int {
 	-${x}
 }
 
