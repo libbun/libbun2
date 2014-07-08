@@ -23,6 +23,7 @@ abstract class SourceDriver extends BunDriver {
 		this.addCommand("typeof",    new TypeofCommand());
 		this.addCommand("statement", new StatementCommand());
 		this.addCommand("list",      new ListCommand());
+		this.addCommand("newline",   new NewLineCommand());
 	}
 
 	@Override

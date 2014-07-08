@@ -863,9 +863,8 @@ abstract class BunNodeType extends BunType {
 }
 
 class NodeType extends BunNodeType {
-	String symbol;
 	NodeType(String symbol) {
-		super("#Tbun.node", symbol);
+		super("#Tbun.node", "#" + symbol);
 	}
 	@Override
 	public void stringfy(UStringBuilder sb) {
@@ -873,6 +872,7 @@ class NodeType extends BunNodeType {
 		sb.append(this.symbol);
 	}
 	public boolean accept(SymbolTable gamma, PegObject node, boolean hasNextChoice) {
+		//System.out.println("node " + node + " isa ? " + this.symbol);
 		if(this.symbol.equals(node.tag)) {
 			return true;
 		}

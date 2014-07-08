@@ -20,8 +20,8 @@ export function main() {
 	println("#Func<int>: ${f()}");
 	println("#Func<int,int>: ${f(1)}");
 	println("#Func<int,int,int>: ${f(1,2)}");
-        assert(f() == 1);
-        assert(f(1) == 2);
+    assert(f() == 1);
+    assert(f(1) == 2);
 	assert(f(1,2) == 3);
 }
 

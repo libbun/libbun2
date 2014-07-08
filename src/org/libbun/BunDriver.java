@@ -66,7 +66,12 @@ public abstract class BunDriver {
 
 	public void pushCommand(String cmd, PegObject node, String[] params) {
 		DriverCommand command = this.commandMap.get(cmd);
-		command.invoke(this, node, params);
+		if(command != null) {
+			command.invoke(this, node, params);
+		}
+		else {
+			Main._Exit(1, "unknown command: " + cmd);
+		}
 	}
 
 	public String rename(int flag, String name) {

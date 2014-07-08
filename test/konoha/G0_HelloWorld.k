@@ -1,3 +1,4 @@
+// Konoha's main function
 
 export function main() {
   assert(true);

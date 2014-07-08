@@ -245,13 +245,22 @@ template #block(*): void {
 	${statement this}
 }
 
+template #block(): void {
+	${newline}pass
+}
+
 template #if(x: bool, then: void): void {
-	if ${x}: ${begin} ${statement then} ${end}
+	if ${x}: ${begin} ${then} ${end}
 }
 
 template #if(x: bool, then: void, else: void): void {
-	if ${x}: ${begin} ${statement then} ${end}
-	else: ${begin} ${statement else} ${end}
+	if ${x}: ${begin} ${then} ${end}
+	else: ${begin} ${else} ${end}
+}
+
+template #if(x: bool, then: void, elif: #if void): void {
+	if ${x}: ${begin} ${then} ${end}
+	el${elif}
 }
 
 template #while(x: bool, loop: void): void {
