@@ -1,19 +1,19 @@
 package org.libbun;
 
-public class UniCharset {
-	public final static UniCharset WhiteSpace = new UniCharset(" \t");
-	public final static UniCharset WhiteSpaceNewLine = new UniCharset(" \t\n");
-	public final static UniCharset SemiColon = new UniCharset(" \t\n;");
-	public final static UniCharset Letter = new UniCharset("A-Za-z_");
-	public final static UniCharset NameSymbol = new UniCharset("A-Za-z0-9_");
-	public final static UniCharset NotWhiteSpaceNewLine = new UniCharset("!-:<-~");
-	public final static UniCharset NodeLabel = new UniCharset("A-Za-z0-9_./");
+public class UCharset {
+	public final static UCharset WhiteSpace = new UCharset(" \t");
+	public final static UCharset WhiteSpaceNewLine = new UCharset(" \t\n");
+	public final static UCharset SemiColon = new UCharset(" \t\n;");
+	public final static UCharset Letter = new UCharset("A-Za-z_");
+	public final static UCharset NameSymbol = new UCharset("A-Za-z0-9_");
+	public final static UCharset NotWhiteSpaceNewLine = new UCharset("!-:<-~");
+	public final static UCharset NodeLabel = new UCharset("A-Za-z0-9_./");
 
 	String    charSet;
 	boolean[] asciiSet;
-	UniMap<String> utfBitMap = null;
+	UMap<String> utfBitMap = null;
 
-	public UniCharset(String charSet) {
+	public UCharset(String charSet) {
 		this.charSet = charSet;
 		this.asciiSet = new boolean[128];
 		this.parse(charSet);
@@ -36,7 +36,7 @@ public class UniCharset {
 		}
 		else {
 			if(this.utfBitMap == null) {
-				this.utfBitMap = new UniMap<String>();
+				this.utfBitMap = new UMap<String>();
 			}
 			String key = Main._CharToString(ch);
 			this.utfBitMap.put(key, key);
@@ -142,7 +142,7 @@ public class UniCharset {
 	}
 
 	public static final String _QuoteString(String Text) {
-		return UniCharset._QuoteString("\"", Text, "\"");
+		return UCharset._QuoteString("\"", Text, "\"");
 	}
 
 	public final static double _ParseFloat(String Text) {

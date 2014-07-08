@@ -17,8 +17,8 @@ public abstract class Peg {
 	}
 
 	protected abstract Peg clone(String ns);
-	protected abstract void stringfy(UniStringBuilder sb, boolean debugMode);
-	protected abstract void makeList(PegRuleSet parser, UniArray<String> list, UniMap<String> set);
+	protected abstract void stringfy(UStringBuilder sb, boolean debugMode);
+	protected abstract void makeList(PegRuleSet parser, UList<String> list, UMap<String> set);
 	protected abstract PegObject simpleMatch(PegObject inNode, ParserContext context);
 	protected abstract void verify(String ruleName, PegRuleSet rules);
 	public abstract void accept(PegVisitor visitor);
@@ -31,7 +31,7 @@ public abstract class Peg {
 	}
 
 	@Override public String toString() {
-		UniStringBuilder sb = new UniStringBuilder();
+		UStringBuilder sb = new UStringBuilder();
 		this.stringfy(sb, false);
 		if(this.ruleName != null) {
 			sb.append(" defined in ");
@@ -74,7 +74,7 @@ public abstract class Peg {
 		return this.simpleMatch(inNode, context);
 	}
 	public final String toPrintableString(String name, String Setter, String Choice, String SemiColon, boolean debugMode) {
-		UniStringBuilder sb = new UniStringBuilder();
+		UStringBuilder sb = new UStringBuilder();
 		sb.append(name);
 		sb.append(Setter);
 		if(this instanceof PegChoice) {
@@ -105,7 +105,7 @@ public abstract class Peg {
 		}
 	}
 	protected void warning(String msg) {
-		if(Main.PegDebuggerMode) {
+		if(Main.VerbosePegMode) {
 			Main._PrintLine("PEG warning: " + msg);
 		}
 	}
@@ -119,7 +119,7 @@ abstract class PegAtom extends Peg {
 		this.symbol = symbol;
 	}
 	@Override
-	protected void stringfy(UniStringBuilder sb, boolean debugMode) {
+	protected void stringfy(UStringBuilder sb, boolean debugMode) {
 		sb.append(this.symbol);
 	}	
 	@Override
@@ -135,7 +135,7 @@ abstract class PegAtom extends Peg {
 		return this;  // just avoid NullPointerException
 	}
 	@Override
-	protected void makeList(PegRuleSet parser, UniArray<String> list, UniMap<String> set) {
+	protected void makeList(PegRuleSet parser, UList<String> list, UMap<String> set) {
 	}
 
 }
@@ -153,10 +153,10 @@ class PegString extends PegAtom {
 		if(s.indexOf("'") != -1) {
 			quote = '"';
 		}
-		return UniCharset._QuoteString(quote, s, quote);
+		return UCharset._QuoteString(quote, s, quote);
 	}
 	@Override
-	protected void stringfy(UniStringBuilder sb, boolean debugMode) {
+	protected void stringfy(UStringBuilder sb, boolean debugMode) {
 		sb.append(PegString.quoteString(this.symbol));
 	}
 	@Override
@@ -195,17 +195,17 @@ class PegAny extends PegAtom {
 }
 
 class PegCharacter extends PegAtom {
-	UniCharset charset;
+	UCharset charset;
 	public PegCharacter(String token) {
 		super(token);
-		this.charset = new UniCharset(token);
+		this.charset = new UCharset(token);
 	}
 	@Override
 	protected Peg clone(String ns) {
 		return this;
 	}
 	@Override
-	protected void stringfy(UniStringBuilder sb, boolean debugMode) {
+	protected void stringfy(UStringBuilder sb, boolean debugMode) {
 		sb.append("[" + this.symbol, "]");
 	}
 	@Override
@@ -238,7 +238,7 @@ class PegLabel extends PegAtom {
 		return context.parsePegObject(parentNode, this.symbol);
 	}
 	@Override
-	protected void makeList(PegRuleSet parser, UniArray<String> list, UniMap<String> set) {
+	protected void makeList(PegRuleSet parser, UList<String> list, UMap<String> set) {
 		if(!set.hasKey(this.symbol)) {
 			Peg next = parser.getRule(this.symbol);
 			list.add(this.symbol);
@@ -277,7 +277,7 @@ abstract class PegUnary extends Peg {
 	}
 	protected abstract String getOperator();
 	@Override
-	protected final void stringfy(UniStringBuilder sb, boolean debugMode) {
+	protected final void stringfy(UStringBuilder sb, boolean debugMode) {
 		if(this.prefix) {
 			sb.append(this.getOperator());
 		}
@@ -294,7 +294,7 @@ abstract class PegUnary extends Peg {
 		}
 	}
 	@Override
-	protected void makeList(PegRuleSet parser, UniArray<String> list, UniMap<String> set) {
+	protected void makeList(PegRuleSet parser, UList<String> list, UMap<String> set) {
 		this.innerExpr.makeList(parser, list, set);
 	}
 	@Override
@@ -476,10 +476,10 @@ class PegNot extends PegUnary {
 }
 
 abstract class PegList extends Peg {
-	protected UniArray<Peg> list;
+	protected UList<Peg> list;
 	PegList() {
 		super();
-		this.list = new UniArray<Peg>(new Peg[2]);
+		this.list = new UList<Peg>(new Peg[2]);
 	}
 	public final int size() {
 		return this.list.size();
@@ -490,7 +490,7 @@ abstract class PegList extends Peg {
 	public void add(Peg e) {
 		this.list.add(e);
 	}
-	@Override protected void stringfy(UniStringBuilder sb, boolean debugMode) {
+	@Override protected void stringfy(UStringBuilder sb, boolean debugMode) {
 		for(int i = 0; i < this.size(); i++) {
 			if(i > 0) {
 				sb.append(" ");
@@ -507,7 +507,7 @@ abstract class PegList extends Peg {
 		}
 	}
 	@Override
-	protected void makeList(PegRuleSet parser, UniArray<String> list, UniMap<String> set) {
+	protected void makeList(PegRuleSet parser, UList<String> list, UMap<String> set) {
 		for(int i = 0; i < this.size(); i++) {
 			this.get(i).makeList(parser, list, set);
 		}
@@ -614,7 +614,7 @@ class PegChoice extends PegList {
 //			}
 		}
 	}
-	@Override protected void stringfy(UniStringBuilder sb, boolean debugMode) {
+	@Override protected void stringfy(UStringBuilder sb, boolean debugMode) {
 		for(int i = 0; i < this.size(); i++) {
 			if(i > 0) {
 				sb.append(" / ");
@@ -632,12 +632,11 @@ class PegChoice extends PegList {
 		for(int i = 0; i < this.size(); i++) {
 			Peg e  = this.get(i);
 			if(e instanceof PegCatch) {
-				node = context.newPegObject("#error");
-				node.createdPeg = context.storeFailurePeg();
-				node.startIndex = context.storeFailurePosition();
-				node.endIndex = context.storeFailurePosition();
-				if(Main.PegDebuggerMode) {
-					Main._PrintLine(node.formatSourceMessage("error: " + this.ruleName, " by " + node.createdPeg));
+				if(!context.isVerifyMode()) {
+					node = context.newErrorObject();
+					if(Main.VerbosePegMode) {
+						Main._PrintLine(node.formatSourceMessage("error: " + this.ruleName, " by " + node.createdPeg));
+					}
 				}
 				context.restoreFailure(errorPeg, errorPosition);
 				return e.performMatch(node, context);
@@ -715,7 +714,7 @@ class PegTag extends PegAtom {
 		return this;
 	}
 	@Override
-	protected final void stringfy(UniStringBuilder sb, boolean debugMode) {
+	protected final void stringfy(UStringBuilder sb, boolean debugMode) {
 		if(debugMode) {
 			sb.append(this.symbol);
 		}
@@ -776,7 +775,7 @@ class PegNewObject extends PegList {
 	}
 
 	@Override
-	protected final void stringfy(UniStringBuilder sb, boolean debugMode) {
+	protected final void stringfy(UStringBuilder sb, boolean debugMode) {
 		if(debugMode) {
 			if(this.leftJoin) {
 				sb.append("8<^ ");

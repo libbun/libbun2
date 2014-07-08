@@ -2,21 +2,21 @@ package org.libbun;
 
 public class BunTypeChecker {
 	// SymbolTable
-	private class DefinedNameFunctor extends Functor {
-		PegObject defNode = null;
-		public DefinedNameFunctor(int flag, String name, BunType type, PegObject defNode) {
+	private class NameFunctor extends Functor {
+		//PegObject defNode = null;
+		public NameFunctor(int flag, String name, BunType type, PegObject defNode) {
 			super(flag, name, type);
-			this.defNode = defNode;
+			//this.defNode = defNode;
 		}
 		@Override
 		public void build(PegObject node, BunDriver driver) {
-			driver.pushLocalName(node, this.name);
+			driver.pushName(node, this.name);
 		}
 	}
-	private DefinedNameFunctor getName(SymbolTable gamma, String name) {
+	private NameFunctor getName(SymbolTable gamma, String name) {
 		Functor f = gamma.getSymbol(name);
-		if(f instanceof DefinedNameFunctor) {
-			return (DefinedNameFunctor)f;
+		if(f instanceof NameFunctor) {
+			return (NameFunctor)f;
 		}
 		return null;
 	}
@@ -24,35 +24,32 @@ public class BunTypeChecker {
 		String name = nameNode.getText();
 		Functor defined = gamma.getLocalSymbol(name);
 		if(defined != null) {
-			gamma.report(nameNode, "notice", "duplicated name: " + name);
+			gamma.report(nameNode, "notice", "duplicated name: " + name + " @" + gamma);
 		}
 		type = type.getRealType();
-//		if(type.hasVarType()) {
-//			gamma.report(nameNode, "notice", "ambigious variable: " + name + " :" + type.getName());
-//		}
 		if(nameNode.matched == null) {
 			nameNode.matched = gamma.getSymbol("#name:0");
 		}
 		if(nameNode.typed == null) {
 			nameNode.typed = type;
 		}
-		DefinedNameFunctor f = new DefinedNameFunctor(flag, name, type, defNode);
+		NameFunctor f = new NameFunctor(flag, name, type, defNode);
 		gamma.setSymbol(name, f);
 		return f;
 	}
 	private Functor setName(SymbolTable gamma, int flag, String name, BunType type) {
-		DefinedNameFunctor f = new DefinedNameFunctor(flag, name, type.getRealType(), null);
+		NameFunctor f = new NameFunctor(flag, name, type.getRealType(), null);
 		gamma.setSymbol(name, f);
 		return f;
 	}
-	private class DefinedFunctionFunctor extends DefinedNameFunctor {
-		public DefinedFunctionFunctor(String name, BunType type, PegObject funcNode, Functor defined) {
-			super(0, name, type, funcNode);
+	private class FunctionFunctor extends NameFunctor {
+		public FunctionFunctor(int flag, String name, BunType type, PegObject funcNode, Functor defined) {
+			super(flag, name, type, funcNode);
 			this.nextChoice = defined;
 		}
 		@Override 
 		public void build(PegObject node, BunDriver driver) {
-			driver.pushApplyNode(node, name);
+			driver.pushApplyNode(name, node);
 		}
 	}
 	private boolean checkReturnStatement(PegObject block) {
@@ -72,45 +69,32 @@ public class BunTypeChecker {
 		}
 		return false;
 	}
-	private Functor setFunctionName(SymbolTable gamma, String name, BunType type, PegObject node) {
-		Functor defined = gamma.getSymbol(name);
+	
+	private Functor setFunctionName(SymbolTable gamma, int flag, String name, BunType type, PegObject node) {
+		String key = name + ":" + type.getFuncParamSize();
+		Functor defined = gamma.getSymbol(key);
 		type = type.getRealType();
-		defined = new DefinedFunctionFunctor(name, type, node, defined);
-		if(Main.EnableVerbose) {
-			Main._PrintLine(name + " :" + type.getName() + " initValue=" + node);
-		}
-		gamma.setSymbol(name, defined);
+		name = gamma.root.driver.rename(flag, name);
+		defined = new FunctionFunctor(flag, name, type.getRealType(), node, defined);
+		gamma.setSymbol(key, defined);
 		return defined;
 	}
+	
+	private int checkNameFlag(PegObject node, int flag) {
+		if(node.findParentNode("#function") != null) {
+			flag |= Functor._LocalFunctor;
+		}
+		if(node.findParentNode("#public") != null) {
+			flag |= Functor._PublicFunctor;
+		}
+		if(node.findParentNode("#export") != null) {
+			flag |= Functor._ExportFunctor;
+		}
+		return flag;
+	}
 
-//
-//class DefinedGlobalNameFunctor extends DefinedNameFunctor {
-//	public DefinedGlobalNameFunctor(String name, BunType type, PegObject initValue) {
-//		super(name, type, initValue);
-//	}
-//	@Override
-//	public void build(PegObject node, BunDriver driver) {
-//		driver.pushGlobalName(node, this.name);
-//	}
-//}
-//
-//
-//
-//public Functor setName(String name, BunType type, PegObject initValue) {
-//	return this.setName(false, name, null, type, initValue);
-//}
-//
-//public Functor setName(PegObject nameNode, BunType type, PegObject initValue) {
-//	return this.setName(false, nameNode.getText(), nameNode, type, initValue);
-//}
-//
-//public Functor setGlobalName(PegObject nameNode, BunType type, PegObject initValue) {
-//	return this.setName(true, nameNode.getText(), nameNode, type, initValue);
-//}
-//
-//
-//
-
+	/***********************************************************************/
+	
 	abstract class TypeChecker {
 		public abstract PegObject check(SymbolTable gamma, PegObject node, boolean isStrongTyping);
 	}
@@ -132,7 +116,7 @@ public class BunTypeChecker {
 			else {
 				PegObject block = node.findParentNode("#block");
 				gamma = block.getLocalSymbolTable();
-				flag |= Functor._ReadOnlyFunctor;
+				flag |= Functor._LocalFunctor;
 			}
 			PegObject nameNode = node.get(0);
 			setName(gamma, flag, nameNode, type, node);
@@ -145,13 +129,23 @@ public class BunTypeChecker {
 		@Override
 		public PegObject check(SymbolTable gamma, PegObject node, boolean isStrongTyping) {
 			String name = node.getText();
-			DefinedNameFunctor f = getName(gamma, name);
+			NameFunctor f = getName(gamma, name);
 			if(f != null) {
 				node.matched = f;
 				node.typed = f.getReturnType(BunType.UntypedType);
 				return node;
 			}
 			return gamma.typeErrorNode(node, "undefined name: " + name, isStrongTyping);
+		}
+	}
+	class FieldChecker extends TypeChecker {
+		@Override
+		public PegObject check(SymbolTable gamma, PegObject node, boolean isStrongTyping) {
+			if(node.isUntyped()) {
+				node.matched = null;
+				return gamma.typeErrorNode(node, "undefined field: " + node.textAt(1, "") + " of " + node.get(0).typed, isStrongTyping);
+			}
+			return node;
 		}
 	}
 	class ParamChecker extends TypeChecker {
@@ -173,7 +167,7 @@ public class BunTypeChecker {
 				SymbolTable blockgamma = block.getLocalSymbolTable();
 				blockgamma.checkTypeAt(node, 1, BunType.VoidType, isStrongTyping);
 				PegObject params = node.get(1, null);
-				UniArray<BunType> typeList = new UniArray<BunType>(new BunType[params.size()+1]);
+				UList<BunType> typeList = new UList<BunType>(new BunType[params.size()+1]);
 				for(int i = 0; i < params.size(); i++) {
 					PegObject p = params.get(i);
 					BunType ptype = p.typeAt(gamma, 1, null);
@@ -190,7 +184,8 @@ public class BunTypeChecker {
 				}
 				block = blockgamma.tryMatch(block, false);
 				node.set(3, block);
-				setFunctionName(gamma, node.textAt(0, "f"), node.typed, node);
+				int flag = checkNameFlag(node, 0);
+				setFunctionName(gamma, flag, node.textAt(0, ""), node.typed, node);
 			}
 			else {
 				System.out.println("** second time");
@@ -199,10 +194,63 @@ public class BunTypeChecker {
 			return node;
 		}
 	}
+	class Apply2Checker extends TypeChecker {
+		@Override
+		public PegObject check(SymbolTable gamma, PegObject node, boolean isStrongTyping) {
+			gamma.checkTypeAt(node, 0, BunType.AnyType, false);
+			PegObject f = node.get(0);
+			if(f.matched != null) {
+				gamma.checkTypeAt(node, 1, BunType.AnyType, isStrongTyping);
+				return checkFuncType(gamma, node, f.typed.getRealType(), isStrongTyping);
+			}
+			else {
+				PegObject args = node.get(1);
+				if(f.is("#name")) {
+					String name = f.getText();
+					Functor fc = gamma.getFunctor(name, args.size());
+					gamma.tryMatchImpl("function", name, fc, args, isStrongTyping);
+					if(args.matched != null) {
+						args.tag = name; // for readability
+						return args;
+					}
+				}
+				if(f.is("#field")) {
+					PegObject[] stackAST = args.AST;
+					args.insert(0, f.get(0));
+					String name = f.textAt(1, "");
+					Functor fc = gamma.getFunctor(name, args.size());
+					gamma.tryMatchImpl("method", name, fc, args, isStrongTyping);
+					if(args.matched != null) {
+						args.tag = name; // for readability
+						return args;
+					}
+					args.AST = stackAST;
+				}
+			}
+			return node;
+		}
+
+		private PegObject checkFuncType(SymbolTable gamma, PegObject node, BunType funcType, boolean isStrongTyping) {
+			PegObject args = node.get(1);
+			if(Main.VerboseMode) {
+				System.out.println("FirstClassFunction : " + funcType);
+			}
+			if(args.size() != funcType.getFuncParamSize()) {
+				return gamma.typeErrorNode(args, "mismatched function parameter: " + funcType, isStrongTyping);
+			}
+			for(int i = 0; i < args.size(); i++) {
+				gamma.checkTypeAt(args, i, funcType.get(i), isStrongTyping);
+			}
+			args.typed = funcType.getReturnType();
+			node.typed = args.typed;
+			return node;
+		}
+	}
+
 	class Return0Checker extends TypeChecker {
 		@Override
 		public PegObject check(SymbolTable gamma, PegObject node, boolean isStrongTyping) {
-			DefinedNameFunctor f = getName(gamma, "return");
+			NameFunctor f = getName(gamma, "return");
 			BunType type = f.funcType.getRealType();
 			//System.out.println("return0 = " + type);
 			gamma.checkTypeAt(node, 0, type, isStrongTyping);
@@ -212,7 +260,7 @@ public class BunTypeChecker {
 	class Return1Checker extends TypeChecker {
 		@Override
 		public PegObject check(SymbolTable gamma, PegObject node, boolean isStrongTyping) {
-			DefinedNameFunctor f = getName(gamma, "return");
+			NameFunctor f = getName(gamma, "return");
 			BunType type = f.funcType.getRealType();
 			//System.out.println("return1 = " + type);
 			gamma.checkTypeAt(node, 0, type, isStrongTyping);
@@ -229,8 +277,7 @@ public class BunTypeChecker {
 		}
 	}
 
-	
-	//	class ApplyChecker extends TypeChecker {
+//	class ApplyChecker extends TypeChecker {
 //		@Override
 //		public void check(PegObject node) {
 //			System.out.println("typeCheckApply: " + node);
@@ -251,36 +298,28 @@ public class BunTypeChecker {
 //			gamma.checkTypeAt(node, 0, returnType, false);
 //		}
 //	}
-//	class ApplyChecker extends TypeChecker {
-//		@Override
-//		public void check(PegObject node) {
-//			public static void typeCheckReturn(PegObject node) {
-//				//System.out.println("FuncDeclCommand node: " + node);
-//				SymbolTable gamma = node.getSymbolTable();
-//				DefinedNameFunctor f = gamma.getName("return");
-//				BunType returnType = f.getReturnType(BunType.UntypedType);
-//				System.out.println("returnType="+returnType);
-//				gamma.checkTypeAt(node, 0, returnType, false);
-//			}
-//		}
-//	}
 	
-	private UniMap<TypeChecker> checkerMap = null;
+	private UMap<TypeChecker> checkerMap = null;
 	
 	public BunTypeChecker() {
 		if(this.checkerMap == null) {
-			this.checkerMap = new UniMap<TypeChecker>();
+			this.checkerMap = new UMap<TypeChecker>();
 			this.set("#Tvar:0", new TvarChecker());
 			this.set("#var:3",  new VarChecker());
 			this.set("#let:3",  new VarChecker());
 			this.set("#name:0", new NameChecker());
+			this.set("#field:2", new FieldChecker());
 			
 			this.set("#function:4", new FunctionChecker());
 			this.set("#param:2", new ParamChecker());
+			this.set("#apply:2", new Apply2Checker());
+			
 			this.set("#return:0", new Return0Checker());
 			this.set("#return:1", new Return1Checker());
 			this.set("#block:*",  new BlockChecker());
-			this.set("#params:*",  this.checkerMap.get("#block:*"));
+			
+			this.set("#toplevel:*",  this.checkerMap.get("#block:*"));
+			this.set("#params:*",    this.checkerMap.get("#block:*"));
 		}
 	}
 
@@ -295,12 +334,12 @@ public class BunTypeChecker {
 			c = this.checkerMap.get(node.tag+":*", null);
 		}
 		if(c != null) {
-			if(Main.EnableVerbose) {
+			if(Main.VerboseMode) {
 				System.out.println("Using extended type checker: " + nodeKey);
 			}
 			return c.check(gamma, node, isStrongTyping);
 		}
-		if(Main.EnableVerbose) {
+		if(Main.VerboseMode) {
 			System.out.println("Unusing extended type checker: '" + nodeKey + "' c =" + c);
 		}
 		return node;

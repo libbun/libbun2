@@ -1,10 +1,9 @@
 // Bun's Peg example
 // / catch is an extended operator to catch error
 
-import Value from "value.peg";
-import Type  from "type.peg";
+//import Value from "value.peg";
+//import Type  from "type.peg";
 
-// TopLevel = Expr / _ ;
 
 // Preparation for whitespace control
 
@@ -12,10 +11,10 @@ Spacing
   = [ \t]+
   ;
 _ 
-  = ([ \t]+ / Comment / '')*
+  = ([ \t]+ / Comment)*
   ;
 NL 
-  = ([ \t\n]+ / Comment/ '')*
+  = ([ \t\n]+ / Comment)*
   ;
 Comment    
   = '/*' (!'*/' .)* '*/' 
@@ -25,66 +24,104 @@ Token
   = ![A-Za-z0-9_]
   ;
 Name
-  = <<[A-Za-z_] [A-Za-z0-9_]*   #name>>
+  = <<[A-Za-z_] [A-Za-z0-9_]* #name>> <<@ '::' _? Name@ #ns >>?
   ;
 
+Type 
+ = PrimaryType <<@ '[]' #TArray >>*
+ ;
+
+PrimaryType
+  = BasicType
+  / 'Func'  _? << '<' _? Type@ ( _? ',' _? Type@)*  _? '>' #TFunc >>
+  / 'Tuple' _? << '<' _? Type@ ( _? ',' _? Type@)*  _? '>' #TTuple >>
+  / 'Map'   _? << '<' _? Type@ _? '>' #TMap >>
+  / 'Array' _? << '<' _? Type@ _? '>' #TArray >>
+  / ObjectType
+  ;
+
+BasicType
+  = <<'void'    #Tvoid>>
+  / <<'boolean' #Tboolean>>
+  / <<'int'     #Tint64>>
+  / <<'float'   #Tdouble>>
+  / <<'String'  #TString>>
+  ;
+
+ObjectType
+  = << [A-Za-z] [A-Za-z0-9_]*   #type >>
+  ;
+
+
 TopLevel
-  = FuncDecl 
+  = (NL / ';')* TopLevelStmt EOL
+  ;
+
+TopLevelStmt
+  = 'export' NL (FuncDecl/LetDecl)
+  / FuncDecl 
   / LetDecl
   / IfStmt
-  / Expr EOL
+  / Expr
+  / << '' #empty >>
   ;
 
 EOL
-  = (_ / ';')* !.
+  = (!'\n' (';' / _ ))* ('\n' / !.)
   ;
 
 FuncDecl
-  = <<'function' Spacing Name@ _ Params@ _ TypeAnno@ NL Block@  #function>>
+  = <<'function' _ Name@ _? Params@ _? TypeAnno@ NL? Block@  #function>>
   ;
 
 Params
-  = << '(' _ (Param@ ( _ ',' _ Param@)*)? _ ')' #block >>
+  = << '(' _? (Param@ ( _? ',' _? Param@)*)? _? ')' #block >>
   ;
 Param
   = << Name@ TypeAnno@ #param >>
   ;
 TypeAnno
-  = (_ ':' _ Type / << '' #Tvar>>)     // imported
+  = (_? ':' _? Type / << '' #Tvar>>)     // imported
   ;
 
 Block
-  = << '{' (NL ( ';' / Stmt )@ )* NL '}' #block>>
+  = << '{' (NL? ( ';' / Stmt@ ) )* NL? '}' #block>>
+  ;
+
+Stmt
+  = IfStmt
+  / VarDecl EOS / LetDecl EOS
+  / << 'return' Token (_ Expr@)? #return >> EOS
+  / << 'while' _? '(' _? Expr@ _? ')' NL? Block@ #while >>
+  / << 'break' #break >> EOS
+  / << 'continue' #break >> EOS
+  / << 'try' NL? Block@ #try
+        << NL? 'catch' _? '(' _? Name@ _? ')' NL? Block@ >>?
+        (NL? 'finally' NL? Block@)? >> EOS
+  / << 'throw' Token _? Expr@ #throw >> EOS
+  / Expr EOS
+  / << !'}' BlockSkip #error >>
   ;
 
 BlockSkip
   = (![{}] .)* ('{' BlockSkip '}')?
   ;
 
-Stmt
-  = IfStmt
-  / VarDecl EOS / LetDecl EOS
-  / << 'return' (Spacing Expr@)? #return >> EOS
-  / << 'while' _ '(' _ Expr@ _ ')' NL Block@ #while >>
-  / << 'break' #break >> EOS
-  / Expr EOS
-  ;
-
 EOS   // End of Statement
- = _ ('\n' / ';')
+ = _? ('\n' / ';')
  ;
 
 IfStmt
-  = <<'if' _ '(' _ Expr@ _ ')' NL Block@ 
-       (NL 'else' NL (IfStmt@ / Block@) )? #if>>
+  = <<'if' _? '(' _? Expr@ _? ')' NL? Block@ 
+       (NL? 'else' NL? (IfStmt@ / Block@) )? #if>>
   ;
 
 LetDecl
-  = <<'let' Spacing Name@ TypeAnno@ _ '=' _ Expr@ (_ 'in' _ Block@)? #let  >>
+  = <<'let' _ Name@ TypeAnno@ _? '=' _? Expr@ (_? 'in' _? Block@)? #let  >>
   ;
 
 VarDecl
-  = <<'var' Spacing Name@ TypeAnno@ _ '=' _ Expr@ (_ 'in' _ Block@)? #var >>
+  = <<'var' _ Name@ TypeAnno@ _? '=' _? Expr@ (_? 'in' _? Block@)? #var >>
   ;
   
 Expr
@@ -92,65 +129,101 @@ Expr
   ;
   
 Assignment
-  = Trinary <<@ _ AssignmentLabel Trinary@>>*
+  = Trinary <<@ _? AssignmentLabel Trinary@>>?
   ;
 
 AssignmentLabel
-  = '=' !'=' _  #assign
-  / '+='     _  #addeq
-  / '-='     _  #subeq
+  = '=' !'=' _?  #assign
+  / '+='     _?  #addeq
+  / '-='     _?  #subeq
   ;
 
 Trinary
-  = ExprOrExpr <<@ _ '?' _ Expr@ _ ':' _ Trinary@ #trinary >>*
+  = ExprOrExpr <<@ _? '?' _? Expr@ _? ':' _? Trinary@ #trinary >>*
   ;
 
 ExprOrExpr
-  = ExprAndExpr <<@ _ '||' _ ExprAndExpr@ #or >>*
+  = ExprAndExpr <<@ _? '||' _? ExprAndExpr@ #or >>*
   ;
 
 ExprAndExpr
-  = BitwiseBinary <<@ _ '||' _ BitwiseBinary@ #and >>*
+  = BitwiseBinary <<@ _? '&&' _? BitwiseBinary@ #and >>*
   ;
 
 BitwiseBinary
-  = Equal <<@ _ ('|' !'|' #bitor / '&' !'&' #bitand / '^' #bitxor) _ Equal@ >>*
+  = Equal <<@ _? ('|' !'|' #bitor / '&' !'&' #bitand / '^' #bitxor) _? Equal@ >>*
   ;
 
 Equal
-  = Relation <<@ _ ('==' #eq / '!=' #noteq) _ Relation@>>*
+  = Relation <<@ _? ('==' #eq / '!=' #noteq) _? Relation@>>*
   ;
 
 Relation
-  = Shift <<@ _ ('<' !'<' #lt / '<=' #lte / '>' !'>' #gt / '>=' #gte) _ Shift@ >>*
+  = Shift <<@ _? ('<' !'<' #lt / '<=' #lte / '>' !'>' #gt / '>=' #gte) _? Shift@ >>*
   ;
 
 Shift
-  = Sum <<@ _ ('<<' #lshift / '>>' #rshift) _ Sum@ >>*
+  = Sum <<@ _? ('<<' #lshift / '>>' #rshift) _? Sum@ >>*
   ;
   
 Sum 
-  = Product <<@ ('+' #add / '-' #sub) Product@ >>*
+  = Product <<@ _? ('+' #add / '-' #sub) _? Product@ >>*
   ;
 
 Product
-  = Unary <<@ _ ('*' #mul / '/' #div / '%' #mod) _ Unary@ >>*
+  = Unary <<@ _? ('*' #mul / '/' #div / '%' #mod) _? Unary@ >>*
   ;
 
 Unary
-  = << ('!' #not / '-' #minus / '+' #plus / '~' #compl) Unary@ >>
+  = << ('!' #not / '-' #minus / '+' #plus / '~' #compl) _? Unary@ >>
   / Primary <<@ Selector>>*
   ;
 
 Selector
   = '.' Name@ #field
   / '[' _ Expr@ ']' #index
-  / '(' << _ ( Expr@ ( _ ',' _ Expr@ )* )? #arguments >>@ ')'  #apply
-  / '++' #postinc  / '--' #postdec
+  / _? '(' << _ ( Expr@ ( _ ',' _ Expr@ )* )? #arguments >>@ ')'  #apply
+  / _? '++' #postinc  / '--' #postdec
   ;
   
 Primary
-  = << '(' _ Expr@ _ ')' #group >> 
-  / << '[' _ ( Expr@ ( _ ',' _ Expr@ )* )? #array >>
+  = << '(' _? Expr@ _? ')' #group >> 
+  / << '[' (NL? Expr@ NL? ',')* NL? Expr@? NL? #array ']' >>
+  / << '{' NL? ( KeyValue@ ( NL? ',' NL? KeyValue@ )* )? #map '}' >>
+  / << '|' Expr@ '|' #size >>
+  / <<'function' Token _? Params@ _? TypeAnno@ NL? Block@  #lambda >>
   / Value / Name
   ;
+
+KeyValue 
+  = << (String@ / Name@) _? ':' _? Expr@ #keyvalue >>
+  ;
+
+Value
+  = << 'null'  Token #null >>
+  / << 'true'  Token #true >>
+  / << 'false' Token #false >>
+  / Number
+  / String
+  ;
+
+String
+//  = '"' << StringContent #stringexpr >> "'"
+  = '"' << ('\\"' / !'"' .)*  #string >> '"'
+  / "'" << ("\\'" / !"'" .)*  #string >> "'"
+  ;
+
+Number
+ = << [0-9]+ ('.' [0-9]+ 'f'? #double / 'L' #int64 / '' #int) >>
+ ;
+
+StringContent
+  = << ('\\"' / '$$' / (!"${" !'"' .))* #string >> StringExpr?
+  ;
+
+StringExpr
+  = '${' _? Expr@ _? '}' StringContent
+  ;
+
+  
+  

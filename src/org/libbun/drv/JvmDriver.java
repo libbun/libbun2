@@ -1,4 +1,4 @@
-package org.libbun;
+package org.libbun.drv;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,6 +14,12 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
 
+import org.libbun.BunDriver;
+import org.libbun.BunType;
+import org.libbun.DriverCommand;
+import org.libbun.Namespace;
+import org.libbun.PegObject;
+import org.libbun.UMap;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
@@ -50,7 +56,7 @@ public class JvmDriver extends BunDriver implements Opcodes {
 	/**
 	 * used for bun type to java class translation.
 	 */
-	protected final UniMap<Class<?>> classMap;
+	protected final UMap<Class<?>> classMap;
 
 	/**
 	 * used for java class generation.
@@ -76,7 +82,7 @@ public class JvmDriver extends BunDriver implements Opcodes {
 		this.bunModel = bunModel;
 		this.loader = new JvmByteCodeLoader();
 		this.typeStack = new Stack<BunType>();
-		this.classMap = new UniMap<Class<?>>();
+		this.classMap = new UMap<Class<?>>();
 		this.mBuilders = new Stack<MethodBuilder>();
 		this.addCommand("PUSH_AS_LONG", new PushAsLong());
 		this.addCommand("PUSH_AS_DOUBLE", new PushAsDouble());
@@ -116,6 +122,11 @@ public class JvmDriver extends BunDriver implements Opcodes {
 		new FieldInsCommand().addToDriver(this);
 		new MethodInsCommand().addToDriver(this);
 		new JumpInsCommand().addToDriver(this);
+	}
+
+	@Override
+	public String getDesc() {
+		return "Java bytecode generator by Nagisa Sekiguchi (YNU)";
 	}
 
 	@Override
@@ -163,6 +174,15 @@ public class JvmDriver extends BunDriver implements Opcodes {
 			System.exit(1);
 		}
 	}
+	
+	@Override
+	public void startTopLevel() {
+	}
+
+	@Override
+	public void endTopLevel() {
+	}
+
 
 	/**
 	 * insert print instruction after top level expression.
@@ -240,20 +260,11 @@ public class JvmDriver extends BunDriver implements Opcodes {
 	}
 
 	@Override
-	public void pushGlobalName(PegObject node, String name) {
+	public void pushName(PegObject node, String name) {
 	}
 
 	@Override
-	public void pushLocalName(PegObject node, String name) {
-	}
-
-	@Override
-	public void pushUndefinedName(PegObject node, String name) {
-
-	}
-
-	@Override
-	public void pushApplyNode(PegObject node, String name) {
+	public void pushApplyNode(String name, PegObject args) {
 	}
 
 	@Override
@@ -1268,6 +1279,12 @@ public class JvmDriver extends BunDriver implements Opcodes {
 		public DebuggableJvmDriver() {
 			JvmByteCodeLoader.setDebugMode(true);
 		}
+	}
+
+	@Override
+	public void pushErrorNode(PegObject errorNode) {
+		// TODO Auto-generated method stub
+		
 	}
 }
 

@@ -1,7 +1,7 @@
 package org.libbun;
 
 public class PegSource {
-	String fileName;
+	public String fileName;
 	int    lineNumber;
 	public String  sourceText;
 

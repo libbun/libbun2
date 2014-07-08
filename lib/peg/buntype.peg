@@ -18,6 +18,8 @@ AtomType
   / '#' << TypeName  #Tbun.node >>
   / '!' << LangType@ #Tbun.not >>
   / '$' << TypeName  #Tbun.ref >>
+  / '"' << ('\\"' / !'"' .)*  #Tbun.token >> '"'
+  / "'" << ('\\"' / !"'" .)*  #Tbun.token >> "'"
   ;
 
 LangType

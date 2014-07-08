@@ -1,11 +1,11 @@
 package org.libbun;
 
 public class PegObject {
-	PegSource    source = null;
+	public PegSource    source = null;
 	int          startIndex = 0;
 	int          endIndex = 0;
 	Peg          createdPeg = null;
-	String       tag = null;
+	public String       tag = null;
 	PegObject    parent = null;
 	PegObject    AST[] = null;
 	SymbolTable  gamma = null;
@@ -43,10 +43,6 @@ public class PegObject {
 		return this.source.formatErrorMessage(type, this.startIndex, msg);
 	}
 	
-//	final void setMessage(Peg createdPeg, BunSource source, int startIndex, String message) {
-//		this.source = source.newToken(createdPeg, startIndex, startIndex, message);
-//	}
-
 	public final boolean isEmptyToken() {
 		return this.startIndex == this.endIndex;
 	}
@@ -115,6 +111,43 @@ public class PegObject {
 		childNode.parent = this;
 	}
 
+	public final void insert(int index, PegObject childNode) {
+		int oldsize = this.size();
+		if(index < oldsize) {
+			PegObject[] newast = Main._NewPegObjectArray(oldsize+1);
+			if(index > 0) {
+				Main._ArrayCopy(this.AST, 0, newast, 0, index);
+			}
+			newast[index] = childNode;
+			childNode.parent = this;
+			if(oldsize > index) {
+				Main._ArrayCopy(this.AST, index, newast, index+1, oldsize - index);
+			}
+			this.AST = newast;
+		}
+		else {
+			this.append(childNode);
+		}
+	}
+
+	public final void removeAt(int index) {
+		int oldsize = this.size();
+		if(oldsize > 1) {
+			PegObject[] newast = Main._NewPegObjectArray(oldsize-1);
+			if(index > 0) {
+				Main._ArrayCopy(this.AST, 0, newast, 0, index);
+			}
+			if(oldsize - index > 1) {
+				Main._ArrayCopy(this.AST, index+1, newast, index, oldsize - index - 1);
+			}
+			this.AST = newast;
+		}
+		else {
+			this.AST = null;
+		}
+	}
+	
+	
 	public final int count() {
 		int count = 1;
 		for(int i = 0; i < this.size(); i++) {
@@ -254,6 +287,10 @@ public class PegObject {
 			return c+1;
 		}
 		return c;
+	}
+
+	public final boolean isUntyped() {
+		return this.typed == null || this.typed == BunType.UntypedType;
 	}
 
 }

@@ -3,14 +3,14 @@ package org.libbun;
 import java.util.HashMap;
 
 public class SimpleParserContext extends ParserContext {
-	private UniMap<Peg>        pegCache;
+	private UMap<Peg>        pegCache;
 	
 	class SimpleMemo {
 		PegObject result;
 		int nextPosition;
 	}
 
-	final UniArray<SimpleLog> logStack = new UniArray<SimpleLog>(new SimpleLog[128]);
+	final UList<SimpleLog> logStack = new UList<SimpleLog>(new SimpleLog[128]);
 	private int stackTop = 0;
 
 	class SimpleLog {
@@ -35,22 +35,22 @@ public class SimpleParserContext extends ParserContext {
 		this.loadPegDefinition(ruleSet.pegMap);
 	}
 
-	public final void loadPegDefinition(UniMap<Peg> pegMap) {
-		this.pegCache = new UniMap<Peg>();	
-		UniArray<String> list = pegMap.keys();
+	public final void loadPegDefinition(UMap<Peg> pegMap) {
+		this.pegCache = new UMap<Peg>();	
+		UList<String> list = pegMap.keys();
 		for(int i = 0; i < list.size(); i++) {
 			String key = list.ArrayValues[i];
 			Peg e = pegMap.get(key, null);
 			this.checkLeftRecursion(key, e);
 		}
-		list = this.pegCache.keys();
-		for(int i = 0; i < list.size(); i++) {
-			String key = list.ArrayValues[i];
-			Peg e = this.pegCache.get(key, null);
+//		list = this.pegCache.keys();
+//		for(int i = 0; i < list.size(); i++) {
+//			String key = list.ArrayValues[i];
+//			Peg e = this.pegCache.get(key, null);
 //			if(Main.PegDebuggerMode) {
 //				System.out.println(e.toPrintableString(key, "\n  = ", "\n  / ", "\n  ;", true));
 //			}
-		}
+//		}
 	}
 	
 	private void checkLeftRecursion(String name, Peg e) {

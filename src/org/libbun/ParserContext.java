@@ -9,19 +9,13 @@ public abstract class ParserContext extends SourceContext {
 	}
 	
 	public abstract void setRuleSet(PegRuleSet ruleSet);
-
-//	@Override
-//	public SourceContext subContext(int startIndex, int endIndex) {
-//		return new PegParserContext(this.parser, this.source, startIndex, endIndex);
-//	}
-
 	public boolean hasNode() {
-		this.matchZeroMore(UniCharset.WhiteSpaceNewLine);
+		this.matchZeroMore(UCharset.WhiteSpaceNewLine);
 		return this.sourcePosition < this.endPosition;
 	}
 
 	public PegObject parseNode(String key) {
-		return this.parsePegObject(new PegObject(BunSymbol.TopLevelFunctor), key);
+		return this.parsePegObject(new PegObject("#toplevel"), key);
 	}
 
 	public abstract void initMemo();
@@ -33,6 +27,16 @@ public abstract class ParserContext extends SourceContext {
 	public final PegObject newPegObject(String name) {
 		PegObject node = new PegObject(name, this.source, null, this.sourcePosition);
 		this.objectCount = this.objectCount + 1;
+		return node;
+	}
+	
+	public final PegObject newErrorObject() {
+		PegObject node = newPegObject("#error");
+		node.createdPeg = this.storeFailurePeg();
+		node.startIndex = this.storeFailurePosition();
+		node.endIndex = this.storeFailurePosition();
+		node.matched = Functor.ErrorFunctor;
+		node.typed = BunType.newErrorType(null);
 		return node;
 	}
 

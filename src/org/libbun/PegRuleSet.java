@@ -1,13 +1,13 @@
 package org.libbun;
 
 public final class PegRuleSet {
-	UniMap<Peg>           pegMap;
-	UniMap<String>        objectLabelMap = null;
+	UMap<Peg>           pegMap;
+	UMap<String>        objectLabelMap = null;
 	boolean lrExistence = false;
 	public boolean foundError = false;
 
 	public PegRuleSet() {
-		this.pegMap = new UniMap<Peg>();
+		this.pegMap = new UMap<Peg>();
 		this.pegMap.put("indent", new PegIndent(null));  // default rule
 	}
 
@@ -51,14 +51,14 @@ public final class PegRuleSet {
 	}
 	
 	public final void check() {
-		this.objectLabelMap = new UniMap<String>();
+		this.objectLabelMap = new UMap<String>();
 		this.foundError = false;
-		UniArray<String> list = this.pegMap.keys();
+		UList<String> list = this.pegMap.keys();
 		for(int i = 0; i < list.size(); i++) {
 			String ruleName = list.ArrayValues[i];
 			Peg e = this.pegMap.get(ruleName, null);
 			e.verify(ruleName, this);
-			if(Main.PegDebuggerMode) {
+			if(Main.VerbosePegMode) {
 				System.out.println(e.toPrintableString(ruleName, "\n  = ", "\n  / ", "\n  ;", true));
 			}
 		}
@@ -113,7 +113,7 @@ public final class PegRuleSet {
 			return new PegLabel(node.getText());
 		}
 		if(node.is("#string")) {
-			return new PegString(UniCharset._UnquoteString(node.getText()));
+			return new PegString(UCharset._UnquoteString(node.getText()));
 		}
 		if(node.is("#character")) {
 			return new PegCharacter(node.getText());
@@ -183,7 +183,7 @@ public final class PegRuleSet {
 			int index = -1;
 			String indexString = node.getText();
 			if(indexString.length() > 0) {
-				index = (int)UniCharset._ParseInt(indexString);
+				index = (int)UCharset._ParseInt(indexString);
 			}
 			return new PegSetter(null, toPeg(node.get(0)), index);
 		}
@@ -205,12 +205,12 @@ public final class PegRuleSet {
 //	}
 
 	void importRuleFromFile(String label, String fileName) {
-		if(Main.PegDebuggerMode) {
+		if(Main.VerbosePegMode) {
 			System.out.println("importing " + fileName);
 		}
 		PegRuleSet p = new PegRuleSet();
 		p.loadPegFile(fileName);
-		UniArray<String> list = p.makeList(label);
+		UList<String> list = p.makeList(label);
 		String prefix = "";
 		int loc = label.indexOf(":");
 		if(loc > 0) {
@@ -225,9 +225,9 @@ public final class PegRuleSet {
 		}
 	}
 
-	public final UniArray<String> makeList(String startPoint) {
-		UniArray<String> list = new UniArray<String>(new String[100]);
-		UniMap<String> set = new UniMap<String>();
+	public final UList<String> makeList(String startPoint) {
+		UList<String> list = new UList<String>(new String[100]);
+		UMap<String> set = new UMap<String>();
 		Peg e = this.getRule(startPoint);
 		if(e != null) {
 			list.add(startPoint);
@@ -238,7 +238,7 @@ public final class PegRuleSet {
 	}
 
 	public final void show(String startPoint) {
-		UniArray<String> list = makeList(startPoint);
+		UList<String> list = makeList(startPoint);
 		for(int i = 0; i < list.size(); i++) {
 			String name = list.ArrayValues[i];
 			Peg e = this.getRule(name);

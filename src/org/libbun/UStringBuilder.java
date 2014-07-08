@@ -1,14 +1,14 @@
 package org.libbun;
 
-public class UniStringBuilder {
-	public final UniArray<String> slist = new UniArray<String>(new String[128]);
+public class UStringBuilder {
+	public final UList<String> slist = new UList<String>(new String[128]);
 	protected int indentLevel = 0;
 	protected String currentIndentString = "";
 	protected char lastChar   = '\n';
 	protected String LineFeed = "\n";
 	protected String Tabular  = "   ";
 
-	public UniStringBuilder() {
+	public UStringBuilder() {
 	}
 
 	public final boolean isEmpty(String Text) {
@@ -38,7 +38,7 @@ public class UniStringBuilder {
 	}
 
 	public final void AppendQuotedText(String Text) {
-		this.slist.add(UniCharset._QuoteString(Text));
+		this.slist.add(UCharset._QuoteString(Text));
 	}
 
 	public final void AppendLineFeed() {

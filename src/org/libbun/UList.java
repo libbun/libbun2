@@ -2,11 +2,11 @@ package org.libbun;
 
 import java.lang.reflect.Array;
 
-public class UniArray<T> {
+public class UList<T> {
 	private int    currentSize;
 	public T[] ArrayValues;
 
-	public UniArray(T[] Values) {
+	public UList(T[] Values) {
 		this.ArrayValues = Values;
 		this.currentSize = 0;
 	}
@@ -26,7 +26,7 @@ public class UniArray<T> {
 
 	protected String Stringify(Object Value) {
 		if(Value instanceof String) {
-			return UniCharset._QuoteString((String) Value);
+			return UCharset._QuoteString((String) Value);
 		}
 		return Value.toString();
 	}

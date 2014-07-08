@@ -2,7 +2,39 @@
 // Bun's Peg example
 // / catch is an extended operator to catch error
 
-Stmt = 'return' 'a' / 'break' / catch .*;
-TopLevel = Stmt;
+TopLevel = Block;
+
+Block
+  = << '{' (NL? ( ';' / Stmt@ ) )* NL? '}' #block>>
+  ;
+
+Stmt
+  = << 'return' (Expr@)? #return >> EOS
+  / << 'break' #break >> EOS
+  / << 'continue' #break >> EOS
+  / << 'print' _? Expr@ #throw >> EOS 
+  / Expr EOS
+  / << !'}' BlockSkip #error >>
+  /// catch BlockSkip
+  ;
+
+BlockSkip
+  = (![{}] .)* ('{' BlockSkip '}')?
+  ;
+
+Expr 
+  = <<[0-9]+ #int >>
+  ;
+_
+  = [ \t]+
+  ;
+
+NL
+  = [ \t\n]+
+  ;
+
+EOS   // End of Statement
+ = _? ('\n' / ';')
+ ;
 
 
