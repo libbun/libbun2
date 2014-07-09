@@ -1,0 +1,21 @@
+parsed:
+#block {            ## by peg : ( SourceElement^ (__ SourceElement^)*  ) defined in SourceElements
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+         #field {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+            #this: this   ## by peg : ( ThisToken  ) defined in PrimaryExpression
+            #identifier: hoge   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         }
+         #intNumber: 0   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
+      }
+   }
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+         #field {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+            #identifier: foo   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            #identifier: hoge   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         }
+         #intNumber: 0   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
+      }
+   }
+}

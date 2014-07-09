@@ -194,8 +194,8 @@ ExponentIndicator
   ;
 
 SignedInteger
-  = "+"? DecimalDigit+
-  / "-" DecimalDigit+
+  = "-" DecimalDigit+
+  / "+"? DecimalDigit+
   ;
 
 HexIntegerLiteral
@@ -294,13 +294,13 @@ RegularExpressionBody
   ;
 
 RegularExpressionFirstChar
-  = ![*\\/[] RegularExpressionNonTerminator
+  = ![*\\/\x5b] RegularExpressionNonTerminator
   / RegularExpressionBackslashSequence
   / RegularExpressionClass
   ;
 
 RegularExpressionChar
-  = ![\\/[] RegularExpressionNonTerminator
+  = ![\\/\x5b] RegularExpressionNonTerminator
   / RegularExpressionBackslashSequence
   / RegularExpressionClass
   ;
@@ -455,7 +455,7 @@ EOF
 ///* ----- A.3 Expressions ----- */
 
 PrimaryExpression
-  = ThisToken
+  = << ThisToken #this >>
   / Identifier
   / Literal
   / ArrayLiteral
@@ -508,9 +508,18 @@ PropertySetParameterList
   ;
 
 MemberExpression
-  = Receiver <<@ (__ "[" __ Expression@ __ "]" #index) / (__ "." __ IdentifierName@ #field) >>*
+    = << Receiver@ __ ( MemberIndex@ / MemberField@ )+ >>
+    / Receiver 
+    ;
+
+MemberIndex
+  = "[" __ Expression@ __ "]" #index
   ;
 
+MemberField
+  = "." __ IdentifierName@ #field
+  ;
+  
 Receiver
   = PrimaryExpression / FunctionExpression / New
   ;
@@ -807,7 +816,7 @@ StatementList
   ;
 
 VariableStatement
-  = << VarToken __ VariableDeclarationList@ EOS #varstmt >> // declarations
+  = VarToken __ VariableDeclarationList@ EOS  // declarations
   ;
 
 VariableDeclarationList

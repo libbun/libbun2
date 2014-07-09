@@ -15,17 +15,81 @@ parsed:
          }
       }
    }
+   #function {            ## by peg : ( FunctionToken __ Identifier^ __ '(' __ ((FormalParameterList __)^)? ')' __ '{' __ FunctionBody^ __ '}'  ) defined in FunctionDeclaration
+      #identifier: hogehoge   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+      #params {            ## by peg : ( FunctionIdentifier^ ((__ ',' __ FunctionIdentifier)^)*  ) defined in FormalParameterList
+         #param {            ## by peg : ( Identifier^  ) defined in FunctionIdentifier
+            #identifier: num   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         }
+         #param {            ## by peg : ( Identifier^  ) defined in FunctionIdentifier
+            #identifier: str   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         }
+      }
+      #block {            ## by peg : ( SourceElement^ (__ SourceElement^)*  ) defined in SourceElements
+         #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+            #postincl {            ## by peg : ( LeftHandSideExpression^ _ '++'  ) defined in PostfixExpression
+               #identifier: num   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            }
+         }
+         #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+            #call {            ## by peg : ( MemberExpression^ __ Arguments^  ) defined in FirstCall
+               #field {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+                  #identifier: document   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+                  #identifier: write   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+               }
+               #arguments {            ## by peg : ( Argument^ (__ ',' __ Argument^)*  ) defined in ArgumentList
+                  #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
+                     #identifier: str   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+                  }
+               }
+            }
+         }
+      }
+   }
+   #function {            ## by peg : ( FunctionToken __ Identifier^ __ '(' __ ((FormalParameterList __)^)? ')' __ '{' __ FunctionBody^ __ '}'  ) defined in FunctionDeclaration
+      #identifier: foo   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+      #block {            ## by peg : ( SourceElement^ (__ SourceElement^)*  ) defined in SourceElements
+         #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+            #call {            ## by peg : ( MemberExpression^ __ Arguments^  ) defined in FirstCall
+               #field {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+                  #identifier: document   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+                  #identifier: write   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+               }
+               #arguments {            ## by peg : ( Argument^ (__ ',' __ Argument^)*  ) defined in ArgumentList
+                  #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
+                     #string: Foo!!   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
+                  }
+               }
+            }
+         }
+      }
+   }
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #call {            ## by peg : ( MemberExpression^ __ Arguments^  ) defined in FirstCall
+         #identifier: foo   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+      }
+   }
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #call {            ## by peg : ( MemberExpression^ __ Arguments^  ) defined in FirstCall
+         #identifier: hogehoge   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #arguments {            ## by peg : ( Argument^ (__ ',' __ Argument^)*  ) defined in ArgumentList
+            #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
+               #intNumber: 2   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
+            }
+            #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
+               #string: hoge   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
+            }
+         }
+      }
+   }
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #call {            ## by peg : ( MemberExpression^ __ Arguments^  ) defined in FirstCall
+         #identifier: hoge   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #arguments {            ## by peg : ( Argument^ (__ ',' __ Argument^)*  ) defined in ArgumentList
+            #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
+               #intNumber: 3   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
+            }
+         }
+      }
+   }
 }
-** uncosumed: 'function hogehoge(num,str){
-    num++;
-    document.write(str);
-}
-
-function foo(){
-    document.write("Foo!!");
-}
-
-  foo();
-  hogehoge(2,"hoge");
-  hoge(3);
-' **

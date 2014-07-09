@@ -26,11 +26,62 @@ parsed:
          }
       }
    }
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+         #identifier: n   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #field {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+            #identifier: Number   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            #identifier: NaN   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         }
+      }
+   }
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+         #identifier: b   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #call {            ## by peg : ( MemberExpression^ __ Arguments^  ) defined in FirstCall
+            #identifier: isNaN   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            #arguments {            ## by peg : ( Argument^ (__ ',' __ Argument^)*  ) defined in ArgumentList
+               #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
+                  #identifier: n   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+               }
+            }
+         }
+      }
+   }
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+         #identifier: max   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #field {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+            #identifier: Number   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            #identifier: MAX_VALUE   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         }
+      }
+   }
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+         #identifier: min   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #field {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+            #identifier: Number   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            #identifier: MIN_VALUE   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         }
+      }
+   }
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+         #identifier: pos   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #field {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+            #identifier: Number   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            #identifier: POSITIVE_INFINITY   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         }
+      }
+   }
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+         #identifier: neg   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #field {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+            #identifier: Number   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            #identifier: NEGATIVE_INFINITY   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         }
+      }
+   }
 }
-** uncosumed: 'n = Number.NaN;
-b = isNaN(n);
-max = Number.MAX_VALUE;
-min = Number.MIN_VALUE;
-pos = Number.POSITIVE_INFINITY;
-neg = Number.NEGATIVE_INFINITY;
-' **

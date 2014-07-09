@@ -44,12 +44,38 @@ parsed:
          }
       }
    }
+   #forin {            ## by peg : ( ForToken __ '(' __ LeftHandSideExpression^ __ InToken __ Expression^ __ ')' __ Statement^  ) defined in IterationStatement
+      #identifier: i   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+      #identifier: arr   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+      #block {            ## by peg : ( (Statement^ __)*  ) defined in Block
+         #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+            #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+               #index {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+                  #identifier: arr   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+                  #identifier: i   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+               }
+               #intNumber: 1   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
+            }
+         }
+      }
+   }
+   #forin {            ## by peg : ( ForToken __ '(' __ VarToken __ VariableDeclarationListNoIn^ __ InToken __ Expression^ __ ')' __ Statement^  ) defined in IterationStatement
+      #varlist {            ## by peg : ( VariableDeclarationNoIn^ (__ ',' __ VariableDeclarationNoIn^)*  ) defined in VariableDeclarationListNoIn
+         #var {            ## by peg : ( Identifier^ ((__ InitialiserNoIn)^)?  ) defined in VariableDeclarationNoIn
+            #identifier: i   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         }
+      }
+      #identifier: arr   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+      #block {            ## by peg : ( (Statement^ __)*  ) defined in Block
+         #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+            #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+               #index {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+                  #identifier: arr   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+                  #identifier: i   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+               }
+               #intNumber: 1   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
+            }
+         }
+      }
+   }
 }
-** uncosumed: 'for(i in arr){
-	arr[i] = 1;
-}
-
-for(var i in arr){
-	arr[i] = 1;
-}
-' **

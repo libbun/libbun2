@@ -1,10 +1,8 @@
 parsed:
 #block {            ## by peg : ( SourceElement^ (__ SourceElement^)*  ) defined in SourceElements
-   #varstmt {            ## by peg : ( VarToken __ VariableDeclarationList^ EOS  ) defined in VariableStatement
-      #varlist {            ## by peg : ( VariableDeclaration^ (__ ',' __ VariableDeclaration^)*  ) defined in VariableDeclarationList
-         #var {            ## by peg : ( Identifier^ ((__ Initialiser)^)?  ) defined in VariableDeclaration
-            #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
-         }
+   #varlist {            ## by peg : ( VariableDeclaration^ (__ ',' __ VariableDeclaration^)*  ) defined in VariableDeclarationList
+      #var {            ## by peg : ( Identifier^ ((__ Initialiser)^)?  ) defined in VariableDeclaration
+         #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
       }
    }
    #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
@@ -17,6 +15,20 @@ parsed:
       #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
          #identifier: b   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
          #intNumber: 5   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
+      }
+   }
+   #varlist {            ## by peg : ( VariableDeclaration^ (__ ',' __ VariableDeclaration^)*  ) defined in VariableDeclarationList
+      #var {            ## by peg : ( Identifier^ ((__ Initialiser)^)?  ) defined in VariableDeclaration
+         #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #expr {            ## by peg : ( __ AssignmentExpression^  ) defined in Initialiser
+            #intNumber: 1   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
+         }
+      }
+      #var {            ## by peg : ( Identifier^ ((__ Initialiser)^)?  ) defined in VariableDeclaration
+         #identifier: b   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #expr {            ## by peg : ( __ AssignmentExpression^  ) defined in Initialiser
+            #intNumber: 2   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
+         }
       }
    }
    #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
