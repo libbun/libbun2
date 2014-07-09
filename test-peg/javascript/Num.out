@@ -8,75 +8,34 @@ parsed:
          #intNumber: 1234   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
       }
    }
-   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
-      #floatNumber: 1234.   ## by peg : ( DecimalIntegerLiteral '.' DecimalDigit* ExponentPart?  ) defined in DecimalLiteral
-   }
-   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
-      #minus {            ## by peg : ( UnaryOperator __ UnaryExpression^ ) defined in UnaryExpression
-         #floatNumber: 1234.   ## by peg : ( DecimalIntegerLiteral '.' DecimalDigit* ExponentPart?  ) defined in DecimalLiteral
-      }
-   }
-   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
-      #floatNumber: 1.234   ## by peg : ( DecimalIntegerLiteral '.' DecimalDigit* ExponentPart?  ) defined in DecimalLiteral
-   }
-   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
-      #minus {            ## by peg : ( UnaryOperator __ UnaryExpression^ ) defined in UnaryExpression
-         #floatNumber: 1.234   ## by peg : ( DecimalIntegerLiteral '.' DecimalDigit* ExponentPart?  ) defined in DecimalLiteral
-      }
-   }
-   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
-      #intNumber: 123e4   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
-   }
-   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
-      #intNumber: 123E4   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
-   }
-   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
-      #intNumber: 123e+4   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
-   }
-   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
-      #intNumber: 123E+4   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
-   }
-   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
-      #intNumber: 123e-4   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
-   }
-   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
-      #intNumber: 123E-4   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
-   }
-   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
-      #floatNumber: 1.23e4   ## by peg : ( DecimalIntegerLiteral '.' DecimalDigit* ExponentPart?  ) defined in DecimalLiteral
-   }
-   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
-      #minus {            ## by peg : ( UnaryOperator __ UnaryExpression^ ) defined in UnaryExpression
-         #floatNumber: 1.23E4   ## by peg : ( DecimalIntegerLiteral '.' DecimalDigit* ExponentPart?  ) defined in DecimalLiteral
-      }
-   }
-   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
-      #floatNumber: 1.23E+4   ## by peg : ( DecimalIntegerLiteral '.' DecimalDigit* ExponentPart?  ) defined in DecimalLiteral
-   }
-   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
-      #minus {            ## by peg : ( UnaryOperator __ UnaryExpression^ ) defined in UnaryExpression
-         #floatNumber: 1.23e-4   ## by peg : ( DecimalIntegerLiteral '.' DecimalDigit* ExponentPart?  ) defined in DecimalLiteral
-      }
-   }
-   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
-      #binNumber: 0b10   ## by peg : ( BinIntegerLiteral !(IdentifierStart / DecimalDigit)  ) defined in NumericLiteral
-   }
-   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
-      #binNumber: 0B10   ## by peg : ( BinIntegerLiteral !(IdentifierStart / DecimalDigit)  ) defined in NumericLiteral
-   }
-   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
-      #octNumber: 0123   ## by peg : ( OctIntegerLiteral !(IdentifierStart / DecimalDigit)  ) defined in NumericLiteral
-   }
-   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
-      #octNumber: 0o123   ## by peg : ( OctIntegerLiteral !(IdentifierStart / DecimalDigit)  ) defined in NumericLiteral
-   }
-   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
-      #octNumber: 0O123   ## by peg : ( OctIntegerLiteral !(IdentifierStart / DecimalDigit)  ) defined in NumericLiteral
-   }
-   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
-      #hexNumber: 0x123   ## by peg : ( HexIntegerLiteral !(IdentifierStart / DecimalDigit)  ) defined in NumericLiteral
-   }
-   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
-      #hexNumber: 0X123   ## by peg : ( HexIntegerLiteral !(IdentifierStart / DecimalDigit)  ) defined in NumericLiteral
-   }
 }
+** uncosumed: '<<<<<<< HEAD
+=======
+1234.;
+-1234.;
+>>>>>>> ebad95126888e50972ad95f5750989b090df73d7
+1.234;
+-1.234;
+123e4;
+123E4;
+<<<<<<< HEAD
+0123;
+0x123;
+=======
+123e+4;
+123E+4;
+123e-4;
+123E-4;
+1.23e4;
+-1.23E4;
+1.23E+4;
+-1.23e-4;
+0b10;
+0B10;
+0123;
+0o123;
+0O123;
+0x123;
+0X123;
+>>>>>>> ebad95126888e50972ad95f5750989b090df73d7
+' **
