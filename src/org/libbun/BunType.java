@@ -3,27 +3,26 @@ package org.libbun;
 public abstract class BunType  {
 	protected int         typeId    = -1;
 	protected Object      typeInfo  = null;  // used in Class<?> in JVM (for example)
-	protected String      label;
-	BunType(String label) {
-		this.label = label;
+	protected String      tag;
+	BunType(String tag) {
+		this.tag = tag;
 		this.typeInfo = null;
 	}
-
-	private final boolean isIssued() {
+	protected final boolean isIssued() {
 		return typeId != -1;
 	}
-
 	public final String getName() {
-		UniStringBuilder sb = new UniStringBuilder();
+		UStringBuilder sb = new UStringBuilder();
 		this.stringfy(sb);
 		return sb.toString();
 	}
 	public final String toString() {
-		UniStringBuilder sb = new UniStringBuilder();
+		UStringBuilder sb = new UStringBuilder();
 		this.stringfy(sb);
 		return sb.toString();
 	}
-	protected final void stringfy(UniStringBuilder sb, String openToken, String delimToken, String closeToken) {
+	
+	protected final void stringfy(UStringBuilder sb, String openToken, String delimToken, String closeToken) {
 		sb.append(openToken);
 		for(int i = 0; i < this.size(); i++) {
 			if(i > 0) {
@@ -33,9 +32,10 @@ public abstract class BunType  {
 		}
 		sb.append(closeToken);		
 	}
+	
 	public final PegObject peg() {
 		BunType type = this.getRealType();
-		PegObject o = new PegObject(type.label, null, null, 0);
+		PegObject o = new PegObject(type.tag, null, null, 0);
 		for(int i = 0; i < type.size(); i++) {
 			o.append(type.get(i).peg());
 		}
@@ -90,7 +90,7 @@ public abstract class BunType  {
 		}
 	}
 	
-	public abstract void    stringfy(UniStringBuilder sb);
+	public abstract void    stringfy(UStringBuilder sb);
 	public abstract int size();
 	public abstract BunType get(int index);
 
@@ -108,50 +108,12 @@ public abstract class BunType  {
 		}
 		return false;
 	}
-	
-//	public BunType getRealType() {
-//		return this;
-//	}
-//	public BunType newVarGreekType(GreekList list, BunType[] buffer) {
-//		return this;
-//	}
-//
-//
-	/**
-
-	public abstract void    stringfy(UniStringBuilder sb);
-	public boolean accept(SymbolTable gamma, PegObject node, boolean hasNextChoice) {
-		BunType nodeType = node.getType(BunType.UntypedType);
-		return this.is(nodeType) || this.checkCoercion(gamma, node, nodeType, hasNextChoice);
-	}
-	public void typed(SymbolTable gamma, PegObject node, boolean flag) {
-	}
-	public abstract boolean is(BunType nodeType);
-	protected final boolean checkCoercion(SymbolTable gamma, PegObject node, BunType nodeType, boolean hasNextChoice) {
-		String key = BunType.keyTypeRel("#coercion", nodeType, this);
-		Functor f = gamma.getSymbol(key);
-		if(f != null) {
-			if(Main.EnableVerbose) {
-				Main._PrintLine("found type coercion from " + nodeType + " to " + this);
-			}
-			node.typed = BunType.newTransType(key, nodeType, this, f);
-			return true;
-		}
-		if(hasNextChoice) {
-			return false;
-		}
-		return false;  // stupid cast
-	}
-	public void build(PegObject node, BunDriver driver) {
-		node.matched.build(node, driver);
-	}
-	 **/
 
 	protected final boolean checkCoercion(SymbolTable gamma, PegObject node, BunType nodeType, boolean hasNextChoice) {
-		String key = BunType.keyTypeRel("#coercion", nodeType, this);
+		String key = BunType.keyTypeRel("#cast", nodeType, this);
 		Functor f = gamma.getSymbol(key);
 		if(f != null) {
-			if(Main.EnableVerbose) {
+			if(Main.VerboseMode) {
 				Main._PrintLine("found type coercion from " + nodeType + " to " + this);
 			}
 			node.typed = BunType.newTransType(key, nodeType, this, f);
@@ -168,16 +130,16 @@ public abstract class BunType  {
 
 	// ----------------------------------------------------------------------
 	
-	final static UniArray<BunType>   _TypeList;
-	final static UniMap<BunType>     _TypeNameMap;
+	final static UList<BunType>   _TypeList;
+	final static UMap<BunType>     _TypeNameMap;
 
 	public final static BunType UntypedType = new AnyType("#Tuntyped", "untyped");
 	public final static BunType AnyType = new AnyType("#Tany", "any");
 	public final static BunType VoidType = new AnyType("#Tvoid", "void");
 		
 	static {
-		_TypeList = new UniArray<BunType>(new BunType[128]);
-		_TypeNameMap = new UniMap<BunType>();
+		_TypeList = new UList<BunType>(new BunType[128]);
+		_TypeNameMap = new UMap<BunType>();
 		issueType("untyped", UntypedType);
 		issueType("any",     AnyType);
 		issueType("void",    VoidType);
@@ -211,7 +173,7 @@ public abstract class BunType  {
 		t.genericId = t.typeId;
 	}
 
-	public final static BunType newGenericType(String baseName, UniArray<BunType> typeList) {
+	public final static BunType newGenericType(String baseName, UList<BunType> typeList) {
 		GenericType gt = null;
 		BunType t = _TypeNameMap.get(baseName+"<>", null);
 		if(t instanceof GenericType) {
@@ -259,7 +221,7 @@ public abstract class BunType  {
 		return false;
 	}
 	private final static String mangleTypes(String header, BunType[] t, int size) {
-		UniStringBuilder sb = new UniStringBuilder();
+		UStringBuilder sb = new UStringBuilder();
 		sb.append(header);
 		for(int i = 0; i < size; i++) {
 			sb.append("+");
@@ -269,17 +231,17 @@ public abstract class BunType  {
 	}
 
 	public final static BunType newGenericType(String baseName, BunType type) {
-		UniArray<BunType> typeList = new UniArray<BunType>(new BunType[1]);
+		UList<BunType> typeList = new UList<BunType>(new BunType[1]);
 		typeList.add(type);
 		return newGenericType(baseName, typeList);
 	}
 
-	public static BunType newUnionType(UniArray<BunType> list) {
+	public static BunType newUnionType(UList<BunType> list) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public final static FuncType newFuncType(UniArray<BunType> typeList) {
+	public final static FuncType newFuncType(UList<BunType> typeList) {
 		BunType funcType = newGenericType(FuncType.FuncBaseName, typeList);
 		if(funcType instanceof FuncType) {
 			return (FuncType)funcType;
@@ -288,7 +250,7 @@ public abstract class BunType  {
 	}
 
 	public final static FuncType newFuncType(BunType t, BunType r) {
-		UniArray<BunType> typeList = new UniArray<BunType>(new BunType[2]);
+		UList<BunType> typeList = new UList<BunType>(new BunType[2]);
 		typeList.add(t);
 		typeList.add(r);
 		return BunType.newFuncType(typeList);
@@ -314,7 +276,7 @@ public abstract class BunType  {
 		BunType t = _TypeNameMap.get(key, null);
 		if(t == null) {
 			t = new TransType(sourceType, targetType, f);
-			_TypeNameMap.put(key, t);
+			issueType(key, t);
 		}
 		return t;
 	}
@@ -350,22 +312,37 @@ public abstract class BunType  {
 		return new BunNotType(type);
 	}
 
-	public static BunType newAndType(UniArray<BunType> typeList) {
+	public static BunType newAndType(UList<BunType> typeList) {
 		BunAndType at = new BunAndType();
 		at.types = typeList.compactArray();
 		return at;
 	}
 
+	public static BunType newTokenType(String text) {
+		String key = "`" + text;
+		BunType t = _TypeNameMap.get(key, null);
+		if(t == null) {
+			t = new TokenType(text);
+			issueType(key, t);
+		}
+		return t;
+	}
+
 	public static BunType newNodeType(String text) {
-		// TODO Auto-generated method stub
-		return null;
+		String key = "#" + text;
+		BunType t = _TypeNameMap.get(key, null);
+		if(t == null) {
+			t = new NodeType(text);
+			issueType(key, t);
+		}
+		return t;
 	}
 
 	public static BunType newOptionalType(String text) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
 }
 
 abstract class LangType extends BunType {
@@ -392,7 +369,7 @@ class ValueType extends LangType {
 		superTypes = BunType.emptyTypes;
 	}
 	@Override
-	public void stringfy(UniStringBuilder sb) {
+	public void stringfy(UStringBuilder sb) {
 		sb.append(this.name);
 	}
 	
@@ -439,7 +416,7 @@ class VarType extends LangType {
 		this.node = node;
 	}
 	@Override
-	public void stringfy(UniStringBuilder sb) {
+	public void stringfy(UStringBuilder sb) {
 		if(this.inferredType != null) {
 			sb.append("(?->");
 			this.inferredType.stringfy(sb);
@@ -495,13 +472,13 @@ class GenericType extends LangType {
 	}
 	
 	public GenericType newCloneType(BunType[] typeParams) {
-		GenericType gt = new GenericType(this.label, this.baseName, this.genericId);
+		GenericType gt = new GenericType(this.tag, this.baseName, this.genericId);
 		gt.typeParams = typeParams;
 		return gt;
 	}
 
 	@Override
-	public void stringfy(UniStringBuilder sb) {
+	public void stringfy(UStringBuilder sb) {
 		this.stringfy(sb, this.baseName + "<", ",", ">");
 	}
 
@@ -522,18 +499,18 @@ class GenericType extends LangType {
 
 	@Override
 	public BunType getRealType() {
-//		if(this.typeId == -1) {
-//			boolean noVarType = true;
-//			for(int i = 0; i < typeParams.length; i++) {
-//				typeParams[i] = typeParams[i].getRealType();
-//				if(typeParams[i].hasVarType()) {
-//					noVarType = false;
-//				}
-//			}
-//			if(noVarType) {
-//				return BunType.newGenericType(this, this.typeParams);
-//			}
-//		}
+		if(!this.isIssued()) {
+			boolean noVarType = true;
+			for(int i = 0; i < typeParams.length; i++) {
+				typeParams[i] = typeParams[i].getRealType();
+				if(typeParams[i].hasVarType()) {
+					noVarType = false;
+				}
+			}
+			if(noVarType) {
+				return BunType.newGenericType(this, this.typeParams);
+			}
+		}
 		return this;
 	}
 
@@ -618,7 +595,7 @@ class UnionType extends LangType {
 		}
 	}
 	@Override
-	public void stringfy(UniStringBuilder sb) {
+	public void stringfy(UStringBuilder sb) {
 		this.stringfy(sb, "", "|", "");
 	}
 	@Override
@@ -697,7 +674,7 @@ class TransType extends BunType {
 		return this.targetType;
 	}
 	@Override
-	public void stringfy(UniStringBuilder sb) {
+	public void stringfy(UStringBuilder sb) {
 		this.targetType.stringfy(sb);
 		sb.append("(<-");
 		this.sourceType.stringfy(sb);
@@ -745,7 +722,6 @@ class TransType extends BunType {
 		}
 	}
 }
-
 
 class GreekList {
 	public String name;
@@ -806,7 +782,7 @@ class GreekType extends LangType {
 		this.greekIndex = greekIndex;
 	}
 	@Override
-	public void stringfy(UniStringBuilder sb) {
+	public void stringfy(UStringBuilder sb) {
 		sb.append("$");
 		sb.appendInt(this.greekIndex);
 	}
@@ -843,7 +819,6 @@ class GreekType extends LangType {
 
 // Mutable<T>, Assignable<T> = T
 // T|null
-
 
 abstract class BunNodeType extends BunType {
 	String symbol;
@@ -888,17 +863,17 @@ abstract class BunNodeType extends BunType {
 }
 
 class NodeType extends BunNodeType {
-	String symbol;
 	NodeType(String symbol) {
-		super("#Tbun.node", symbol);
+		super("#Tbun.node", "#" + symbol);
 	}
 	@Override
-	public void stringfy(UniStringBuilder sb) {
+	public void stringfy(UStringBuilder sb) {
 		sb.append("#");
 		sb.append(this.symbol);
 	}
 	public boolean accept(SymbolTable gamma, PegObject node, boolean hasNextChoice) {
-		if(this.symbol.equals(node.name)) {
+		//System.out.println("node " + node + " isa ? " + this.symbol);
+		if(this.symbol.equals(node.tag)) {
 			return true;
 		}
 		return false;
@@ -913,12 +888,13 @@ class TokenType extends BunNodeType {
 		super("#Tbun.token", symbol);
 	}
 	@Override
-	public void stringfy(UniStringBuilder sb) {
+	public void stringfy(UStringBuilder sb) {
 		sb.append("'");
 		sb.append(this.symbol);
 		sb.append("'");
 	}
 	public boolean accept(SymbolTable gamma, PegObject node, boolean hasNextChoice) {
+		//System.out.println("@@@@ matching " + this + "   "+ this.symbol + " " + node.getText() + " ... " + this.symbol.equals(node.getText()));
 		if(this.symbol.equals(node.getText())) {
 			return true;
 		}
@@ -934,7 +910,7 @@ class SymbolType extends BunNodeType {
 		super("#Tbun.symbol", symbol);
 	}
 	@Override
-	public void stringfy(UniStringBuilder sb) {
+	public void stringfy(UStringBuilder sb) {
 		sb.append("$");
 		sb.append(this.symbol);
 	}
@@ -969,7 +945,7 @@ class VariableType extends BunNodeType {
 		super("#Tbun.optinal", "@Variable");
 	}
 	@Override
-	public void stringfy(UniStringBuilder sb) {
+	public void stringfy(UStringBuilder sb) {
 		sb.append(this.symbol);
 	}
 	public boolean accept(SymbolTable gamma, PegObject node, boolean hasNextChoice) {
@@ -988,7 +964,7 @@ class BunNotType extends BunNodeType {
 		this.innerType = innerType;
 	}
 	@Override
-	public void stringfy(UniStringBuilder sb) {
+	public void stringfy(UStringBuilder sb) {
 		sb.append("!");
 		innerType.stringfy(sb);
 	}
@@ -1007,7 +983,7 @@ class BunAndType extends BunNodeType {
 		this.types = BunType.emptyTypes;
 	}
 	@Override
-	public void stringfy(UniStringBuilder sb) {
+	public void stringfy(UStringBuilder sb) {
 		this.stringfy(sb, "", " ", "");
 	}
 	@Override

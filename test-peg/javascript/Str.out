@@ -1,0 +1,50 @@
+parsed:
+#block {            ## by peg : ( SourceElement^ (__ SourceElement^)*  ) defined in SourceElements
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+         #identifier: str   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #string: hoge   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
+      }
+   }
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+         #identifier: str   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #string: \n \f \b \r \t  \v \' \" \\ \x46 \117 \uFF4F   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
+      }
+   }
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+         #identifier: str   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #new {            ## by peg : ( NewToken __ MemberExpression^ __ Arguments^  ) defined in New
+            #identifier: String   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            #arguments {            ## by peg : ( Argument^ (__ ',' __ Argument^)*  ) defined in ArgumentList
+               #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
+                  #string: foo   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
+               }
+            }
+         }
+      }
+   }
+}
+** uncosumed: 'l = str.length;
+s = str.charAt(1);
+s = str.substring(2);
+s = str.substring(1,3);
+s = str.slice(2);
+s = str.slice(1,3);
+s = str.substr(2);
+s = str.substr(1,3);
+
+str = "hoge:hogehoge:hogehogehoge";
+a = str.split(":");
+ss = str.concat(s);
+str = "hoge".replace("o","u");
+u = a.toUpperCase();
+l = u.toLowerCase();
+
+i = "hoge".indexOf("o");
+i = "hoge".lastIndexOf("h",2);
+
+str = "hoge".match(/[eg]/);
+i = "hoge".search(/og/);
+' **

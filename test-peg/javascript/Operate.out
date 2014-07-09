@@ -1,192 +1,196 @@
 parsed:
-#block {            ## by peg : null
-   #stmt.expression {            ## by peg : null
-      #assign {            ## by peg : null
-         #identifier: a   ## by peg : null
-         #number: 10   ## by peg : null
+#block {            ## by peg : ( SourceElement^ (__ SourceElement^)*  ) defined in SourceElements
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+         #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #intNumber: 10   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
       }
    }
-   #stmt.expression {            ## by peg : null
-      #assign {            ## by peg : null
-         #identifier: b   ## by peg : null
-         #number: 2   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+         #identifier: b   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #intNumber: 2   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
       }
    }
-   #stmt.expression {            ## by peg : null
-      #assign {            ## by peg : null
-         #identifier: c   ## by peg : null
-         #string: 10   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+         #identifier: c   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #string: 10   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
       }
    }
-   #stmt.expression {            ## by peg : null
-      #assign {            ## by peg : null
-         #identifier: d   ## by peg : null
-         #bool: true   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+         #identifier: d   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #bool: true   ## by peg : ( (TrueToken / FalseToken)  ) defined in BooleanLiteral
       }
    }
-   #stmt.expression {            ## by peg : null
-      #assign {            ## by peg : null
-         #identifier: e   ## by peg : null
-         #identifier: bool   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+         #identifier: e   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #bool: false   ## by peg : ( (TrueToken / FalseToken)  ) defined in BooleanLiteral
       }
    }
-   #stmt.expression {            ## by peg : null
-      #add {            ## by peg : null
-         #identifier: a   ## by peg : null
-         #identifier: b   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #add {            ## by peg : ( __ AdditiveOperator __ MultiplicativeExpression^ ) defined in AdditiveExpression
+         #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #identifier: b   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
       }
    }
-   #stmt.expression {            ## by peg : null
-      #sub {            ## by peg : null
-         #identifier: a   ## by peg : null
-         #identifier: b   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #sub {            ## by peg : ( __ AdditiveOperator __ MultiplicativeExpression^ ) defined in AdditiveExpression
+         #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #identifier: b   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
       }
    }
-   #stmt.expression {            ## by peg : null
-      #mul {            ## by peg : null
-         #identifier: a   ## by peg : null
-         #identifier: b   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #mul {            ## by peg : ( __ MultiplicativeOperator __ UnaryExpression^ ) defined in MultiplicativeExpression
+         #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #identifier: b   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
       }
    }
-   #stmt.expression {            ## by peg : null
-      #div {            ## by peg : null
-         #identifier: a   ## by peg : null
-         #identifier: b   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #div {            ## by peg : ( __ MultiplicativeOperator __ UnaryExpression^ ) defined in MultiplicativeExpression
+         #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #identifier: b   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
       }
    }
-   #stmt.expression {            ## by peg : null
-      #mod {            ## by peg : null
-         #identifier: a   ## by peg : null
-         #identifier: b   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #mod {            ## by peg : ( __ MultiplicativeOperator __ UnaryExpression^ ) defined in MultiplicativeExpression
+         #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #identifier: b   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
       }
    }
-   #stmt.expression {            ## by peg : null
-      #postincl: a++   ## by peg : null
-   }
-   #stmt.expression {            ## by peg : null
-      #preincl {            ## by peg : null
-         #identifier: b   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #postincl {            ## by peg : ( LeftHandSideExpression^ _ '++'  ) defined in PostfixExpression
+         #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
       }
    }
-   #stmt.expression {            ## by peg : null
-      #postdecl: a--   ## by peg : null
-   }
-   #stmt.expression {            ## by peg : null
-      #predecl {            ## by peg : null
-         #identifier: b   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #preincl {            ## by peg : ( UnaryOperator __ UnaryExpression^ ) defined in UnaryExpression
+         #identifier: b   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
       }
    }
-   #stmt.expression {            ## by peg : null
-      #eq {            ## by peg : null
-         #identifier: a   ## by peg : null
-         #identifier: b   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #postdecl {            ## by peg : ( LeftHandSideExpression^ _ '--'  ) defined in PostfixExpression
+         #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
       }
    }
-   #stmt.expression {            ## by peg : null
-      #noteq {            ## by peg : null
-         #identifier: a   ## by peg : null
-         #identifier: b   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #predecl {            ## by peg : ( UnaryOperator __ UnaryExpression^ ) defined in UnaryExpression
+         #identifier: b   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
       }
    }
-   #stmt.expression {            ## by peg : null
-      #lt {            ## by peg : null
-         #identifier: a   ## by peg : null
-         #identifier: b   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #eq {            ## by peg : ( __ EqualityOperator __ RelationalExpression^ ) defined in EqualityExpression
+         #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #identifier: b   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
       }
    }
-   #stmt.expression {            ## by peg : null
-      #lte {            ## by peg : null
-         #identifier: a   ## by peg : null
-         #identifier: b   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #noteq {            ## by peg : ( __ EqualityOperator __ RelationalExpression^ ) defined in EqualityExpression
+         #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #identifier: b   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
       }
    }
-   #stmt.expression {            ## by peg : null
-      #gt {            ## by peg : null
-         #identifier: a   ## by peg : null
-         #identifier: b   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #lt {            ## by peg : ( __ RelationalOperator __ ShiftExpression^ ) defined in RelationalExpression
+         #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #identifier: b   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
       }
    }
-   #stmt.expression {            ## by peg : null
-      #gte {            ## by peg : null
-         #identifier: a   ## by peg : null
-         #identifier: b   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #lte {            ## by peg : ( __ RelationalOperator __ ShiftExpression^ ) defined in RelationalExpression
+         #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #identifier: b   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
       }
    }
-   #stmt.expression {            ## by peg : null
-      #eq {            ## by peg : null
-         #identifier: a   ## by peg : null
-         #identifier: c   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #gt {            ## by peg : ( __ RelationalOperator __ ShiftExpression^ ) defined in RelationalExpression
+         #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #identifier: b   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
       }
    }
-   #stmt.expression {            ## by peg : null
-      #noteq {            ## by peg : null
-         #identifier: a   ## by peg : null
-         #identifier: c   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #gte {            ## by peg : ( __ RelationalOperator __ ShiftExpression^ ) defined in RelationalExpression
+         #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #identifier: b   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
       }
    }
-   #stmt.expression {            ## by peg : null
-      #and {            ## by peg : null
-         #identifier: d   ## by peg : null
-         #identifier: e   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #eq {            ## by peg : ( __ EqualityOperator __ RelationalExpression^ ) defined in EqualityExpression
+         #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #identifier: c   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
       }
    }
-   #stmt.expression {            ## by peg : null
-      #or {            ## by peg : null
-         #identifier: d   ## by peg : null
-         #identifier: e   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #noteq {            ## by peg : ( __ EqualityOperator __ RelationalExpression^ ) defined in EqualityExpression
+         #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #identifier: c   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
       }
    }
-   #stmt.expression {            ## by peg : null
-      #not {            ## by peg : null
-         #identifier: e   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #and {            ## by peg : ( __ LogicalANDOperator  __ BitwiseORExpression^ ) defined in LogicalANDExpression
+         #identifier: d   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #identifier: e   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
       }
    }
-   #stmt.expression {            ## by peg : null
-      #trinary {            ## by peg : null
-         #identifier: d   ## by peg : null
-         #string: hoge   ## by peg : null
-         #string: hogehoge   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #or {            ## by peg : ( __ LogicalOROperator  __ LogicalANDExpression^ ) defined in LogicalORExpression
+         #identifier: d   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #identifier: e   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
       }
    }
-   #stmt.expression {            ## by peg : null
-      #and {            ## by peg : null
-         #identifier: a   ## by peg : null
-         #identifier: b   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #not {            ## by peg : ( UnaryOperator __ UnaryExpression^ ) defined in UnaryExpression
+         #identifier: e   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
       }
    }
-   #stmt.expression {            ## by peg : null
-      #bitor {            ## by peg : null
-         #identifier: a   ## by peg : null
-         #identifier: b   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #trinary {            ## by peg : ( LogicalORExpression^ __ '?' __ AssignmentExpression^ __ ':' __ AssignmentExpression^  ) defined in ConditionalExpression
+         #identifier: d   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #string: hoge   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
+         #string: hogehoge   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
       }
    }
-   #stmt.expression {            ## by peg : null
-      #bitxor {            ## by peg : null
-         #identifier: a   ## by peg : null
-         #identifier: b   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #and {            ## by peg : ( __ BitwiseANDOperator  __ EqualityExpression^ ) defined in BitwiseANDExpression
+         #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #identifier: b   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
       }
    }
-   #stmt.expression {            ## by peg : null
-      #compl {            ## by peg : null
-         #identifier: a   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #bitor {            ## by peg : ( __ BitwiseOROperator  __ BitwiseXORExpression^ ) defined in BitwiseORExpression
+         #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #identifier: b   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
       }
    }
-   #stmt.expression {            ## by peg : null
-      #lshift {            ## by peg : null
-         #identifier: a   ## by peg : null
-         #number: 2   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #bitxor {            ## by peg : ( __ BitwiseXOROperator  __ BitwiseANDExpression^ ) defined in BitwiseXORExpression
+         #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #identifier: b   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
       }
    }
-   #stmt.expression {            ## by peg : null
-      #rshift {            ## by peg : null
-         #identifier: a   ## by peg : null
-         #number: 2   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #compl {            ## by peg : ( UnaryOperator __ UnaryExpression^ ) defined in UnaryExpression
+         #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
       }
    }
-   #stmt.expression {            ## by peg : null
-      #rshift {            ## by peg : null
-         #identifier: a   ## by peg : null
-         #number: 2   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #lshift {            ## by peg : ( __ ShiftOperator __ AdditiveExpression^ ) defined in ShiftExpression
+         #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #intNumber: 2   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
+      }
+   }
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #rshift {            ## by peg : ( __ ShiftOperator __ AdditiveExpression^ ) defined in ShiftExpression
+         #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #intNumber: 2   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
+      }
+   }
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #rshift {            ## by peg : ( __ ShiftOperator __ AdditiveExpression^ ) defined in ShiftExpression
+         #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #intNumber: 2   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
       }
    }
 }

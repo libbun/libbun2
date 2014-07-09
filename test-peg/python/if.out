@@ -1,14 +1,14 @@
 parsed:
-#toplevel {            ## by peg : ( (Stmt^)+  )
-   #if {            ## by peg : ( 'if' WS+ Expr^ WS* ':' Block^ (Elif^)* ('else' WS* ':' Block^)?  )
-      #lt {            ## by peg : ( WS* ('<' !'<'  / '<='  / '>' !'>'  / '>=' ) WS* Shift^ )
-         #integer: 5   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  )
-         #integer: 3   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  )
+#toplevel {            ## by peg : ( (Stmt^)+  ) defined in TopLevel
+   #if {            ## by peg : ( 'if' WS+ Expr^ WS* ':' Block^ (Elif^)* (indent 'else' WS* ':' Block^)?  ) defined in IfStmt
+      #lt {            ## by peg : ( WS* ('<' !'<'  / '<='  / '>' !'>'  / '>=' ) WS* Shift^ ) defined in Relation
+         #integer: 5   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  ) defined in Number
+         #integer: 3   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  ) defined in Number
       }
-      #block {            ## by peg : ( (indent WS* Stmt^ EOS?)+  )
-         #add {            ## by peg : ( WS* ('+'  / '-' ) WS* Product^ )
-            #integer: 4   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  )
-            #integer: 6   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  )
+      #block {            ## by peg : ( (WS* EOS+ / indent WS+ Stmt^ EOS?)+  ) defined in Block
+         #add {            ## by peg : ( WS* ('+'  / '-' ) WS* Product^ ) defined in Sum
+            #integer: 4   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  ) defined in Number
+            #integer: 6   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  ) defined in Number
          }
       }
    }

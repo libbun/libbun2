@@ -3,14 +3,14 @@ package org.libbun;
 import java.util.HashMap;
 
 public class SimpleParserContext extends ParserContext {
-	private UniMap<Peg>        pegCache;
+	private UMap<Peg>        pegCache;
 	
 	class SimpleMemo {
 		PegObject result;
 		int nextPosition;
 	}
 
-	final UniArray<SimpleLog> logStack = new UniArray<SimpleLog>(new SimpleLog[128]);
+	final UList<SimpleLog> logStack = new UList<SimpleLog>(new SimpleLog[128]);
 	private int stackTop = 0;
 
 	class SimpleLog {
@@ -32,25 +32,26 @@ public class SimpleParserContext extends ParserContext {
 	
 	@Override
 	public void setRuleSet(PegRuleSet ruleSet) {
+		this.ruleSet = ruleSet;
 		this.loadPegDefinition(ruleSet.pegMap);
 	}
 
-	public final void loadPegDefinition(UniMap<Peg> pegMap) {
-		this.pegCache = new UniMap<Peg>();	
-		UniArray<String> list = pegMap.keys();
+	public final void loadPegDefinition(UMap<Peg> pegMap) {
+		this.pegCache = new UMap<Peg>();	
+		UList<String> list = pegMap.keys();
 		for(int i = 0; i < list.size(); i++) {
 			String key = list.ArrayValues[i];
 			Peg e = pegMap.get(key, null);
 			this.checkLeftRecursion(key, e);
 		}
-		list = this.pegCache.keys();
-		for(int i = 0; i < list.size(); i++) {
-			String key = list.ArrayValues[i];
-			Peg e = this.pegCache.get(key, null);
+//		list = this.pegCache.keys();
+//		for(int i = 0; i < list.size(); i++) {
+//			String key = list.ArrayValues[i];
+//			Peg e = this.pegCache.get(key, null);
 //			if(Main.PegDebuggerMode) {
 //				System.out.println(e.toPrintableString(key, "\n  = ", "\n  / ", "\n  ;", true));
 //			}
-		}
+//		}
 	}
 	
 	private void checkLeftRecursion(String name, Peg e) {
@@ -207,8 +208,8 @@ public class SimpleParserContext extends ParserContext {
 			this.memoHit += 1;
 			this.endVerifyMode(verifyMode);
 			if(m.createdPeg == keypeg) {
+				this.setPosition(m.pos);  // comsume
 				if(verifyMode) {
-					this.setPosition(m.pos);  // comsume
 					return inNode;
 				}
 				//this.removePreCheckCache(keypos, m.pos);
@@ -233,7 +234,7 @@ public class SimpleParserContext extends ParserContext {
 			return vnode;
 		}
 		//this.removePreCheckCache(keypos, this.getPosition());
-		this.rollback(keypos);
+		//this.rollback(keypos);
 		return null;
 	}
 	

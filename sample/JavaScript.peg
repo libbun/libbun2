@@ -160,15 +160,16 @@ BooleanLiteral
 //
 
 NumericLiteral
-  = << HexIntegerLiteral !(IdentifierStart / DecimalDigit)
-  / OctIntegerLiteral !(IdentifierStart / DecimalDigit)
-  / DecimalLiteral !(IdentifierStart / DecimalDigit) #number >>
+  = << HexIntegerLiteral !(IdentifierStart / DecimalDigit) #hexNumber >>
+  / << OctIntegerLiteral !(IdentifierStart / DecimalDigit) #octNumber >>
+  / << BinIntegerLiteral !(IdentifierStart / DecimalDigit) #binNumber >>
+  / DecimalLiteral !(IdentifierStart / DecimalDigit)
   ;
 
 DecimalLiteral
-  = DecimalIntegerLiteral "." DecimalDigit* ExponentPart?
-  / "." DecimalDigit+ ExponentPart?
-  / DecimalIntegerLiteral ExponentPart?
+  = << DecimalIntegerLiteral "." DecimalDigit* ExponentPart? #floatNumber >>
+  / << "." DecimalDigit+ ExponentPart? #floatNumber >>
+  / << DecimalIntegerLiteral ExponentPart? #intNumber >>
   ;
 
 DecimalIntegerLiteral
@@ -193,7 +194,8 @@ ExponentIndicator
   ;
 
 SignedInteger
-  = [+-]? DecimalDigit+
+  = "+"? DecimalDigit+
+  / "-" DecimalDigit+
   ;
 
 HexIntegerLiteral
@@ -205,11 +207,19 @@ HexDigit
   ;
 
 OctIntegerLiteral
-  = "0" OctDigit+
+  = "0" [Oo]? OctDigit+
   ;
 
 OctDigit
   = [0-7]
+  ;
+
+BinIntegerLiteral
+  = "0" [Bb] BinDigit+
+  ;
+
+BinDigit
+  = [01]
   ;
 
 StringLiteral
@@ -237,6 +247,7 @@ EscapeSequence
   = CharacterEscapeSequence
   / "0" !DecimalDigit
   / HexEscapeSequence
+  / OctEscapeSequence
   / UnicodeEscapeSequence
   ;
 
@@ -264,6 +275,10 @@ EscapeCharacter
 
 HexEscapeSequence
   = "x" (HexDigit HexDigit)
+  ;
+
+OctEscapeSequence
+  = OctDigit OctDigit OctDigit
   ;
 
 UnicodeEscapeSequence
@@ -303,7 +318,7 @@ RegularExpressionClass
   ;
 
 RegularExpressionClassChar
-  = ![\]\\] RegularExpressionNonTerminator
+  = ![\x5d\\] RegularExpressionNonTerminator
   / RegularExpressionBackslashSequence
   ;
 
@@ -526,7 +541,11 @@ Arguments
   ;
 
 ArgumentList
-  = << AssignmentExpression@ (__ "," __ AssignmentExpression@)* #arguments >>
+  = << Argument@ (__ "," __ Argument@)* #arguments >>
+  ;
+
+Argument
+  = << AssignmentExpression@ #argument >>
   ;
 
 LeftHandSideExpression
@@ -535,14 +554,15 @@ LeftHandSideExpression
   ;
 
 PostfixExpression
-  = << LeftHandSideExpression _ PostfixOperator >>
+  = << LeftHandSideExpression@ _ "++" #postincl >>
+  / << LeftHandSideExpression@ _ "--" #postdecl >>
   / LeftHandSideExpression
   ;
 
-PostfixOperator
-  = "++" #postincl
-  / "--" #postdecl
-  ;
+// PostfixOperator
+//   = "++" #postincl
+//   / "--" #postdecl
+//   ;
 
 UnaryExpression
   = PostfixExpression
@@ -550,13 +570,13 @@ UnaryExpression
   ;
 
 UnaryOperator
-  = $DeleteToken #delete
-  / $VoidToken #void
-  / $TypeofToken #typeof
+  = DeleteToken #delete
+  / VoidToken #void
+  / TypeofToken #typeof
   / "++" #preincl
   / "--" #predecl
-  / $("+" !"=") #plus
-  / $("-" !"=") #minus
+  / ("+" !"=") #plus
+  / ("-" !"=") #minus
   / "~" #compl
   / "!" #not
   ;
@@ -567,9 +587,9 @@ MultiplicativeExpression
   ;
 
 MultiplicativeOperator
-  = $("*" !"=") #mul
-  / $("/" !"=") #div
-  / $("%" !"=") #mod
+  = ("*" !"=") #mul
+  / ("/" !"=") #div
+  / ("%" !"=") #mod
   ;
 
 AdditiveExpression
@@ -578,8 +598,8 @@ AdditiveExpression
   ;
 
 AdditiveOperator
-  = $("+" ![+=]) #add
-  / $("-" ![-=]) #sub
+  = ("+" ![+=]) #add
+  / ("-" ![-=]) #sub
   ;
 
 ShiftExpression
@@ -588,9 +608,9 @@ ShiftExpression
   ;
 
 ShiftOperator
-  = $("<<"  !"=") #lshift
-  / $(">>>" !"=") #rshift
-  / $(">>"  !"=") #rshift
+  = ("<<"  !"=") #lshift
+  / (">>>" !"=") #rshift
+  / (">>"  !"=") #rshift
   ;
 
 RelationalExpression
@@ -611,8 +631,8 @@ RelationalOperator
 RelationalOperatorNoIn
   = "<=" #lte
   / ">=" #gte
-  / $("<" !"<") #lt
-  / $(">" !">") #gt
+  / ("<" !"<") #lt
+  / (">" !">") #gt
   / InstanceofToken #instanceof
   ;
 
@@ -644,7 +664,7 @@ BitwiseANDExpressionNoIn
   ;
 
 BitwiseANDOperator
-  = $("&" ![&=]);
+  = ("&" ![&=]);
 
 BitwiseXORExpression
   = BitwiseANDExpression // first
@@ -657,7 +677,7 @@ BitwiseXORExpressionNoIn
   ;
 
 BitwiseXOROperator
-  = $("^" !"=")
+  = ("^" !"=")
   ;
 
 BitwiseORExpression
@@ -671,7 +691,7 @@ BitwiseORExpressionNoIn
   ;
 
 BitwiseOROperator
-  = $("|" ![|=])
+  = ("|" ![|=])
   ;
 
 LogicalANDExpression
@@ -815,11 +835,11 @@ InitialiserNoIn
   ;
 
 EmptyStatement
-  = <<";" #stmt.empty >>
+  = <<";" #emptystmt >>
   ;
 
 ExpressionStatement
-  = !("{" / FunctionToken) << Expression@ EOS #stmt.expression >>// expression
+  = !("{" / FunctionToken) << Expression@ EOS #exprstmt >>// expression
   ;
 
 IfStatement
@@ -941,19 +961,23 @@ DebuggerStatement
 ///* ----- A.5 Functions and Programs ----- */
 
 FunctionDeclaration
-  = FunctionToken __ Identifier@ __ // id
-    "(" __ (FormalParameterList __)@? ")" __ // params
-    "{" __ FunctionBody@ __ "}" // body
+  = << FunctionToken __ Identifier@ __        // id
+    "(" __ (FormalParameterList __)@? ")" __  // params
+    "{" __ FunctionBody@ __ "}" #function  >> // body
   ;
 
 FunctionExpression
-  = FunctionToken __ (Identifier __)@? // id
-    "(" __ (FormalParameterList __)@? ")" __ // params
-    "{" __ FunctionBody@ __ "}" // body
+  = << FunctionToken __ (Identifier __)@?     // id
+    "(" __ (FormalParameterList __)@? ")" __  // params
+    "{" __ FunctionBody@ __ "}" #function >>  // body
   ;
 
 FormalParameterList
-  = Identifier@ (__ "," __ Identifier)@* // first // rest
+  = << FunctionIdentifier@ (__ "," __ FunctionIdentifier)@* #params >> // first // rest
+  ;
+
+FunctionIdentifier
+  = << Identifier@ #param >>
   ;
 
 FunctionBody
@@ -972,15 +996,3 @@ SourceElement
   = Statement
   / FunctionDeclaration
   ;
-
-///* ----- A.6 Universal Resource Identifier Character Classes ----- */
-
-// Irrelevant.
-
-///* ----- A.7 Regular Expressions ----- */
-
-// Irrelevant.
-
-///* ----- A.8 JSON ----- */
-
-// Irrelevant. *

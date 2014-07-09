@@ -9,7 +9,7 @@ _
 BasicType
   = <<'void'    #Tvoid>>
   / <<'boolean' #Tboolean>>
-  / <<'int'     #Tint>>
+  / <<'int'     #Tint64>>
   / <<'float'   #Tdouble>>
   / <<'String'  #TString>>
   ;

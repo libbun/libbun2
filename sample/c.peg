@@ -193,7 +193,7 @@ StructOrUnion
     ;
 
 StructDeclaration
-    = << SpecifierQualifierList StructDeclaratorList@ SEMI #structdeclaration >>
+    = << SpecifierQualifierList StructDeclaratorList@? SEMI #structdeclaration >>
     ;
 
 SpecifierQualifierList
@@ -231,23 +231,23 @@ Enumerator
     ;
 
 TypeQualifier
-    = CONST
+    = << CONST #const>>
     / RESTRICT
     / VOLATILE
     / DECLSPEC LPAR Identifier RPAR
     ;
 
 FunctionSpecifier
-    = INLINE
-    / STDCALL
+    = << INLINE #inline >>
+    / << STDCALL #stdcall >>
     ;
 
 Attribute
-    = ATTRIBUTE LPAR LPAR Identifier AttributeParamList? RPAR RPAR;
+    = << ATTRIBUTE #attribute LPAR LPAR (PostfixExpression@ / TypeQualifier@ / Identifier@) AttributeParamList@? RPAR RPAR >>;
 
-AttributeParam = IntegerConstant / Identifier / StringLiteral;
+AttributeParam = << IntegerConstant@ / Identifier@ / StringLiteral@ #attributeparam >>;
 
-AttributeParamList = LPAR (AttributeParam (COMMA AttributeParam)*)? RPAR;
+AttributeParamList = LPAR (AttributeParam@ (COMMA AttributeParam@)*)? RPAR;
 
 
 Assembler = ASM LPAR (StringLiteral (COMMA StringLiteral)*)? RPAR;
@@ -389,14 +389,23 @@ PrimaryExpression
     / LPAR Expression RPAR
     ;
 
+Index
+    = LBRK@ Expression@ RBRK@
+    ;
+
+
+FunctionCall
+    = LPAR@ ArgumentExpressionList@? RPAR@
+    ;
+
 PostfixExpression
     = ( PrimaryExpression
       / LPAR TypeName RPAR LWING InitializerList COMMA? RWING
       )
       <<@
-      ( LBRK@ Expression@ RBRK@
-      / LPAR@ ArgumentExpressionList@? RPAR@
-      / DOT #dot Identifier@
+      ( FunctionCall #apply
+      / Index #index
+      / DOT #field Identifier@
       / PTR #ptr Identifier@
       / INC #inc
       / DEC #dec
@@ -545,7 +554,7 @@ FOR       = "for"        !IdChar Spacing ;
 GOTO      = "goto"       !IdChar Spacing ;
 IF        = "if"         !IdChar Spacing ;
 INT       = "int"        !IdChar Spacing ;
-INLINE    = "inline"     !IdChar Spacing ;
+INLINE    = ("inline" / "__inline")    !IdChar Spacing ;
 LONG      = "long"       !IdChar Spacing ;
 REGISTER  = "register"   !IdChar Spacing ;
 RESTRICT  = "restrict"   !IdChar Spacing ;

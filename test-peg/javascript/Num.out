@@ -1,31 +1,41 @@
 parsed:
-#block {            ## by peg : null
-   #stmt.expression {            ## by peg : null
-      #number: 1234   ## by peg : null
+#block {            ## by peg : ( SourceElement^ (__ SourceElement^)*  ) defined in SourceElements
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #intNumber: 1234   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
    }
-   #stmt.expression {            ## by peg : null
-      #minus {            ## by peg : null
-         #number: 1234   ## by peg : null
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #minus {            ## by peg : ( UnaryOperator __ UnaryExpression^ ) defined in UnaryExpression
+         #intNumber: 1234   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
       }
-   }
-   #stmt.expression {            ## by peg : null
-      #number: 1.234   ## by peg : null
-   }
-   #stmt.expression {            ## by peg : null
-      #minus {            ## by peg : null
-         #number: 1.234   ## by peg : null
-      }
-   }
-   #stmt.expression {            ## by peg : null
-      #number: 123e4   ## by peg : null
-   }
-   #stmt.expression {            ## by peg : null
-      #number: 123E4   ## by peg : null
-   }
-   #stmt.expression {            ## by peg : null
-      : 0123   ## by peg : null
-   }
-   #stmt.expression {            ## by peg : null
-      : 0x123   ## by peg : null
    }
 }
+** uncosumed: '<<<<<<< HEAD
+=======
+1234.;
+-1234.;
+>>>>>>> ebad95126888e50972ad95f5750989b090df73d7
+1.234;
+-1.234;
+123e4;
+123E4;
+<<<<<<< HEAD
+0123;
+0x123;
+=======
+123e+4;
+123E+4;
+123e-4;
+123E-4;
+1.23e4;
+-1.23E4;
+1.23E+4;
+-1.23e-4;
+0b10;
+0B10;
+0123;
+0o123;
+0O123;
+0x123;
+0X123;
+>>>>>>> ebad95126888e50972ad95f5750989b090df73d7
+' **

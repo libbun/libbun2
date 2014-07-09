@@ -1,43 +1,43 @@
 parsed:
-#toplevel {            ## by peg : null
-   #class {            ## by peg : null
-      #name: A   ## by peg : null
-      #block {            ## by peg : null
-         #function {            ## by peg : null
-            #name: __init__   ## by peg : null
-            #params {            ## by peg : null
-               #param {            ## by peg : null
-                  #name: self   ## by peg : null
+#toplevel {            ## by peg : ( (Stmt^)+  ) defined in TopLevel
+   #class {            ## by peg : ( 'class' WS+ Symbol^ (WS* '(' WS* (Extend^)? WS* ')')? WS* ':' ClassBlock^  ) defined in DefineClass
+      #name: A   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  ) defined in Symbol
+      #block {            ## by peg : ( (WS* EOS+ / indent WS+ ClassStmt^ EOS?)+  ) defined in ClassBlock
+         #function {            ## by peg : ( 'def' WS+ Symbol^ '(' Params^ ')' WS* ':' Block^  ) defined in DefineFunction
+            #name: __init__   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  ) defined in Symbol
+            #params {            ## by peg : ( (Param^)? (_* ',' _* Param^)* _*  ) defined in Params
+               #param {            ## by peg : ( Symbol^ (WS* '=' WS* Expr^)?  ) defined in Param
+                  #name: self   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  ) defined in Symbol
                }
             }
-            #block {            ## by peg : null
-               #assign {            ## by peg : null
-                  #field {            ## by peg : null
-                     #name: self   ## by peg : null
-                     #name: a   ## by peg : null
+            #block {            ## by peg : ( (WS* EOS+ / indent WS+ Stmt^ EOS?)+  ) defined in Block
+               #assign {            ## by peg : ( WS* AssignOp WS* OrExpr^ ) defined in Assign
+                  #field {            ## by peg : ( Selector ) defined in Unary
+                     #name: self   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  ) defined in Symbol
+                     #name: a   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  ) defined in Symbol
                   }
-                  #integer: 1   ## by peg : null
+                  #integer: 1   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  ) defined in Number
                }
-               #apply {            ## by peg : null
-                  #field {            ## by peg : null
-                     #name: self   ## by peg : null
-                     #name: b   ## by peg : null
+               #apply {            ## by peg : ( Selector ) defined in Unary
+                  #field {            ## by peg : ( Selector ) defined in Unary
+                     #name: self   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  ) defined in Symbol
+                     #name: b   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  ) defined in Symbol
                   }
-                  #args:    ## by peg : null
+                  #args:    ## by peg : ( _* (_* Expr^ (_* ',' _* Expr^)*)?  ) defined in Selector
                }
             }
          }
       }
    }
-   #class {            ## by peg : null
-      #name: B   ## by peg : null
-      #super {            ## by peg : null
-         #name: A   ## by peg : null
+   #class {            ## by peg : ( 'class' WS+ Symbol^ (WS* '(' WS* (Extend^)? WS* ')')? WS* ':' ClassBlock^  ) defined in DefineClass
+      #name: B   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  ) defined in Symbol
+      #super {            ## by peg : ( ExtendContent^  ) defined in Extend
+         #name: A   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  ) defined in Symbol
       }
-      #block {            ## by peg : null
-         #assign {            ## by peg : null
-            #name: b   ## by peg : null
-            #integer: 1   ## by peg : null
+      #block {            ## by peg : ( (WS* EOS+ / indent WS+ ClassStmt^ EOS?)+  ) defined in ClassBlock
+         #assign {            ## by peg : ( WS* AssignOp WS* OrExpr^ ) defined in Assign
+            #name: b   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  ) defined in Symbol
+            #integer: 1   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  ) defined in Number
          }
       }
    }

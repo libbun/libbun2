@@ -1,13 +1,13 @@
 package org.libbun;
 
 public final class PegRuleSet {
-	UniMap<Peg>           pegMap;
-	UniMap<String>        objectLabelMap = null;
+	UMap<Peg>           pegMap;
+	UMap<String>        objectLabelMap = null;
 	boolean lrExistence = false;
 	public boolean foundError = false;
 
 	public PegRuleSet() {
-		this.pegMap = new UniMap<Peg>();
+		this.pegMap = new UMap<Peg>();
 		this.pegMap.put("indent", new PegIndent(null));  // default rule
 	}
 
@@ -51,14 +51,14 @@ public final class PegRuleSet {
 	}
 	
 	public final void check() {
-		this.objectLabelMap = new UniMap<String>();
+		this.objectLabelMap = new UMap<String>();
 		this.foundError = false;
-		UniArray<String> list = this.pegMap.keys();
+		UList<String> list = this.pegMap.keys();
 		for(int i = 0; i < list.size(); i++) {
 			String ruleName = list.ArrayValues[i];
 			Peg e = this.pegMap.get(ruleName, null);
 			e.verify(ruleName, this);
-			if(Main.PegDebuggerMode) {
+			if(Main.VerbosePegMode) {
 				System.out.println(e.toPrintableString(ruleName, "\n  = ", "\n  / ", "\n  ;", true));
 			}
 		}
@@ -105,7 +105,8 @@ public final class PegRuleSet {
 	}
 	private Peg toPeg(PegObject node) {
 		Peg e = this.toPegImpl(node);
-		e.setSource(node.source, node.startIndex);
+		e.source = node.source;
+		e.sourcePosition = node.startIndex;
 		return e;
 	}	
 	private Peg toPegImpl(PegObject node) {
@@ -113,7 +114,7 @@ public final class PegRuleSet {
 			return new PegLabel(node.getText());
 		}
 		if(node.is("#string")) {
-			return new PegString(UniCharset._UnquoteString(node.getText()));
+			return new PegString(UCharset._UnquoteString(node.getText()));
 		}
 		if(node.is("#character")) {
 			return new PegCharacter(node.getText());
@@ -150,12 +151,15 @@ public final class PegRuleSet {
 		if(node.is("#option")) {
 			return new PegOptional(toPeg(node.get(0)));
 		}
-		if(node.is("#label")) {
-			return new PegTag(null, node.getText());
+		if(node.is("#tag")) {
+			return new PegTag(node.getText());
+		}
+		if(node.is("#message")) {
+			return new PegMessage(node.getText());
 		}
 		if(node.is("#newjoin")) {
 			Peg seq = toPeg(node.get(0));
-			PegNewObject o = new PegNewObject(null, true);
+			PegNewObject o = new PegNewObject(true);
 			if(seq.size() > 0) {
 				for(int i = 0; i < seq.size(); i++) {
 					o.list.add(seq.get(i));
@@ -168,7 +172,7 @@ public final class PegRuleSet {
 		}
 		if(node.is("#new")) {
 			Peg seq = toPeg(node.get(0));
-			PegNewObject o = new PegNewObject(null, false);
+			PegNewObject o = new PegNewObject(false);
 			if(seq.size() > 0) {
 				for(int i = 0; i < seq.size(); i++) {
 					o.list.add(seq.get(i));
@@ -183,9 +187,12 @@ public final class PegRuleSet {
 			int index = -1;
 			String indexString = node.getText();
 			if(indexString.length() > 0) {
-				index = (int)UniCharset._ParseInt(indexString);
+				index = (int)UCharset._ParseInt(indexString);
 			}
-			return new PegSetter(null, toPeg(node.get(0)), index);
+			return new PegSetter(toPeg(node.get(0)), index);
+		}
+		if(node.is("#pipe")) {
+			return new PegPipe(node.getText());
 		}
 		if(node.is("#catch")) {
 			return new PegCatch(null, toPeg(node.get(0)));
@@ -193,24 +200,14 @@ public final class PegRuleSet {
 		Main._Exit(1, "undefined peg: " + node);
 		return null;
 	}
-//
-//	public final boolean loadPegFile2(String fileName) {
-//		PegSource source = Main.loadSource(fileName);
-//		PegParserParser p = new PegParserParser(this, source);
-//		while(p.hasRule()) {
-//			p.parseRule();
-//		}
-//		this.check();
-//		return true;
-//	}
 
 	void importRuleFromFile(String label, String fileName) {
-		if(Main.PegDebuggerMode) {
+		if(Main.VerbosePegMode) {
 			System.out.println("importing " + fileName);
 		}
 		PegRuleSet p = new PegRuleSet();
 		p.loadPegFile(fileName);
-		UniArray<String> list = p.makeList(label);
+		UList<String> list = p.makeList(label);
 		String prefix = "";
 		int loc = label.indexOf(":");
 		if(loc > 0) {
@@ -225,9 +222,9 @@ public final class PegRuleSet {
 		}
 	}
 
-	public final UniArray<String> makeList(String startPoint) {
-		UniArray<String> list = new UniArray<String>(new String[100]);
-		UniMap<String> set = new UniMap<String>();
+	public final UList<String> makeList(String startPoint) {
+		UList<String> list = new UList<String>(new String[100]);
+		UMap<String> set = new UMap<String>();
 		Peg e = this.getRule(startPoint);
 		if(e != null) {
 			list.add(startPoint);
@@ -238,7 +235,7 @@ public final class PegRuleSet {
 	}
 
 	public final void show(String startPoint) {
-		UniArray<String> list = makeList(startPoint);
+		UList<String> list = makeList(startPoint);
 		for(int i = 0; i < list.size(); i++) {
 			String name = list.ArrayValues[i];
 			Peg e = this.getRule(name);
@@ -290,24 +287,24 @@ public final class PegRuleSet {
 		return new PegNot(e);
 	}
 	public static Peg L(String label) {
-		return new PegTag(null, label);
+		return new PegTag(label);
 	}
 	public static Peg O(Peg ... elist) {
-		PegNewObject l = new PegNewObject(null, false);
+		PegNewObject l = new PegNewObject(false);
 		for(Peg e : elist) {
 			l.list.add(e);
 		}
 		return l;
 	}
 	public static Peg LO(Peg ... elist) {
-		PegNewObject l = new PegNewObject(null, true);
+		PegNewObject l = new PegNewObject(true);
 		for(Peg e : elist) {
 			l.list.add(e);
 		}
 		return l;
 	}
 	public static Peg set(Peg e) {
-		return new PegSetter(null, e, -1);
+		return new PegSetter(e, -1);
 	}
 
 	PegRuleSet loadPegRule() {
@@ -336,7 +333,8 @@ public final class PegRuleSet {
 ////	  ;
 		Peg _String = choice(
 			seq(s("'"), O(zero(not(s("'")), Any), L("#string")), s("'")),
-			seq(s("\""), O(zero(not(s("\"")), Any), L("#string")), s("\""))
+			seq(s("\""), O(zero(not(s("\"")), Any), L("#string")), s("\"")),
+			seq(s("`"), O(zero(not(s("`")), Any), L("#message")), s("`"))
 		);	
 //	Character 
 //	  = "[" <<  (!']' .)* #character >> "]"
@@ -347,13 +345,17 @@ public final class PegRuleSet {
 //	  ;
 		Peg _Any = O(s("."), L("#any"));
 //	ObjectLabel 
-//	  = << '#' [A-z0-9_.]+ #label>>
+//	  = << '#' [A-z0-9_.]+ #tag>>
 //	  ;
-		Peg _ObjectLabel = O(s("#"), one(c("A-Za-z0-9_.")), L("#label"));
+		Peg _Tag = O(s("#"), one(c("A-Za-z0-9_.")), L("#tag"));
 //	Index
 //	  = << [0-9] #index >>
 //	  ;
 		Peg _Index = O(c("0-9"), L("#index"));
+//		Index
+//		  = << [0-9] #index >>
+//		  ;
+		Peg _Pipe = seq(s("|>"), opt(n("_")), O(c("A-Za-z_"), zero(c("A-Za-z0-9_")), L("#pipe")));
 //	Setter
 //	  = '@' <<@ [0-9]? #setter>>
 //	  ;
@@ -365,8 +367,8 @@ public final class PegRuleSet {
 //		  ;
 		Peg _SetterTerm = choice(
 			seq(s("("), opt(n("_")), n("Expr"), opt(n("_")), s(")"), opt(n("Setter"))),
-			seq(O(choice(s("8<"), s("<<")), choice(seq(choice(s("^"), s("@")), c(" \\t\\n"), L("#newjoin")), seq(s(""), L("#new"))), 
-					opt(n("_")), set(n("Expr")), opt(n("_")), choice(s(">8"), s(">>"))), opt(n("Setter"))),
+			seq(O(choice(s("8<"), s("<<"), s("{")), choice(seq(choice(s("^"), s("@")), c(" \\t\\n"), L("#newjoin")), seq(s(""), L("#new"))), 
+					opt(n("_")), set(n("Expr")), opt(n("_")), choice(s(">8"), s(">>"), s("}"))), opt(n("Setter"))),
 			seq(n("RuleName"), opt(n("Setter")))
 		);
 //	Term
@@ -378,7 +380,7 @@ public final class PegRuleSet {
 //	  / SetterTerm
 //	  ;
 		setRule("Term", choice(
-			_String, _Character, _Any, _ObjectLabel, _Index, _SetterTerm
+			_String, _Character, _Any, _Tag, _Index, _Pipe, _SetterTerm
 		));
 //
 //	SuffixTerm

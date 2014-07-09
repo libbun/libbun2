@@ -1,0 +1,31 @@
+parsed:
+#block {            ## by peg : ( SourceElement^ (__ SourceElement^)*  ) defined in SourceElements
+   #function {            ## by peg : ( FunctionToken __ Identifier^ __ '(' __ ((FormalParameterList __)^)? ')' __ '{' __ FunctionBody^ __ '}'  ) defined in FunctionDeclaration
+      #identifier: hoge   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+      #params {            ## by peg : ( FunctionIdentifier^ ((__ ',' __ FunctionIdentifier)^)*  ) defined in FormalParameterList
+         #param {            ## by peg : ( Identifier^  ) defined in FunctionIdentifier
+            #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         }
+      }
+      #block {            ## by peg : ( SourceElement^ (__ SourceElement^)*  ) defined in SourceElements
+         #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+            #postincl {            ## by peg : ( LeftHandSideExpression^ _ '++'  ) defined in PostfixExpression
+               #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            }
+         }
+      }
+   }
+}
+** uncosumed: 'function hogehoge(num,str){
+    num++;
+    document.write(str);
+}
+
+function foo(){
+    document.write("Foo!!");
+}
+
+  foo();
+  hogehoge(2,"hoge");
+  hoge(3);
+' **

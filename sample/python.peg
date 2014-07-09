@@ -17,7 +17,7 @@ Stmt
     / Print EOS
     / Raise EOS
     / With EOS
-    / Expr EOS
+    / Expr EOS?
     / EOS+
     / catch .*
     ;
@@ -45,11 +45,11 @@ Raise
     ;
 
 IfStmt
-    = <<"if" WS+ Expr@ WS* ":" Block@ (Elif@)* ("else" WS* ":" Block@)? #if >>
+    = <<"if" WS+ Expr@ WS* ":" Block@ (Elif@)* (indent "else" WS* ":" Block@)? #if >>
     ;
 
 Elif
-    = << "elif" WS+ Expr@ WS* ":" Block@ #if >>
+    = <<indent "elif" WS+ Expr@ WS* ":" Block@ #if >>
     ;
 
 WhileStmt
@@ -98,12 +98,12 @@ ReturnStmt
     ;
 
 Block
-    = WS* EOS+ << (indent WS* Stmt@ EOS?)+ #block>>
+    = << (WS* EOS+ / indent WS+ Stmt@ EOS?)+ #block>>
     / WS* << Stmt@ #block>>
     ;
 
 ClassBlock
-    = NL+ << (indent WS* ClassStmt@ EOS?)+ #block>>;
+    = NL+ << (WS* EOS+ / indent WS+ ClassStmt@ EOS?)+ #block>>;
 
 ClassStmt
     = Stmt

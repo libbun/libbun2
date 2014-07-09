@@ -1,14 +1,4 @@
 parsed:
-#block {            ## by peg : null
-   #stmt.expression {            ## by peg : null
-      #call {            ## by peg : null
-         #field {            ## by peg : null
-            #identifier: document   ## by peg : null
-            #identifier: write   ## by peg : null
-         }
-         #arguments {            ## by peg : null
-            #string: Hello World!   ## by peg : null
-         }
-      }
-   }
-}
+#toplevel:    
+** uncosumed: 'document.write("Hello World!");
+' **

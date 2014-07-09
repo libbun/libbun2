@@ -4,7 +4,7 @@ package org.libbun;
 public class SourceContext {
 	public final         PegSource source;
 	protected int        sourcePosition = 0;
-	public final int     endPosition;
+	public int           endPosition;
 
 	int backtrackCount = 0;
 	int backtrackSize = 0;
@@ -96,7 +96,7 @@ public class SourceContext {
 		return false;
 	}
 
-	public final boolean match(UniCharset charset) {
+	public final boolean match(UCharset charset) {
 		if(charset.match(this.getChar())) {
 			this.consume(1);
 			return true;
@@ -104,7 +104,7 @@ public class SourceContext {
 		return false;
 	}
 	
-	public final int matchZeroMore(UniCharset charset) {
+	public final int matchZeroMore(UCharset charset) {
 		for(;this.hasChar(); this.consume(1)) {
 			char ch = this.charAt(this.sourcePosition);
 			if(!charset.match(ch)) {
@@ -114,7 +114,7 @@ public class SourceContext {
 		return this.sourcePosition;
 	}
 
-	public final void skipComment(UniCharset skipChars) {
+	public final void skipComment(UCharset skipChars) {
 		while(this.hasChar()) {
 			this.matchZeroMore(skipChars);
 			int pos = this.getPosition();

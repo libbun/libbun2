@@ -2,7 +2,7 @@
 b = 2;
 c = "10";
 d = true;
-e = bool;
+e = false;
 
 a + b;
 a - b;

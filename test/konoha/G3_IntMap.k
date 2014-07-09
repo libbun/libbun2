@@ -1,0 +1,20 @@
+
+export function main() {
+	var m: Map<int> = {};
+	var May = "May";
+	m["April"] = 4;
+	m[May] = 5;
+	println("#m[April]: " + m["April"]);
+	println("#m[May]: " + m[May]);
+	println("#m[June]: " + m.hasKey("June"));
+	assert(m["April"] == 4);
+	assert(m[May] == 5);
+	assert(!m.hasKey("June"));
+
+	var m2: Map<int> = {"Jan": 1};
+	println("m2[Jan]: " + m2["Jan"]);
+	assert(m2["Jan"] == 1);
+
+	//var m3: Map<String> = {};
+	//assert(m3["huga"] == null);
+}

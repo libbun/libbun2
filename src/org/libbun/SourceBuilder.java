@@ -1,6 +1,6 @@
 package org.libbun;
 
-public final class SourceBuilder extends UniStringBuilder {
+public final class SourceBuilder extends UStringBuilder {
 	SourceBuilder parent;
 
 	public SourceBuilder(SourceBuilder Parent) {

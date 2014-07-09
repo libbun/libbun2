@@ -1,0 +1,17 @@
+parsed:
+#block {            ## by peg : ( SourceElement^ (__ SourceElement^)*  ) defined in SourceElements
+   #while {            ## by peg : ( WhileToken __ '(' __ (BooleanLiteral^ / Expression^) __ ')' __ Statement^  ) defined in IterationStatement
+      #bool: true   ## by peg : ( (TrueToken / FalseToken)  ) defined in BooleanLiteral
+      #block {            ## by peg : ( (Statement^ __)*  ) defined in Block
+         #if {            ## by peg : ( IfToken __ '(' __ Expression^ __ ')' __ StatementBlock^  ) defined in IfStatement
+            #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+               #identifier: i   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+               #intNumber: 4   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
+            }
+            #block {            ## by peg : ( Statement^  ) defined in StatementBlock
+               #continue: continue;   ## by peg : ( ContinueToken EOS  ) defined in ContinueStatement
+            }
+         }
+      }
+   }
+}

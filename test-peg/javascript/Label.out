@@ -1,18 +1,20 @@
 parsed:
-#block {            ## by peg : null
-   #labeled {            ## by peg : null
-      #identifier: hoge   ## by peg : null
-      #while {            ## by peg : null
-         #bool: false   ## by peg : null
-         #block {            ## by peg : null
-            #with {            ## by peg : null
-               #identifier: document   ## by peg : null
-               #block {            ## by peg : null
-                  #stmt.expression {            ## by peg : null
-                     #call {            ## by peg : null
-                        #identifier: write   ## by peg : null
-                        #arguments {            ## by peg : null
-                           #string: hoge   ## by peg : null
+#block {            ## by peg : ( SourceElement^ (__ SourceElement^)*  ) defined in SourceElements
+   #labeled {            ## by peg : ( Identifier^ __ ':' __ Statement^  ) defined in LabelledStatement
+      #identifier: hoge   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+      #while {            ## by peg : ( WhileToken __ '(' __ (BooleanLiteral^ / Expression^) __ ')' __ Statement^  ) defined in IterationStatement
+         #bool: false   ## by peg : ( (TrueToken / FalseToken)  ) defined in BooleanLiteral
+         #block {            ## by peg : ( (Statement^ __)*  ) defined in Block
+            #with {            ## by peg : ( WithToken __ '(' __ Expression^ __ ')' __ Statement^  ) defined in WithStatement
+               #identifier: document   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+               #block {            ## by peg : ( (Statement^ __)*  ) defined in Block
+                  #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+                     #call {            ## by peg : ( MemberExpression^ __ Arguments^  ) defined in FirstCall
+                        #identifier: write   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+                        #arguments {            ## by peg : ( Argument^ (__ ',' __ Argument^)*  ) defined in ArgumentList
+                           #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
+                              #string: hoge   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
+                           }
                         }
                      }
                   }

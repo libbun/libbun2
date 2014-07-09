@@ -1,45 +1,45 @@
 parsed:
-#toplevel {            ## by peg : ( (Stmt^)+  )
-   #assign {            ## by peg : ( WS* AssignOp WS* OrExpr^ )
-      #name: a   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  )
-      #array {            ## by peg : ( '[' _* (Expr^)? (_* ',' _* Expr^)* _* ']'  )
-         #integer: 1   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  )
-         #integer: 2   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  )
-         #integer: 3   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  )
+#toplevel {            ## by peg : ( (Stmt^)+  ) defined in TopLevel
+   #assign {            ## by peg : ( WS* AssignOp WS* OrExpr^ ) defined in Assign
+      #name: a   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  ) defined in Symbol
+      #array {            ## by peg : ( '[' _* (Expr^)? (_* ',' _* Expr^)* _* ']'  ) defined in ArrayLiteral
+         #integer: 1   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  ) defined in Number
+         #integer: 2   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  ) defined in Number
+         #integer: 3   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  ) defined in Number
       }
    }
-   #assign {            ## by peg : ( WS* AssignOp WS* OrExpr^ )
-      #name: b   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  )
-      #index {            ## by peg : ( Selector )
-         #name: a   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  )
-         #slice {            ## by peg : ( SliceBegin^ WS* ':'  )
-            #sliceBegin {            ## by peg : ( Expr^  )
-               #integer: 1   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  )
+   #assign {            ## by peg : ( WS* AssignOp WS* OrExpr^ ) defined in Assign
+      #name: b   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  ) defined in Symbol
+      #index {            ## by peg : ( Selector ) defined in Unary
+         #name: a   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  ) defined in Symbol
+         #slice {            ## by peg : ( SliceBegin^ WS* ':'  ) defined in Slice
+            #sliceBegin {            ## by peg : ( Expr^  ) defined in SliceBegin
+               #integer: 1   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  ) defined in Number
             }
          }
       }
    }
-   #assign {            ## by peg : ( WS* AssignOp WS* OrExpr^ )
-      #name: c   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  )
-      #index {            ## by peg : ( Selector )
-         #name: a   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  )
-         #slice {            ## by peg : ( SliceBegin^ WS* ':' WS* SliceEnd^  )
-            #sliceBegin {            ## by peg : ( Expr^  )
-               #integer: 0   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  )
+   #assign {            ## by peg : ( WS* AssignOp WS* OrExpr^ ) defined in Assign
+      #name: c   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  ) defined in Symbol
+      #index {            ## by peg : ( Selector ) defined in Unary
+         #name: a   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  ) defined in Symbol
+         #slice {            ## by peg : ( SliceBegin^ WS* ':' WS* SliceEnd^  ) defined in Slice
+            #sliceBegin {            ## by peg : ( Expr^  ) defined in SliceBegin
+               #integer: 0   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  ) defined in Number
             }
-            #sliceEnd {            ## by peg : ( Expr^  )
-               #integer: 2   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  )
+            #sliceEnd {            ## by peg : ( Expr^  ) defined in SliceEnd
+               #integer: 2   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  ) defined in Number
             }
          }
       }
    }
-   #assign {            ## by peg : ( WS* AssignOp WS* OrExpr^ )
-      #name: d   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  )
-      #index {            ## by peg : ( Selector )
-         #name: a   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  )
-         #slice {            ## by peg : ( ':' SliceEnd^  )
-            #sliceEnd {            ## by peg : ( Expr^  )
-               #integer: 1   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  )
+   #assign {            ## by peg : ( WS* AssignOp WS* OrExpr^ ) defined in Assign
+      #name: d   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  ) defined in Symbol
+      #index {            ## by peg : ( Selector ) defined in Unary
+         #name: a   ## by peg : ( [a-zA-Z_] [a-zA-Z0-9_]*  ) defined in Symbol
+         #slice {            ## by peg : ( ':' SliceEnd^  ) defined in Slice
+            #sliceEnd {            ## by peg : ( Expr^  ) defined in SliceEnd
+               #integer: 1   ## by peg : ( ('-' WS* / '+' WS*)? IntegerLiteral  ) defined in Number
             }
          }
       }

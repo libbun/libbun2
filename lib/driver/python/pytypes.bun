@@ -1,0 +1,11 @@
+
+typedef str;
+
+bun #cast(x: unicode): str {
+	str(${x})
+}
+
+bun #cast(x: str): unicode {
+	ustr(${x})
+}
+

@@ -41,7 +41,7 @@ parsed:
             }
             #compoundstatement {            ## by peg : ( LWING ((Declaration / Statement)^)* RWING  ) defined in CompoundStatement
                #expressionstatement {            ## by peg : ( (Expression^)? SEMI  ) defined in ExpressionStatement
-                  #inc {            ## by peg : ( (LBRK^ Expression^ RBRK^ / LPAR^ (ArgumentExpressionList^)? RPAR^ / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
+                  #inc {            ## by peg : ( (FunctionCall  / Index  / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
                      #identifier: i   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
                   }
                }
@@ -57,7 +57,7 @@ parsed:
 		   ## by peg : ( CONTINUE^ SEMI  ) defined in JumpStatement
                }
                #expressionstatement {            ## by peg : ( (Expression^)? SEMI  ) defined in ExpressionStatement
-                  #inc {            ## by peg : ( (LBRK^ Expression^ RBRK^ / LPAR^ (ArgumentExpressionList^)? RPAR^ / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
+                  #inc {            ## by peg : ( (FunctionCall  / Index  / DOT  Identifier^ / PTR  Identifier^ / INC  / DEC ) ) defined in PostfixExpression
                      #identifier: c   ## by peg : ( !Keyword IdNondigit^ (IdChar^)* Spacing  ) defined in Identifier
                   }
                }

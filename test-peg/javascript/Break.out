@@ -1,15 +1,15 @@
 parsed:
-#block {            ## by peg : null
-   #while {            ## by peg : null
-      #bool: true   ## by peg : null
-      #block {            ## by peg : null
-         #if {            ## by peg : null
-            #assign {            ## by peg : null
-               #identifier: i   ## by peg : null
-               #number: 8   ## by peg : null
+#block {            ## by peg : ( SourceElement^ (__ SourceElement^)*  ) defined in SourceElements
+   #while {            ## by peg : ( WhileToken __ '(' __ (BooleanLiteral^ / Expression^) __ ')' __ Statement^  ) defined in IterationStatement
+      #bool: true   ## by peg : ( (TrueToken / FalseToken)  ) defined in BooleanLiteral
+      #block {            ## by peg : ( (Statement^ __)*  ) defined in Block
+         #if {            ## by peg : ( IfToken __ '(' __ Expression^ __ ')' __ StatementBlock^  ) defined in IfStatement
+            #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+               #identifier: i   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+               #intNumber: 8   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
             }
-            #block {            ## by peg : null
-               #break: break;   ## by peg : null
+            #block {            ## by peg : ( (Statement^ __)*  ) defined in Block
+               #break: break;   ## by peg : ( BreakToken EOS  ) defined in BreakStatement
             }
          }
       }

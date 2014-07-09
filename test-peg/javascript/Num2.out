@@ -1,0 +1,36 @@
+parsed:
+#block {            ## by peg : ( SourceElement^ (__ SourceElement^)*  ) defined in SourceElements
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+         #identifier: n   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #new {            ## by peg : ( NewToken __ MemberExpression^ __ Arguments^  ) defined in New
+            #identifier: Number   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            #arguments {            ## by peg : ( Argument^ (__ ',' __ Argument^)*  ) defined in ArgumentList
+               #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
+                  #intNumber: 123   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
+               }
+            }
+         }
+      }
+   }
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+         #identifier: str   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #call {            ## by peg : ( MemberExpression^ __ Arguments^  ) defined in FirstCall
+            #identifier: toString   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            #arguments {            ## by peg : ( Argument^ (__ ',' __ Argument^)*  ) defined in ArgumentList
+               #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
+                  #intNumber: 123   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
+               }
+            }
+         }
+      }
+   }
+}
+** uncosumed: 'n = Number.NaN;
+b = isNaN(n);
+max = Number.MAX_VALUE;
+min = Number.MIN_VALUE;
+pos = Number.POSITIVE_INFINITY;
+neg = Number.NEGATIVE_INFINITY;
+' **

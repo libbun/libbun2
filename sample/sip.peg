@@ -1,0 +1,21 @@
+
+TopLevel
+ = String
+ ;
+
+String 
+ = '"' StringContent <<@ StringExpr #strings >>? '"'
+ ;
+
+StringContent
+ = << ('\\"' / (!'"' !'${' .))* #string >>
+ ;
+
+StringExpr
+ = '${' Expr@ '}' (StringContent@ StringExpr@?)? / '${' StringContent@
+ ;
+
+
+Expr
+ = << [A-z0-9] #value>>
+ ;

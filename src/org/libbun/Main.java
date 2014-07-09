@@ -8,8 +8,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
 import java.text.DecimalFormat;
+
+import org.libbun.drv.JvmDriver;
+import org.libbun.drv.JvmIndyDriver;
 
 public class Main {
 	public final static String  ProgName  = "libbun";
@@ -25,36 +27,36 @@ public class Main {
 	private static String LanguagePeg = "lib/peg/konoha.peg"; // default
 
 	// -d driver
-	private static String DriverName = "debug";  // default
+	private static String DriverName = "peg";  // default
 
 	// -i
 	private static boolean ShellMode = false;
 
-	// -o
-	private static String OutputFileName = null;
-
 	//
 	private static String InputFileName = null;
 
-	// --parse-only
-	public static boolean ParseOnly = false;
+	// -o
+	private static String OutputFileName = null;
+
+	// --parse-only -p
+	public static boolean ParseOnlyMode = false;
 
 	// --verbose
-	public static boolean EnableVerbose = false;
+	public static boolean VerboseMode    = false;
 
-	// --verbose:ast
-	public static boolean EnableVerboseAst = false;
+	// --verbose:peg
+	public static boolean VerbosePegMode = false;
+
+	// --verbose:bun
+	public static boolean VerboseBunMode = false;
 
 	// --profile
 	public static boolean ProfileMode = false;
 
-	// --verbose:peg
-	public static boolean PegDebuggerMode = false;
-
 	// --disable-memo
 	public static boolean NonMemoPegMode = false;
 
-	private static void parseCommandArgument(String[] args) {
+	private static void parseCommandArguments(String[] args) {
 		int index = 0;
 		while (index < args.length) {
 			String argument = args[index];
@@ -62,12 +64,13 @@ public class Main {
 				break;
 			}
 			index = index + 1;
-			if (argument.equals("--peg") && (index < args.length)) {
+			if ((argument.equals("-p") || argument.equals("--peg")) && (index < args.length)) {
 				LanguagePeg = args[index];
-				PegDebuggerMode = true;
+				ParseOnlyMode  = true;
+				VerbosePegMode = true;
 				index = index + 1;
 			}
-			else if (argument.equals("-l") && (index < args.length)) {
+			else if ((argument.equals("-l") || argument.equals("--lang"))  && (index < args.length)) {
 				LanguagePeg = args[index];
 				index = index + 1;
 			}
@@ -89,18 +92,14 @@ public class Main {
 				ProfileMode = true;
 			}
 			else if (argument.equals("--parse-only")) {
-				ParseOnly = true;
+				ParseOnlyMode = true;
 			}
 			else if(argument.startsWith("--verbose")) {
-				if(argument.equals("--verbose:ast")) {
-					EnableVerboseAst = true;
+				if(argument.equals("--verbose:bun")) {
+					VerboseBunMode = true;
 				}
-//				else if(argument.equals("--verbose:peg")) {
-//					pegDebugger = true;
-//				}
 				else {
-					EnableVerbose = true;
-					EnableVerboseAst = true;
+					VerboseMode = true;
 				}
 			}
 			else {
@@ -117,46 +116,68 @@ public class Main {
 
 	public final static void ShowUsage(String Message) {
 		System.out.println(ProgName + " :");
-		System.out.println("  --peg|-l  FILE          Language file");
+		System.out.println("  --peg|-p  FILE          Parser Only Mode");
+		System.out.println("  --lang|-l  FILE         Language file");
 		System.out.println("  --driver|-d  NAME       Driver");
 		System.out.println("  --out|-o  FILE          Output filename");
 		System.out.println("  --verbose               Printing Debug infomation");
+		System.out.println("  --verbose:peg           Printing Peg/Debug infomation");
+		System.out.println("  --verbose:bun           Printing Peg/Bun infomation");
 		System.out.println("  --profile               Show memory usage and parse time");
 		Main._Exit(0, Message);
 	}
 
-	private final static UniMap<Class<?>> driverMap = new UniMap<Class<?>>();
+	private final static UMap<Class<?>> driverMap = new UMap<Class<?>>();
 	static {
-		driverMap.put("py", PythonDriver.class);
-		driverMap.put("python", PythonDriver.class);
-		driverMap.put("ll", LLVMDriver.class);
-		driverMap.put("llvm", LLVMDriver.class);
+		driverMap.put("py", org.libbun.drv.PythonDriver.class);
+		driverMap.put("python", org.libbun.drv.PythonDriver.class);
+		driverMap.put("ll", org.libbun.drv.LLVMDriver.class);
+		driverMap.put("llvm", org.libbun.drv.LLVMDriver.class);
 		driverMap.put("jvm", JvmDriver.class);
 		driverMap.put("jvm-debug", JvmDriver.DebuggableJvmDriver.class);
 		driverMap.put("jvm-indy", JvmIndyDriver.class);
 		driverMap.put("jvm-indy-debug", JvmIndyDriver.DebuggableJvmIndyDriver.class);
+		driverMap.put("peg", org.libbun.drv.PegDumpper.class);
 	}
 
-	private static BunDriver loadDriver(String driverName) {
-		if(PegDebuggerMode) {
-			return new Debugger();
-		}
+	private static BunDriver loadDriverImpl(String driverName) {
 		try {
-			return (BunDriver) driverMap.get(driverName, PythonDriver.class).newInstance();
+			return (BunDriver) driverMap.get(driverName).newInstance();
 		}
-		catch(Throwable t) {
-			System.err.println("cannot load driver: " + driverName);
-			System.err.println("instead load python driver");
+		catch(Exception e) {
 		}
-		return new PythonDriver();
+		return null;
+	}
+	
+	private static BunDriver loadDriver(String driverName) {
+		BunDriver d = loadDriverImpl(driverName);
+		if(d == null) {
+			System.out.println("Supported driver list:");
+			UList<String> driverList = driverMap.keys();
+			for(int i = 0; i < driverList.size(); i++) {
+				String k = driverList.ArrayValues[i];
+				d = loadDriverImpl(k);
+				if(d != null) {
+					System.out.println("\t" + k + " - " + d.getDesc());
+				}
+			}
+			Main._Exit(1, "undefined driver: " + driverName);
+		}
+		return d;
 	}
 
 	public final static ParserContext newParserContext(PegSource source) {
 		return new SimpleParserContext(source);
 	}
 
+	public final static ParserContext newParserContext(PegSource source, int startIndex, int endIndex, PegRuleSet ruleSet) {
+		ParserContext p = new SimpleParserContext(source, startIndex, endIndex);
+		p.setRuleSet(ruleSet);
+		return p;
+	}
+	
 	public final static void main(String[] args) {
-		parseCommandArgument(args);
+		parseCommandArguments(args);
 		BunDriver driver = loadDriver(DriverName);
 		Namespace gamma = new Namespace(driver);
 		gamma.loadPegFile("main", LanguagePeg);
@@ -182,29 +203,43 @@ public class Main {
 		try {
 			ParserContext context = Main.newParserContext(source);
 			gamma.initParserRuleSet(context, "main");
-			ParseProfileStart();
-			PegObject node = context.parsePegObject(new PegObject(BunSymbol.TopLevelFunctor), startPoint);
-			if(node.isFailure()) {
-				node.name = BunSymbol.PerrorFunctor;
-			}
-			gamma.set(node);
-			if(PegDebuggerMode || EnableVerboseAst) {
-				System.out.println("parsed:\n" + node.toString());
-				if(context.hasChar()) {
-					System.out.println("** uncosumed: '" + context + "' **");
+			driver.startTransaction(OutputFileName);
+			while(context.hasNode()) {
+				ParseProfileStart();
+				PegObject node = context.parsePegObject(new PegObject("#toplevel"), startPoint);
+				if(node.isFailure()) {
+					node = context.newErrorObject();
+				}
+				gamma.setNode(node);
+				if(VerbosePegMode) {
+					System.out.println("parsed:\n" + node.toString());
+					if(context.hasChar()) {
+						System.out.println("** uncosumed: '" + context + "' **");
+					}
+				}
+				if(VerbosePegMode || VerboseMode) {
+					System.out.println();
+					context.showStatInfo(node);
+				}
+				ParseProfileStop();
+				if(!ParseOnlyMode && driver != null) {
+					node = gamma.tryMatch(node, true);
+					if(VerboseMode) {
+						System.out.println("Typed node: \n" + node + "\n:untyped: " + node.countUnmatched(0));
+					}
+					driver.startTopLevel();
+					node.matched.build(node, driver);
+					driver.endTopLevel();
+				}
+				if(node.is("#error")) {
+					if(OutputFileName != null) {
+						Main._Exit(1, "toplevel error was found");
+					}
+					break;
 				}
 			}
-			if(PegDebuggerMode || EnableVerbose) {
-				System.out.println();
-				context.showStatInfo(node);
-			}
-			ParseProfileStop();
-			if(!ParseOnly && driver != null) {
-				driver.startTransaction(null);
-				gamma.tryMatch(node);
-				node.matched.build(node, driver);
-				driver.endTransaction();
-			}
+			driver.generateMain();
+			driver.endTransaction();
 		}
 		catch (Exception e) {
 			PrintStackTrace(e, source.lineNumber);
@@ -250,11 +285,12 @@ public class Main {
 	public final static void performShell(Namespace gamma, BunDriver driver) {
 		Main._PrintLine(ProgName + Version + " (" + CodeName + ") on " + Main._GetPlatform());
 		Main._PrintLine(Copyright);
+		Main._PrintLine("Driver: " + driver.getDesc());
 		int linenum = 1;
 		String line = null;
 		while ((line = readMultiLine(">>> ", "    ")) != null) {
 			String startPoint = "TopLevel";
-			if(PegDebuggerMode) {
+			if(VerbosePegMode) {
 				if(line.startsWith("?")) {
 					int loc = line.indexOf(" ");
 					if(loc > 0) {
@@ -382,20 +418,25 @@ public class Main {
 		return "Java JVM-" + System.getProperty("java.version");
 	}
 
-	public final static String _GetEnv(String Name) {
-		return System.getenv(Name);
+//	public final static String _GetEnv(String Name) {
+//		return System.getenv(Name);
+//	}
+//
+//	public final static void _Print(Object msg) {
+//		System.err.print(msg);
+//	}
+
+	public final static void _PrintLine(Object message) {
+		System.err.println(message);
 	}
 
-	public final static void _Print(Object msg) {
-		System.err.print(msg);
-	}
-
-	public final static void _PrintLine(Object msg) {
-		System.err.println(msg);
-	}
-
-	public final static void _Exit(int status, String Message) {
-		System.err.println("EXIT " + Main._GetStackInfo(3) + " " + Message);
+	public final static void _Exit(int status, String message) {
+		if(Main.VerboseMode) {
+			System.err.println("EXIT " + Main._GetStackInfo(3) + " " + message);
+		}
+		else {
+			System.err.println("EXIT " + message);
+		}
 		System.exit(status);
 	}
 
@@ -434,11 +475,11 @@ public class Main {
 			return ""+ch;
 	}
 
-	public static String _SourceBuilderToString(UniStringBuilder sb) {
+	public static String _SourceBuilderToString(UStringBuilder sb) {
 		return Main._SourceBuilderToString(sb, 0, sb.slist.size());
 	}
 
-	public static String _SourceBuilderToString(UniStringBuilder sb, int beginIndex, int endIndex) {
+	public static String _SourceBuilderToString(UStringBuilder sb, int beginIndex, int endIndex) {
 		StringBuilder jsb = new StringBuilder();
 		for(int i = beginIndex; i < endIndex; i = i + 1) {
 			jsb.append(sb.slist.ArrayValues[i]);
@@ -446,26 +487,22 @@ public class Main {
 		return jsb.toString();
 	}
 
-	public final static void _WriteTo(String FileName, UniArray<SourceBuilder> List) {
-		if(FileName == null) {
-			int i = 0;
-			while(i < List.size()) {
-				SourceBuilder Builder = List.ArrayValues[i];
-				System.out.println(Builder.toString());
-				Builder.clear();
-				i = i + 1;
+	public final static void _WriteFile(String fileName, UList<UStringBuilder> list) {
+		if(fileName == null) {
+			for(int i = 0; i < list.size(); i++) {
+				UStringBuilder sb = list.ArrayValues[i];
+				System.out.println(sb.toString());
+				sb.clear();
 			}
 		}
 		else {
 			try {
-				BufferedWriter w = new BufferedWriter(new FileWriter(FileName));
-				int i = 0;
-				while(i < List.size()) {
-					SourceBuilder Builder = List.ArrayValues[i];
-					w.write(Builder.toString());
+				BufferedWriter w = new BufferedWriter(new FileWriter(fileName));
+				for(int i = 0; i < list.size(); i++) {
+					UStringBuilder sb = list.ArrayValues[i];
+					w.write(sb.toString());
 					w.write("\n\n");
-					Builder.clear();
-					i = i + 1;
+					sb.clear();
 				}
 				w.close();
 			}
@@ -475,9 +512,9 @@ public class Main {
 		}
 	}
 
-	public final static String[] _GreekNames = {
-		/*"Alpha"*/ "\u03B1", "\u03B2", "\u03B3"
-	};
+//	public final static String[] _GreekNames = {
+//		/*"Alpha"*/ "\u03B1", "\u03B2", "\u03B3"
+//	};
 
 	public final static BunType[] _NewTypeArray(int size) {
 		return new BunType[size];
@@ -490,8 +527,5 @@ public class Main {
 	public final static void _ArrayCopy(Object src, int sIndex, Object dst, int dIndex, int length) {
 		System.arraycopy(src, sIndex, dst, dIndex, length);
 	}
-
-
-
 
 }
