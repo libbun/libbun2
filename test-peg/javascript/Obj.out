@@ -1,0 +1,24 @@
+parsed:
+#block {            ## by peg : ( SourceElement^ (__ SourceElement^)*  ) defined in SourceElements
+   #varlist {            ## by peg : ( VariableDeclaration^ (__ ',' __ VariableDeclaration^)*  ) defined in VariableDeclarationList
+      #var {            ## by peg : ( Identifier^ ((__ Initialiser)^)?  ) defined in VariableDeclaration
+         #identifier: object   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #expr {            ## by peg : ( __ AssignmentExpression^  ) defined in Initialiser
+            #object {            ## by peg : ( PropertyAssignment^ (__ ',' __ PropertyAssignment^)*  ) defined in PropertyNameAndValueList
+               #field {            ## by peg : ( PropertyName^ __ ':' __ AssignmentExpression^  ) defined in PropertyAssignment
+                  #string: country   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
+                  #string: JPN   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
+               }
+               #field {            ## by peg : ( PropertyName^ __ ':' __ AssignmentExpression^  ) defined in PropertyAssignment
+                  #string: prefecture   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
+                  #string: Kanagawa   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
+               }
+               #field {            ## by peg : ( PropertyName^ __ ':' __ AssignmentExpression^  ) defined in PropertyAssignment
+                  #string: city   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
+                  #string: Yokohama   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
+               }
+            }
+         }
+      }
+   }
+}

@@ -28,14 +28,20 @@ parsed:
    #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
       #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
          #identifier: l   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
-         #identifier: str   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #field {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+            #identifier: str   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            #identifier: length   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         }
       }
    }
    #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
       #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
          #identifier: s   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
          #call {            ## by peg : ( MemberExpression^ __ Arguments^  ) defined in FirstCall
-            #identifier: str   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            #field {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+               #identifier: str   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+               #identifier: charAt   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            }
             #arguments {            ## by peg : ( Argument^ (__ ',' __ Argument^)*  ) defined in ArgumentList
                #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
                   #intNumber: 1   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
@@ -48,7 +54,10 @@ parsed:
       #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
          #identifier: s   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
          #call {            ## by peg : ( MemberExpression^ __ Arguments^  ) defined in FirstCall
-            #identifier: str   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            #field {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+               #identifier: str   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+               #identifier: substring   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            }
             #arguments {            ## by peg : ( Argument^ (__ ',' __ Argument^)*  ) defined in ArgumentList
                #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
                   #intNumber: 2   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
@@ -61,36 +70,10 @@ parsed:
       #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
          #identifier: s   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
          #call {            ## by peg : ( MemberExpression^ __ Arguments^  ) defined in FirstCall
-            #identifier: str   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
-            #arguments {            ## by peg : ( Argument^ (__ ',' __ Argument^)*  ) defined in ArgumentList
-               #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
-                  #intNumber: 1   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
-               }
-               #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
-                  #intNumber: 3   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
-               }
+            #field {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+               #identifier: str   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+               #identifier: substring   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
             }
-         }
-      }
-   }
-   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
-      #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
-         #identifier: s   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
-         #call {            ## by peg : ( MemberExpression^ __ Arguments^  ) defined in FirstCall
-            #identifier: str   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
-            #arguments {            ## by peg : ( Argument^ (__ ',' __ Argument^)*  ) defined in ArgumentList
-               #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
-                  #intNumber: 2   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
-               }
-            }
-         }
-      }
-   }
-   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
-      #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
-         #identifier: s   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
-         #call {            ## by peg : ( MemberExpression^ __ Arguments^  ) defined in FirstCall
-            #identifier: str   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
             #arguments {            ## by peg : ( Argument^ (__ ',' __ Argument^)*  ) defined in ArgumentList
                #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
                   #intNumber: 1   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
@@ -106,7 +89,10 @@ parsed:
       #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
          #identifier: s   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
          #call {            ## by peg : ( MemberExpression^ __ Arguments^  ) defined in FirstCall
-            #identifier: str   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            #field {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+               #identifier: str   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+               #identifier: slice   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            }
             #arguments {            ## by peg : ( Argument^ (__ ',' __ Argument^)*  ) defined in ArgumentList
                #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
                   #intNumber: 2   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
@@ -119,7 +105,45 @@ parsed:
       #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
          #identifier: s   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
          #call {            ## by peg : ( MemberExpression^ __ Arguments^  ) defined in FirstCall
-            #identifier: str   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            #field {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+               #identifier: str   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+               #identifier: slice   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            }
+            #arguments {            ## by peg : ( Argument^ (__ ',' __ Argument^)*  ) defined in ArgumentList
+               #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
+                  #intNumber: 1   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
+               }
+               #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
+                  #intNumber: 3   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
+               }
+            }
+         }
+      }
+   }
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+         #identifier: s   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #call {            ## by peg : ( MemberExpression^ __ Arguments^  ) defined in FirstCall
+            #field {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+               #identifier: str   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+               #identifier: substr   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            }
+            #arguments {            ## by peg : ( Argument^ (__ ',' __ Argument^)*  ) defined in ArgumentList
+               #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
+                  #intNumber: 2   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
+               }
+            }
+         }
+      }
+   }
+   #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
+      #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
+         #identifier: s   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+         #call {            ## by peg : ( MemberExpression^ __ Arguments^  ) defined in FirstCall
+            #field {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+               #identifier: str   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+               #identifier: substr   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            }
             #arguments {            ## by peg : ( Argument^ (__ ',' __ Argument^)*  ) defined in ArgumentList
                #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
                   #intNumber: 1   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
@@ -141,7 +165,10 @@ parsed:
       #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
          #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
          #call {            ## by peg : ( MemberExpression^ __ Arguments^  ) defined in FirstCall
-            #identifier: str   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            #field {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+               #identifier: str   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+               #identifier: split   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            }
             #arguments {            ## by peg : ( Argument^ (__ ',' __ Argument^)*  ) defined in ArgumentList
                #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
                   #string: :   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
@@ -154,7 +181,10 @@ parsed:
       #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
          #identifier: ss   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
          #call {            ## by peg : ( MemberExpression^ __ Arguments^  ) defined in FirstCall
-            #identifier: str   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            #field {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+               #identifier: str   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+               #identifier: concat   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            }
             #arguments {            ## by peg : ( Argument^ (__ ',' __ Argument^)*  ) defined in ArgumentList
                #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
                   #identifier: s   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
@@ -167,7 +197,10 @@ parsed:
       #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
          #identifier: str   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
          #call {            ## by peg : ( MemberExpression^ __ Arguments^  ) defined in FirstCall
-            #string: hoge   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
+            #field {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+               #string: hoge   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
+               #identifier: replace   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            }
             #arguments {            ## by peg : ( Argument^ (__ ',' __ Argument^)*  ) defined in ArgumentList
                #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
                   #string: o   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
@@ -183,7 +216,10 @@ parsed:
       #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
          #identifier: u   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
          #call {            ## by peg : ( MemberExpression^ __ Arguments^  ) defined in FirstCall
-            #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            #field {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+               #identifier: a   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+               #identifier: toUpperCase   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            }
          }
       }
    }
@@ -191,7 +227,10 @@ parsed:
       #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
          #identifier: l   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
          #call {            ## by peg : ( MemberExpression^ __ Arguments^  ) defined in FirstCall
-            #identifier: u   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            #field {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+               #identifier: u   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+               #identifier: toLowerCase   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            }
          }
       }
    }
@@ -199,7 +238,10 @@ parsed:
       #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
          #identifier: i   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
          #call {            ## by peg : ( MemberExpression^ __ Arguments^  ) defined in FirstCall
-            #string: hoge   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
+            #field {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+               #string: hoge   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
+               #identifier: indexOf   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            }
             #arguments {            ## by peg : ( Argument^ (__ ',' __ Argument^)*  ) defined in ArgumentList
                #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
                   #string: o   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
@@ -212,7 +254,10 @@ parsed:
       #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
          #identifier: i   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
          #call {            ## by peg : ( MemberExpression^ __ Arguments^  ) defined in FirstCall
-            #string: hoge   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
+            #field {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+               #string: hoge   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
+               #identifier: lastIndexOf   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            }
             #arguments {            ## by peg : ( Argument^ (__ ',' __ Argument^)*  ) defined in ArgumentList
                #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
                   #string: h   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
@@ -228,7 +273,10 @@ parsed:
       #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
          #identifier: str   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
          #call {            ## by peg : ( MemberExpression^ __ Arguments^  ) defined in FirstCall
-            #string: hoge   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
+            #field {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+               #string: hoge   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
+               #identifier: match   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            }
             #arguments {            ## by peg : ( Argument^ (__ ',' __ Argument^)*  ) defined in ArgumentList
                #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
                   #regexp: /[eg]/   ## by peg : ( '/' RegularExpressionBody^ '/' RegularExpressionFlags^  ) defined in RegularExpressionLiteral
@@ -241,7 +289,10 @@ parsed:
       #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
          #identifier: i   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
          #call {            ## by peg : ( MemberExpression^ __ Arguments^  ) defined in FirstCall
-            #string: hoge   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
+            #field {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+               #string: hoge   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
+               #identifier: search   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+            }
             #arguments {            ## by peg : ( Argument^ (__ ',' __ Argument^)*  ) defined in ArgumentList
                #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
                   #regexp: /og/   ## by peg : ( '/' RegularExpressionBody^ '/' RegularExpressionFlags^  ) defined in RegularExpressionLiteral

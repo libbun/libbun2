@@ -455,7 +455,7 @@ EOF
 ///* ----- A.3 Expressions ----- */
 
 PrimaryExpression
-  = ThisToken
+  = << ThisToken #this >>
   / Identifier
   / Literal
   / ArrayLiteral
@@ -508,17 +508,16 @@ PropertySetParameterList
   ;
 
 MemberExpression
-    = Receiver __ ( MemberIndex@ / MemberField@ )*
+    = << Receiver@ __ ( MemberIndex@ / MemberField@ )+ >>
+    / Receiver 
     ;
-//  = Receiver <<@ (__ "[" __ Expression@ __ \"]" #index) / (__ "." __ IdentifierName@ #field) >>*
-//  ;
 
 MemberIndex
-  = << "[" __ Expression@ __ "]" #index >>
+  = "[" __ Expression@ __ "]" #index
   ;
 
 MemberField
-  = << "." __ IdentifierName@ #field >>
+  = "." __ IdentifierName@ #field
   ;
   
 Receiver

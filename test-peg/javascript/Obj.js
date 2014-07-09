@@ -1,0 +1,1 @@
+var object = { "country": "JPN", "prefecture": "Kanagawa", "city": "Yokohama"};

@@ -50,7 +50,10 @@ parsed:
       #block {            ## by peg : ( (Statement^ __)*  ) defined in Block
          #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
             #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
-               #identifier: arr   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+               #index {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+                  #identifier: arr   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+                  #identifier: i   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+               }
                #intNumber: 1   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
             }
          }
@@ -66,7 +69,10 @@ parsed:
       #block {            ## by peg : ( (Statement^ __)*  ) defined in Block
          #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
             #assign {            ## by peg : ( LeftHandSideExpression^ __ '=' !'=' __  AssignmentExpression^ ) defined in AssignmentExpression
-               #identifier: arr   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+               #index {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+                  #identifier: arr   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+                  #identifier: i   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+               }
                #intNumber: 1   ## by peg : ( DecimalIntegerLiteral ExponentPart?  ) defined in DecimalLiteral
             }
          }

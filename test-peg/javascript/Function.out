@@ -33,7 +33,10 @@ parsed:
          }
          #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
             #call {            ## by peg : ( MemberExpression^ __ Arguments^  ) defined in FirstCall
-               #identifier: document   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+               #field {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+                  #identifier: document   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+                  #identifier: write   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+               }
                #arguments {            ## by peg : ( Argument^ (__ ',' __ Argument^)*  ) defined in ArgumentList
                   #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
                      #identifier: str   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
@@ -48,7 +51,10 @@ parsed:
       #block {            ## by peg : ( SourceElement^ (__ SourceElement^)*  ) defined in SourceElements
          #exprstmt {            ## by peg : ( Expression^ EOS  ) defined in ExpressionStatement
             #call {            ## by peg : ( MemberExpression^ __ Arguments^  ) defined in FirstCall
-               #identifier: document   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+               #field {            ## by peg : ( Receiver^ __ (MemberIndex^ / MemberField^)+ ) defined in MemberExpression
+                  #identifier: document   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+                  #identifier: write   ## by peg : ( IdentifierStart IdentifierPart*  ) defined in IdentifierName
+               }
                #arguments {            ## by peg : ( Argument^ (__ ',' __ Argument^)*  ) defined in ArgumentList
                   #argument {            ## by peg : ( AssignmentExpression^  ) defined in Argument
                      #string: Foo!!   ## by peg : ( DoubleStringCharacter*  ) defined in StringLiteral
