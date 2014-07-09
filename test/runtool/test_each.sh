@@ -44,7 +44,12 @@ if [ $EXIT_JAVA -eq 0 ]; then
 	if [ -z $CHECKER ]; then
 		exit 0
 	fi
-	echo "$CHECKER $OUTFILE" >> $OUTLOG2
+	if [ -s $OUTFILE ]; then
+		echo "$CHECKER $OUTFILE" >> $OUTLOG2
+	else
+		echo "No file is generated: $OUTFILE" >> $OUTLOG2
+		exit 9
+	fi
 	$CHECKER $OUTFILE >> $OUTLOG2
 	EXIT_CHECKER=$?
 	echo "EXIT_STATUS=$EXIT_CHECKER" >> $OUTLOG2

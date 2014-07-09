@@ -70,11 +70,13 @@ public class BunTypeChecker {
 		return false;
 	}
 	
-	private Functor setFunctionName(SymbolTable gamma, int flag, String name, BunType type, PegObject node) {
+	private Functor setFunctionName(SymbolTable gamma, int flag, PegObject nameNode, BunType type, PegObject node) {
+		String name = nameNode.getText();
 		String key = name + ":" + type.getFuncParamSize();
 		Functor defined = gamma.getSymbol(key);
 		type = type.getRealType();
 		name = gamma.root.driver.rename(flag, name);
+		nameNode.optionalToken = name;
 		defined = new FunctionFunctor(flag, name, type.getRealType(), node, defined);
 		gamma.setSymbol(key, defined);
 		return defined;
@@ -185,7 +187,7 @@ public class BunTypeChecker {
 				block = blockgamma.tryMatch(block, false);
 				node.set(3, block);
 				int flag = checkNameFlag(node, 0);
-				setFunctionName(gamma, flag, node.textAt(0, ""), node.typed, node);
+				setFunctionName(gamma, flag, node.get(0), node.typed, node);
 			}
 			else {
 				System.out.println("** second time");

@@ -81,7 +81,7 @@ public abstract class BunDriver {
 		return name;
 	}
 	
-	private boolean hasMainFunc = false;
+	protected boolean hasMainFunc = false;
 	protected final boolean hasMainFunction() {
 		return hasMainFunc;
 	}

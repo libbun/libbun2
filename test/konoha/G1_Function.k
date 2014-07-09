@@ -17,11 +17,11 @@ function f(a: int, b : int) : int {
 
 export function main() {
 	g();
-	println("#Func<int>: ${f()}");
-	println("#Func<int,int>: ${f(1)}");
-	println("#Func<int,int,int>: ${f(1,2)}");
-    assert(f() == 1);
-    assert(f(1) == 2);
+	println("#Func<int>: " + f());
+	println("#Func<int,int>: " + f(1));
+	println("#Func<int,int,int>: " + f(1,2));
+	assert(f() == 1);
+	assert(f(1) == 2);
 	assert(f(1,2) == 3);
 }
 
