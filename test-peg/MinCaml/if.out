@@ -1,0 +1,131 @@
+TopLevel
+  = _? (Rule / Import) _? ';' _?
+  ;
+_
+  = ([ \t\n\r]+ / '/*' (!'*/' .)* '*/' / '//' (![\r\n] .)* [\r\n])*
+  ;
+Rule
+  = <{ #rule RuleName^ _? '=' _? Expr^ }>
+  ;
+RuleName
+  = <{ [A-Za-z_] [A-Za-z0-9_]* #PegNonTerminal }>
+  ;
+Expr
+  = Sequence <{^ #PegChoice (_? '/' _? (<{ 'catch' _ #catch Expr^ }> / Sequence)^)+ }>?
+  ;
+Sequence
+  = Predicate <{^ #PegSequence (_ Predicate^)+ }>?
+  ;
+Predicate
+  = <{ ('&' #PegAnd / '!' #PegNot) SuffixTerm^ }>
+  / SuffixTerm
+  ;
+SuffixTerm
+  = Term <{^ ('*' #PegZeroMore / '+' #PegOneMore / '?' #PegOptional) }>?
+  ;
+Term
+  = "'" <{ (!"'" .)* #PegString }> "'"
+  / '"' <{ (!'"' .)* #PegString }> '"'
+  / '`' <{ (!'`' .)* #PegMessage }> '`'
+  / '[' <{ (!']' .)* #PegCharacter }> ']'
+  / <{ '.' #PegAny }>
+  / <{ '#' [A-Za-z0-9_.]+ #PegTagging }>
+  / <{ [0-9] #PegIndex }>
+  / <{ '<|' _? Expr^ _? #PegExport '|>' }>
+  / '(' _? Expr _? ')' Setter?
+  / <{ ('<<' / '<{' / '8<') (('^' / '@') [ \t\n\r] ##PegNewObjectJoin / '' #PegNewObject) _? Expr^ _? ('>>' / '}>' / '>8') }> Setter?
+  / RuleName Setter?
+  ;
+Setter
+  = ('^' / '@') <{^ [0-9]? #PegSetter }>
+  ;
+Import
+  = <{ 'import' #import _ RuleName^ _ 'from' _ ("'" <{ (!"'" .)* #PegString }> "'" / '"' <{ (!'"' .)* #PegString }> '"' / '`' <{ (!'`' .)* #PegMessage }> '`')^ }>
+  ;
+TopLevel
+  = _? (Rule / Import) _? ';' _?
+  ;
+_
+  = ([ \t\n\r]+ / '/*' (!'*/' .)* '*/' / '//' (![\r\n] .)* [\r\n])*
+  ;
+Rule
+  = <{ #rule RuleName^ _? '=' _? Expr^ }>
+  ;
+RuleName
+  = <{ [A-Za-z_] [A-Za-z0-9_]* #PegNonTerminal }>
+  ;
+Expr
+  = Sequence <{^ #PegChoice (_? '/' _? (<{ 'catch' _ #catch Expr^ }> / Sequence)^)+ }>?
+  ;
+Sequence
+  = Predicate <{^ #PegSequence (_ Predicate^)+ }>?
+  ;
+Predicate
+  = <{ ('&' #PegAnd / '!' #PegNot) SuffixTerm^ }>
+  / SuffixTerm
+  ;
+SuffixTerm
+  = Term <{^ ('*' #PegZeroMore / '+' #PegOneMore / '?' #PegOptional) }>?
+  ;
+Term
+  = "'" <{ (!"'" .)* #PegString }> "'"
+  / '"' <{ (!'"' .)* #PegString }> '"'
+  / '`' <{ (!'`' .)* #PegMessage }> '`'
+  / '[' <{ (!']' .)* #PegCharacter }> ']'
+  / <{ '.' #PegAny }>
+  / <{ '#' [A-Za-z0-9_.]+ #PegTagging }>
+  / <{ [0-9] #PegIndex }>
+  / <{ '<|' _? Expr^ _? #PegExport '|>' }>
+  / '(' _? Expr _? ')' Setter?
+  / <{ ('<<' / '<{' / '8<') (('^' / '@') [ \t\n\r] ##PegNewObjectJoin / '' #PegNewObject) _? Expr^ _? ('>>' / '}>' / '>8') }> Setter?
+  / RuleName Setter?
+  ;
+Setter
+  = ('^' / '@') <{^ [0-9]? #PegSetter }>
+  ;
+Import
+  = <{ 'import' #import _ RuleName^ _ 'from' _ ("'" <{ (!"'" .)* #PegString }> "'" / '"' <{ (!'"' .)* #PegString }> '"' / '`' <{ (!'`' .)* #PegMessage }> '`')^ }>
+  ;
+(/mnt/hgfs/workspace/libbun2/sample/mincaml.peg:112) [warning] ignored object operation
+  = Number !(_ SimpleExpStmt) / Identifier !(_ SimpleExpStmt) / ParenExp
+          ^
+(/mnt/hgfs/workspace/libbun2/sample/mincaml.peg:112) [warning] ignored object operation
+  = Number !(_ SimpleExpStmt) / Identifier !(_ SimpleExpStmt) / ParenExp
+                                          ^
+
+#block: {
+   #if: {
+      #eq: {
+         #identifier: n
+         #int: 0
+      }
+      #thenblock: {
+         #int: 1
+      }
+      #elseblock: {
+         #if: {
+            #eq: {
+               #identifier: n
+               #int: 1
+            }
+            #thenblock: {
+               #int: 2
+            }
+            #elseblock: {
+               #if: {
+                  #eq: {
+                     #identifier: n
+                     #int: 2
+                  }
+                  #thenblock: {
+                     #int: 3
+                  }
+                  #elseblock: {
+                     #int: 4
+                  }
+               }
+            }
+         }
+      }
+   }
+}
