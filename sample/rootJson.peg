@@ -24,13 +24,16 @@ WS
 		= [ \t\n\r]*;
 						
 False
-		= << "false" #false >>;
+		= << "false" #boolean >>;
 			
 Null
 		= << "null" #null >>;
 			
 True
-		= << "true" #true >>;
+		= << "true" #boolean >>;
+		
+Boolean
+		= << (True / False) #boolean >>;
 				
 Array
 		= BeginArray << ( Object0@ ( ValueSeparator Object0@ )* )? #array >> EndArray;

@@ -15,6 +15,7 @@ public class JsonPegGenerator {
 	
 	public final StringSource generate(StringSource source, PegObject node, int index) {
 		int count = 0;
+		int arrayCount = 0;
 		for(int i = 0; i < node.AST.length; i++) {
 			switch (node.AST[i].tag) {
 			case "#class":
@@ -24,7 +25,7 @@ public class JsonPegGenerator {
 				break;
 			
 			case "#main":
-				source.sourceText += "Object0 = BeginObject << Member0@ ( ValueSeparator Member0@ )  #object >> EndObject;\n\n";
+				source.sourceText += "Object0 = BeginObject << Member0@  #object >> EndObject;\n\n";
 				source.sourceText += "Member0 = << Object0_0@ #member>>;\n\n";
 				source.sourceText += "Object0" + "_" + count + " = << QuotationMark Name0@ QuotationMark NameSeparator BeginObject Value0@ EndObject #object >>;\n\n";
 				source = generate(source,node.AST[i], 0);
@@ -63,28 +64,32 @@ public class JsonPegGenerator {
 				break;
 				
 			case "#array":
-				if(node.AST[i].AST == null && this.arrayCount == 0) {
-					source.sourceText += "Member" + index + "_" + count + " = <<Key" + index + "_" + count + "@ NameSeparator Array"+ index + "_" + count +"@ #member >>;\n\n";
-					source.sourceText += "Array" + index + "_" + count + " = BeginArray << ( " + node.AST[i].AST[0].getText() + "@ ( ValueSeparator " + node.AST[i].AST[0].getText() + "@ )* )? #array >> EndArray;\n\n"
+				if(node.AST[i].AST[0].AST == null && this.arrayCount == 0) {
+					source.sourceText += "Member" + index + "_" + count + " = <<Key" + index + "_" + count + "@ NameSeparator Array"+ index + "_" + arrayCount +"@ #member >>;\n\n";
+					source.sourceText += "Array" + index + "_" + arrayCount + " = BeginArray << ( " + node.AST[i].AST[0].getText() + "@ ( ValueSeparator " + node.AST[i].AST[0].getText() + "@ )* )? #array >> EndArray;\n\n"
 										+ "Key" + index + "_" + count + " = << QuotationMark " + node.AST[i].AST[1].getText() + " QuotationMark #key >>;\n\n";
+					arrayCount++;
 				}
 				else if(node.AST[i].AST.length == 1) {
-					count = this.arrayCount;
-					source.sourceText += "Array" + index + "_" + count + " = BeginArray << ( " + node.AST[0].getText() + "@ ( ValueSeparator " + node.AST[0].getText() + "@ )* )? #array >> EndArray;\n\n";
+					arrayCount = this.arrayCount;
+					source.sourceText += "Array" + index + "_" + arrayCount + " = BeginArray << ( " + node.AST[0].getText() + "@ ( ValueSeparator " + node.AST[0].getText() + "@ )* )? #array >> EndArray;\n\n";
+					this.arrayCount++;
+					i++;
 				}
 				else if(node.AST[i].AST[0].tag.equals("#Class")) {
-					source.sourceText += "Member" + index + "_" + count + " = <<Key" + index + "_" + count + "@ NameSeparator Array"+ index + "_" + count +"@ #member >>;\n\n";
-					source.sourceText += "Array" + index + "_" + count + " = BeginArray << Object" + this.classNameMap.get(node.AST[i].AST[0].AST[0].getText()) + "@ ( ValueSeparator Object" + this.classNameMap.get(node.AST[i].AST[0].AST[0].getText()) +"@)* #array >> EndArray;\n\n"
+					source.sourceText += "Member" + index + "_" + count + " = <<Key" + index + "_" + count + "@ NameSeparator Array"+ index + "_" + arrayCount +"@ #member >>;\n\n";
+					source.sourceText += "Array" + index + "_" + arrayCount + " = BeginArray << Object" + this.classNameMap.get(node.AST[i].AST[0].AST[0].getText()) + "@ ( ValueSeparator Object" + this.classNameMap.get(node.AST[i].AST[0].AST[0].getText()) +"@)* #array >> EndArray;\n\n"
 										+ "Key" + index + "_" + count + " = << QuotationMark " + node.AST[i].AST[1].getText() + " QuotationMark #key >>;\n\n";
-					count++;
+					arrayCount++;
 				}
 				else {
-					source.sourceText += "Member" + index + "_" + count + " = <<Key" + index + "_" + count + "@ NameSeparator Array"+ index + "_" + count +"@ #member >>;\n\n";
-					source.sourceText += "Array" + index + "_" + count + " = BeginArray << ( Array" + index + "_" + (count + 1) + "@ ( ValueSeparator Array" + index + "_" + (count + 1) + "@ )* )? #array >> EndArray;\n\n"
+					source.sourceText += "Member" + index + "_" + count + " = <<Key" + index + "_" + count + "@ NameSeparator Array"+ index + "_" + arrayCount +"@ #member >>;\n\n";
+					source.sourceText += "Array" + index + "_" + arrayCount + " = BeginArray << ( Array" + index + "_" + (count + 1) + "@ ( ValueSeparator Array" + index + "_" + (count + 1) + "@ )* )? #array >> EndArray;\n\n"
 										+ "Key" + index + "_" + count + " = << QuotationMark " + node.AST[i].AST[1].getText() + " QuotationMark #key >>;\n\n";
-					count++;
-					this.arrayCount = count;
+					arrayCount++;
+					this.arrayCount = arrayCount;
 					source = generate(source, node.AST[i], index);
+					arrayCount = this.arrayCount;
 				}
 				count++;
 				break;

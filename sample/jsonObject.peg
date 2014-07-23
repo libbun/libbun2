@@ -44,7 +44,7 @@ Member
 Key
 		= StringType WS << String #string >>
 		/ NumberType WS << String #number >> 
-		/ ArrayType WS << (StringType@ / NumberType@ / ArrayType Array@ / ClassName@ ) WS ArrayKey@  #array >>
+		/ ArrayType WS << (StringType@ / NumberType@ / BooleanType@ / ArrayType Array@ / ClassName@ ) WS ArrayKey@  #array >>
 		/ ClassLabel << String@ WS #Class >>
 		/ BooleanType WS << String #boolean >>;
 
@@ -71,7 +71,7 @@ NumberType
 		= << "Number" #type >>;
 		
 BooleanType
-		= "Boolean";
+		= << "Boolean" #type >>;
 		
 String
 		= QuotationMark << Char* #string >> QuotationMark;
