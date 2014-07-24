@@ -1,22 +1,22 @@
-Class Friend {
-		String "Name"
+class Friend {
+		String Name;
 }
 
-Class Friends {
-		Array Class "Friend" "Friends"
+class Friends {
+		Array <Friend> Friends;
 }
 
-Class School {
-		String "SchoolName",
-		Number "Grade",
-		Number "ID"
+class School {
+		String SchoolName;
+		Number Grade;
+		Number ID;
 }
 
-Main Human {
-		String "Name",
-		Number "Age",
-		Boolean "SingleLife",
-		Class "School",
-		Class "Friends"
+class Human {
+		String Name;
+		Number Age;
+		boolean SingleLife;
+		School school;
+		Friends friends;
 }
 

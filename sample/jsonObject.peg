@@ -3,12 +3,18 @@ TopLevel
 		
 BeginArray
 		= WS '[' WS;
+		
+BeginArrayType
+		= WS '<' WS;
 			
 BeginClass
 		= WS '{' WS;
 			
 EndArray
 		= WS ']' WS;
+
+EndArrayType
+		= WS '>' WS;
 			
 EndClass
 		= WS '}' WS;
@@ -17,45 +23,47 @@ NameSeparator
 		= WS ':' WS;
 			
 ValueSeparator
-		= WS ',' WS;
+		= WS ';' WS;
 			
 WS			
 		= [ \t\n\r]*;	
 
 Class
-		= << ClassLabel Name@ BeginClass Member@ EndClass #class>>
-		/ << MainLabel Name@ BeginClass Member@ EndClass #main >>;
+		= << ClassLabel Name@ BeginClass Member@ EndClass #class>>;
 		
 ClassLabel
-		= WS "Class" WS;
-
-ObjectId
-		= << [0-9]+ #id >> WS;
-		
-MainLabel
-		= WS "Main" WS;
+		= WS "class" WS;
 		
 Name
-		= << [A-Za-z_] [A-Za-z0-9]* #name >>;
+		= << [A-Za-z_][A-Za-z0-9_]* #name >>;
 		
 Member
-		= << Key@  (ValueSeparator Key@)* #member >>;
+		= << Key@  ValueSeparator (Key@ ValueSeparator)* #member >>;
 		
 Key
 		= StringType WS << String #string >>
 		/ NumberType WS << String #number >> 
-		/ ArrayType WS << (StringType@ / NumberType@ / ArrayType Array@ / ClassName@ ) WS ArrayKey@  #array >>
-		/ ClassLabel << String@ WS #Class >>
-		/ BooleanType WS << String #boolean >>;
+		/ BooleanType WS << String #boolean >>
+		/ ArrayType << Element ArrayKey@  #array >>
+		/ << ClassName@ WS ObjectKey@ WS #Class >>;
+
+Element
+		= BeginArrayType (StringType@ / NumberType@ / BooleanType@ / ArrayType Array@ / ClassType@ ) EndArrayType;
+
+ClassType
+		= << ClassName #Class >>;
 
 ClassName
-		= ClassLabel WS << String@ #Class >>;
+		= << [A-Za-z_][A-Za-z0-9_]* #className >>;
+		
+ObjectKey
+		= << String #key >>;
 
 ArrayKey
-		= << String #string >>;
+		= << String #key >>;
 
 Array
-		= WS << ( StringType@ / NumberType@ / ArrayType Array@ ) #array >>;
+		= BeginArrayType<< ( StringType@ / NumberType@ / ArrayType Array@ ) EndArrayType #array >>;
 
 Type
 		= <<(StringType
@@ -71,10 +79,10 @@ NumberType
 		= << "Number" #type >>;
 		
 BooleanType
-		= "Boolean";
+		= << ("Boolean" / "boolean") #type >>;
 		
 String
-		= QuotationMark << Char* #string >> QuotationMark;
+		= << Char* #string >>;
 		
 Char
 		= Unescaped
@@ -98,7 +106,7 @@ QuotationMark
 		= '"';
 		
 Unescaped
-		= [\u0020-\u0021]/[\u0023-\u005B]/[\u005D-\uFFFF];
+		= [\u0020-\u0021]/[\u0023-\u003A]/[\u003C-\u005B]/[\u005D-\uFFFF];
 			
 HEXDIG
 		= [0-9a-fA-F];

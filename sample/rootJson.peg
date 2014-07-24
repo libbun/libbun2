@@ -24,16 +24,25 @@ WS
 		= [ \t\n\r]*;
 						
 False
-		= << "false" #false >>;
+		= << "false" #boolean >>;
 			
 Null
 		= << "null" #null >>;
 			
 True
-		= << "true" #true >>;
+		= << "true" #boolean >>;
+		
+Boolean
+		= << (True / False) #boolean >>;
 				
 Array
-		= BeginArray << ( Object0@ ( ValueSeparator Object0@ )* )? #array >> EndArray;
+		= BeginArray << ( Object@ ( ValueSeparator Object@ )* )? #array >> EndArray;
+		
+Object
+		= BeginObject << Member@ #object >> EndObject;
+		
+Member
+		= << QuotationMark Key0@ QuotationMark NameSeparator Object0@ #member >>;
 		
 Number
 		= << Minus? Int Frac? Exp? #number >>;
