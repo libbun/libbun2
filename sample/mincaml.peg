@@ -1,0 +1,243 @@
+// 
+// MinCaml peg (Y--Tamura ver.)
+// 
+
+
+// 1. elements
+
+_    
+  = [ \t\n\r]+
+  ;
+
+EOS
+  = ";;"
+  ;
+  
+Comment    
+  = '(*' ( Comment / . )* '*)' 
+  ;
+
+NonZeroDigit
+  = [1-9]
+  ;
+
+Digit
+  = [0-9]
+  ;
+
+Lower
+  = [a-z]
+  ;
+
+Upper
+  = [A-Z]
+  ;
+
+TopLevel
+  = _? Program _?
+  ;
+
+Number
+  = FloatNum
+  / IntNum
+  ;
+
+IntNum
+  = << '-'? NonZeroDigit Digit* #int >>
+  / << "0" #int >>
+  ;
+
+FloatNum
+  = << '-'? Digit* '.' Digit+ #float >>
+  ;
+
+Identifier
+  = !ReservedWord !Digit !Upper IdentifierName
+  ;
+
+IdentifierName
+  = << Lower IdentifierPart* #identifier >>
+  ;
+
+IdentifierPart
+  = Lower / Upper / Digit / '_' 
+  ;
+
+ReservedWord
+  = TrueToken / FalseToken / NotToken / BoolToken 
+  / IntToken / FloatToken / IfToken / ThenToken / ElseToken 
+  / LetToken / RecToken / InToken / EndToken 
+  ;
+
+
+// 2. keywords
+
+TrueToken   = "true"   !IdentifierPart;
+FalseToken  = "false"  !IdentifierPart;
+NotToken    = "not"    !IdentifierPart;
+BoolToken   = "bool"   !IdentifierPart;
+IntToken    = "int"    !IdentifierPart;
+FloatToken  = "float"  !IdentifierPart;
+IfToken     = "if"     !IdentifierPart;
+ThenToken   = "then"   !IdentifierPart;
+ElseToken   = "else"   !IdentifierPart;
+LetToken    = "let"    !IdentifierPart;
+RecToken    = "rec"    !IdentifierPart;
+InToken     = "in"     !IdentifierPart;
+EndToken    = "end"    !IdentifierPart;
+
+
+// 3. statements
+
+SimpleExpStmt
+  = ParenExp / Number / Identifier / BoolToken / IntToken / FloatToken
+  ;
+
+ParenExp
+  = << '(' _? ExpStmt@* _? ')' #block >>
+  ;
+
+Exp
+  = ExpStmt@ _? EOS 
+  / ExpStmt@
+  ;
+
+ExpStmt
+  = IfStmt / LetStmt / TupleStmt / SimpleExpStmt (_ SimpleExpStmt)+ 
+  / ArrayStmt / Elems@ / SimpleExpStmt
+  ;
+
+
+Term
+  = Number !(_ SimpleExpStmt) / Identifier !(_ SimpleExpStmt) / ParenExp
+  ;
+
+NotExp
+  = << NotToken _? Term #not >>
+  / Term
+  ;
+
+SignExp
+  = << "-" !"." _? NotExp@ #minus >>
+  / << "+" !"." _? NotExp@ #plus >>
+  / NotExp
+  ;
+
+MulDiv
+  = SignExp <<@ _? MulDivOperator _? SignExp@ >>*
+  ;
+
+MulDivOperator
+  = "*." #mul 
+  / "/." #div
+  ;
+
+AddSub
+  = MulDiv <<@ _? AddSubOperator _? MulDiv@ >>*
+  ;
+
+AddSubOperator
+  = "+" "."? #add 
+  / "-" "."? #sub
+  ;
+
+Relation
+  = AddSub <<@ _? RelationOperator _? AddSub@ >>*
+  ;
+
+RelationOperator
+  = '<>' #noteq 
+  / '=' #eq 
+  / '<=' #lte 
+  / '<' #lt 
+  / '>=' #gte 
+  / '>' #gt 
+  ;
+
+Elems
+  = Relation <<@ _? ',' _? Relation@ #elems >>* 
+  ;
+
+
+// Pat
+//   = << Identifier ( _? ',' _? Identifier )+ #patterns >>
+//   / Identifier
+//   ;
+
+
+TupleStmt
+  = << '(' _? Relation@ ( _? ',' _? Relation@ )+ _? ')' #tuple >>
+  ;
+
+  
+IfStmt
+  = << IfToken _ ExpStmt@ _ ThenStmt@ _ ElseStmt@ #if >>
+  / << IfToken _ ExpStmt@ _ ThenStmt@ #if >>
+  / << IfToken _ ExpStmt@ _ ElseStmt@ #if >>
+  ;
+
+ThenStmt
+  = << ThenToken _ ExpStmt@ #thenblock >>
+  ;
+
+ElseStmt
+  = << ElseToken _ ExpStmt@ #elseblock >>
+  ;
+
+  
+LetStmt
+  = << LetToken _ TupleStmt@ _? '=' _? ExpStmt@ (_ InStmt@)? #lettuple >>
+  / << LetToken _ Identifier@ _? '=' _? ExpStmt@ (_ InStmt@)? #let >>
+  / << LetToken _ RecToken? _? FunDef@ _? '=' _? ExpStmt@ (_ InStmt@)? #function >>
+  / << LetToken _ ExpStmt@ _? ( _? ';' _? ExpStmt@ )+ #array >>
+  ;
+
+// For supplementary function / local variable
+InStmt
+  = << InToken _ ExpStmt@ _ EndToken #inblock >>
+  ;
+
+  
+FunDef
+  = FunName@ _ TupleStmt@ 
+  / << FunName@ ( _ FunParam@ )* #params >>
+  ;
+
+FunName
+  = << Identifier #funcname >>
+  ;
+
+FunParam
+  = << Identifier #param >>
+  ;
+
+ArrayStmt
+  = ArrayCreate / PutStmt / ReadStmt 
+  ;
+
+// "Array.create" array_size initializer ;;  
+ArrayCreate
+  = << "Array.create" _? SimpleExpStmt@ _? SimpleExpStmt@ #arraycreate >>
+  ;
+
+// array_name.(index) <- element ;;  
+PutStmt
+  = << SimpleExpStmt _? '.' _? '(' _? ExpStmt@ _? ')' _? '<-' _? ExpStmt@ #arrayput >>
+  ;
+
+ReadStmt
+  = << SimpleExpStmt _? '.' _? '(' _? ExpStmt@ _? ')' #arrayread >>
+  ;
+
+Program
+  = SourceElements?
+  ;
+
+SourceElements
+  = << Exp@ ( _? Exp@ )* #block >>
+  ;
+
+  
+// 
+// Eijiro, Sumii. "速攻MinCamlコンパイラ概説" http://esumii.github.io/min-caml/ (July 2014)
+// 

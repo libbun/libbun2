@@ -1,0 +1,5 @@
+{
+    "peg" : "#{SOURCE_ROOT}/sample/mincaml.peg",
+    "input.ext" : "ml",
+    "output.ext" : "out"
+}

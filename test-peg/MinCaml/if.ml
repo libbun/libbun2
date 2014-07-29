@@ -1,0 +1,1 @@
+if n = 0 then 1 else if n = 1 then 2 else if n = 2 then 3 else 4 ;;
